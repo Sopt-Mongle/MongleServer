@@ -18,7 +18,7 @@ module.exports = {
 
     //포스트
     CREATED_POST:"포스팅 성공",
-    READ_POST:"포스트 조회 성공",
+    READ_SENTENCE:"문장 조회 성공",
     Read_All_POST:"포스트 전체 조회 성공",
     NO_POST_IDX:"포스트 인덱스 없음",
     DELETE_POST:"포스트 삭제 완료",
