@@ -3,7 +3,7 @@ const encryption = require('../modules/encryption');
 const crypto = require('crypto');
 const table = 'sentence';
 
-const sentences = {
+const detail = {
     getSentence : async(sentenceIdx) =>{
         const query = `SELECT * FROM ${table} WHERE sentenceIdx = "${sentenceIdx}"`;
         try{
@@ -15,4 +15,4 @@ const sentences = {
     }
 }
 
-module.exports = sentences;
+module.exports = detail;

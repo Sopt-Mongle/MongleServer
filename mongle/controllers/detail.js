@@ -1,5 +1,5 @@
 const encryption = require('../modules/encryption');
-const sentences = require('../models/sentence');
+const sentences = require('../models/detail');
 const util = require('../modules/util');
 const resMessage = require('../modules/responseMessage');
 const statusCode = require('../modules/statusCode');
