@@ -3,10 +3,10 @@ var router = express.Router();
 const detailController = require('../../controllers/detail');
 
 //router.get('/:themeIdx', )
-//router.put('/:themeIdx/like', )
-//router.put('/:themeIdx/save', )
+router.put('/:themeIdx/themelike', detailController.likeTheme);
+//router.put('/:themeIdx/themesave', )
 router.get('/:sentenceIdx', detailController.getSentence);
-router.put('/:sentenceIdx/like', detailController.likeSentence);
-router.put('/:sentenceIdx/save', detailController.saveSentence);
+router.put('/:sentenceIdx/sentencelike', detailController.likeSentence);
+router.put('/:sentenceIdx/sentencesave', detailController.saveSentence);
 
 module.exports = router;

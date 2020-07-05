@@ -107,6 +107,53 @@ const detail = {
         }catch(err){
             console.log('addSave err' + err);
         }throw err;
+    },
+
+    themeIsLike: async(curatorIdx, themeIdx) => {
+        let query = `SELECT COUNT(*) as cnt FROM curator_theme_like WHERE curatorIdx = ${curatorIdx} and themeIdx = ${themeIdx}`;
+        try{
+            const result = await pool.queryParam(query);
+            if(result[0].cnt === 0){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }catch(err){
+            console.log('themeIsLike err' + err);
+        }throw err;
+    },
+
+    themeDeleteLike: async(curatorIdx, themeIdx) =>{
+        let query1 = `DELETE FROM curator_theme_like WHERE curatorIdx="${curatorIdx}" and themeIdx="${themeIdx}"`;
+        let query2 = `UPDATE theme SET likes = likes-1 WHERE themeIdx="${themeIdx}"`;
+        let query3 = `SELECT likes FROM theme WHERE themeIdx="${themeIdx}"`;
+        try{
+            const result1 = await pool.queryParam(query1);
+            const result2 = await pool.queryParam(query2);
+            const result3 = await pool.queryParam(query3);
+            return result3;
+        }catch(err){
+            console.log('themeDeleteLike err' + err);
+        }throw err;
+    },
+
+    themeAddLike: async(curatorIdx, themeIdx) =>{
+        const fields = `curatorIdx, themeIdx`;
+        const question = `?,?`;
+        const values = [curatorIdx, themeIdx];
+        
+        let query1 = `INSERT INTO curator_theme_like(${fields}) VALUES(${question})`;
+        let query2 = `UPDATE theme SET likes = likes+1 WHERE themeIdx="${themeIdx}"`;
+        let query3 = `SELECT likes FROM theme WHERE themeIdx="${themeIdx}"`;
+        try{
+            const result1 = await pool.queryParamArr(query1, values);
+            const result2 = await pool.queryParam(query2);
+            const result3 = await pool.queryParam(query3);
+            return result3;
+        }catch(err){
+            console.log('themeAddLike err' + err);
+        }throw err;
     }
 }
 
