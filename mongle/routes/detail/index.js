@@ -8,7 +8,6 @@ const detailController = require('../../controllers/detail');
 router.get('/bookSearch', detailController.bookSearch);
 router.get('/:sentenceIdx', detailController.getSentence);
 router.put('/:sentenceIdx/like', detailController.likeSentence);
-
-//router.put('/:sentenceIdx/save', )
+router.put('/:sentenceIdx/save', detailController.saveSentence);
 
 module.exports = router;
