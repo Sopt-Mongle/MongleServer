@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const sentence = 'sentence';
 const curator_sentence_like = 'curator_sentence_like';
 
-const sentences = {
+const detail = {
     getSentence : async(sentenceIdx) =>{
         const query = `SELECT * FROM ${sentence} WHERE sentenceIdx = "${sentenceIdx}"`;
         try{
@@ -63,4 +63,4 @@ const sentences = {
     }
 }
 
-module.exports = sentences;
+module.exports = detail;

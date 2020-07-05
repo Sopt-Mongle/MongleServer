@@ -6,6 +6,13 @@ var router = express.Router();
 //   res.render('index', { title: 'Express' });
 // });
 
+// router.use('/main',require('./main'));
+// router.use('/my',require('./my'));
+router.use('/curator',require('./curator'));
+// router.use('/detail',require('./detail'));
+// router.use('/search',require('./search'));
+// router.use('/users',require('./users'));
+// router.use('/post',require('./post'));
 //router.use('/main',require('./main'));
 //router.use('/my',require('./my'));
 //router.use('/curator',require('./curator'));

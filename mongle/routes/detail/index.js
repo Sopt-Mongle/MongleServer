@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const detailController = require('../../controller/detail');
+const detailController = require('../../controllers/detail');
 
 //router.get('/:themeIdx', )
 //router.put('/:themeIdx/like', )
