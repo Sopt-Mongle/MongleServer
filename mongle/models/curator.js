@@ -12,8 +12,7 @@ const curator = {
             // console.log(CuratorData(result[0]));
             let keywords;
             // console.log(tempResult);
-            let res = await Promise.all(tempResult.map(async(element) => {
-                let result = [];
+            await Promise.all(tempResult.map(async(element) => {
                 let curatorIdx = element.curatorIdx;
                 query = `SELECT keyword FROM curator_keyword WHERE curatorIdx = ${curatorIdx}`;
                 const keywordResult = await pool.queryParam(query);
@@ -30,7 +29,6 @@ const curator = {
                 
                 element.keyword = keywords.keyword;
                 
-                return result;
             }));
 
             // console.log(tempResult);
