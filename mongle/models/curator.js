@@ -39,6 +39,40 @@ const curator = {
             console.log('getAllCurators ERROR : ', err);
             throw err;
         }
+    },
+
+    subscribe: async(followerIdx, followedIdx) =>{
+        let query = `SELECT * FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${followedIdx}`;
+        try{
+            let result = "";
+            const selectResult = await pool.queryParam(query);
+            
+            if(selectResult.length == 0){ //구독 안했던 큐레이터 -> 구독하기!!
+                query = `INSERT INTO follow(followerIdx, followedIdx) VALUE(${followerIdx}, ${followedIdx})`;
+                await pool.queryParam(query);
+            
+                query = `UPDATE ${table} SET subscribe = subscribe+1 WHERE curatorIdx = ${followedIdx}`;
+                await pool.queryParam(query);
+
+                result = true;
+
+            }
+            else{ //구독 했던 큐레이터 -> 구독취소!!
+                query = `DELETE FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${followedIdx}`;
+                await pool.queryParam(query);
+
+                query = `UPDATE ${table} SET subscribe = subscribe-1 WHERE curatorIdx = ${followedIdx}`;
+                await pool.queryParam(query);
+
+                result = false;
+            }
+            console.log(result);
+            return result;
+        }
+        catch(err){
+            console.log('subscribe ERROR : ', err);
+            throw err;
+        }
     }
 };
 

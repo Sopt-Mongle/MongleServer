@@ -102,7 +102,7 @@ module.exports = {
         // console.log(result);
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, "구독 기능성공", result));
     },
-    
+
     bookSearch : async(req, res) =>{
         const title = req.body.title;
         const sort = 'accuracy';
@@ -110,6 +110,7 @@ module.exports = {
 
         if(!title){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
         }
 
         let result = await kakaoAPI.bookSearch(title, sort, target);
@@ -117,6 +118,6 @@ module.exports = {
         // console.log(result.documents.map(BookData));
         var finalResult = result.documents.map(BookData);
 
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOK_SEARCH_SUCCESS, finalResult));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOK_SEARCH_SUCCESS, finalResult));
     }
 }
