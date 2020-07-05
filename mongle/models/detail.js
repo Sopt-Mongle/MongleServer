@@ -60,6 +60,53 @@ const detail = {
         }catch(err){
             console.log('addLike err' + err);
         }throw err;
+    },
+
+    isSave: async(curatorIdx, sentenceIdx) => {
+        let query = `SELECT COUNT(*) as cnt FROM curator_sentence WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
+        try{
+            const result = await pool.queryParam(query);
+            if(result[0].cnt === 0){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }catch(err){
+            console.log('isSave err' + err);
+        }throw err;
+    },
+
+    deleteSave: async(curatorIdx, sentenceIdx) =>{
+        let query1 = `DELETE FROM curator_sentence WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
+        let query2 = `UPDATE ${sentence} SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
+        let query3 = `SELECT saves FROM ${sentence} WHERE sentenceIdx="${sentenceIdx}"`;
+        try{
+            const result1 = await pool.queryParam(query1);
+            const result2 = await pool.queryParam(query2);
+            const result3 = await pool.queryParam(query3);
+            return result3;
+        }catch(err){
+            console.log('deleteSave err' + err);
+        }throw err;
+    },
+
+    addSave: async(curatorIdx, sentenceIdx) =>{
+        const fields = `curatorIdx, sentenceIdx`;
+        const question = `?,?`;
+        const values = [curatorIdx, sentenceIdx];
+        
+        let query1 = `INSERT INTO curator_sentence(${fields}) VALUES(${question})`;
+        let query2 = `UPDATE ${sentence} SET saves = saves+1 WHERE sentenceIdx="${sentenceIdx}"`;
+        let query3 = `SELECT saves FROM ${sentence} WHERE sentenceIdx="${sentenceIdx}"`;
+        try{
+            const result1 = await pool.queryParamArr(query1, values);
+            const result2 = await pool.queryParam(query2);
+            const result3 = await pool.queryParam(query3);
+            return result3;
+        }catch(err){
+            console.log('addSave err' + err);
+        }throw err;
     }
 }
 
