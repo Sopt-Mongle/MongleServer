@@ -15,10 +15,16 @@ module.exports = {
     NO_USER: "존재하지 않는 회원입니다.",
     MISS_MATCH_PW: "비밀번호가 맞지 않습니다.",
     
+    //큐레이터
     CURATER_SHOW_ALL: "큐레이터 전체 목록 조회 성공",
     NO_CONTENT_CURATOR: "큐레이터가 없습니다.",
+
+    //디테일
+    BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
+    
     // 프로필 조회
     READ_PROFILE_SUCCESS: "프로필 조회 성공",
+    
 
     //포스트
     CREATED_POST:"포스팅 성공",

@@ -6,6 +6,9 @@ const statusCode = require('../modules/statusCode');
 const crypto = require('crypto');
 //const jwt = require('../modules/jwt');
 
+const kakaoAPI = require('../modules/kakao');
+const BookData = require('../modules/data/bookData');
+
 module.exports = {
     getSentence : async(req,res) =>{
         const sentenceIdx = req.params.sentenceIdx;
@@ -57,5 +60,23 @@ module.exports = {
 
         console.log(result);
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LIKE_SENTENCE, result));
+    },
+
+    bookSearch : async(req, res) =>{
+        const title = req.body.title;
+        const sort = 'accuracy';
+        const target = 'title';
+
+        if(!title){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+
+        let result = await kakaoAPI.bookSearch(title, sort, target);
+
+        // console.log(result.documents.map(BookData));
+        var finalResult = result.documents.map(BookData);
+
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOK_SEARCH_SUCCESS, finalResult));
+
     }
 }
