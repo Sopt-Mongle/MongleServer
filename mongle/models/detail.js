@@ -20,10 +20,10 @@ const detail = {
         try{
             const result = await pool.queryParam(query);
             if(result[0].cnt === 0){
-                return false;
+                return true;
             }
             else{
-                return true;
+                return false;
             }
         }catch(err){
             console.log('isLike err' + err);
@@ -67,10 +67,10 @@ const detail = {
         try{
             const result = await pool.queryParam(query);
             if(result[0].cnt === 0){
-                return false;
+                return true;
             }
             else{
-                return true;
+                return false;
             }
         }catch(err){
             console.log('isSave err' + err);
@@ -114,10 +114,10 @@ const detail = {
         try{
             const result = await pool.queryParam(query);
             if(result[0].cnt === 0){
-                return false;
+                return true;
             }
             else{
-                return true;
+                return false;
             }
         }catch(err){
             console.log('themeIsLike err' + err);
@@ -154,7 +154,54 @@ const detail = {
         }catch(err){
             console.log('themeAddLike err' + err);
         }throw err;
-    }
+    },
+
+    themeIsSave: async(curatorIdx, themeIdx) => {
+        let query = `SELECT COUNT(*) as cnt FROM curator_theme WHERE curatorIdx = ${curatorIdx} and themeIdx = ${themeIdx}`;
+        try{
+            const result = await pool.queryParam(query);
+            if(result[0].cnt === 0){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }catch(err){
+            console.log('themeIsSave err' + err);
+        }throw err;
+    },
+
+    themeDeleteSave: async(curatorIdx, themeIdx) =>{
+        let query1 = `DELETE FROM curator_theme WHERE curatorIdx="${curatorIdx}" and themeIdx="${themeIdx}"`;
+        let query2 = `UPDATE theme SET saves = saves-1 WHERE themeIdx="${themeIdx}"`;
+        let query3 = `SELECT saves FROM theme WHERE themeIdx="${themeIdx}"`;
+        try{
+            const result1 = await pool.queryParam(query1);
+            const result2 = await pool.queryParam(query2);
+            const result3 = await pool.queryParam(query3);
+            return result3;
+        }catch(err){
+            console.log('themeDeleteSave err' + err);
+        }throw err;
+    },
+
+    themeAddSave: async(curatorIdx, themeIdx) =>{
+        const fields = `curatorIdx, themeIdx`;
+        const question = `?,?`;
+        const values = [curatorIdx, themeIdx];
+        
+        let query1 = `INSERT INTO curator_theme(${fields}) VALUES(${question})`;
+        let query2 = `UPDATE theme SET saves = saves+1 WHERE themeIdx="${themeIdx}"`;
+        let query3 = `SELECT saves FROM theme WHERE themeIdx="${themeIdx}"`;
+        try{
+            const result1 = await pool.queryParamArr(query1, values);
+            const result2 = await pool.queryParam(query2);
+            const result3 = await pool.queryParam(query3);
+            return result3;
+        }catch(err){
+            console.log('themeAddSave err' + err);
+        }throw err;
+    },
 }
 
 module.exports = detail;
