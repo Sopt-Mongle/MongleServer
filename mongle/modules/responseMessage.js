@@ -1,5 +1,7 @@
 module.exports = {
     NULL_VALUE: "필요한 값이 없습니다",
+    NULL_VALUE_SENTENCE: "sentenceIdx 값이 없습니다",
+    NULL_VALUE_CURATOR: "curatorIdx 값이 없습니다",
     OUT_OF_VALUE: "파라미터 값이 잘못되었습니다",
 
     // 회원가입
@@ -19,6 +21,7 @@ module.exports = {
     //포스트
     CREATED_POST:"포스팅 성공",
     READ_SENTENCE:"문장 조회 성공",
+    LIKE_SENTENCE:"좋아요 토글 성공",
     Read_All_POST:"포스트 전체 조회 성공",
     NO_POST_IDX:"포스트 인덱스 없음",
     DELETE_POST:"포스트 삭제 완료",

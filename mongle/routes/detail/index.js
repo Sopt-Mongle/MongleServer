@@ -6,7 +6,7 @@ const detailController = require('../../controller/detail');
 //router.put('/:themeIdx/like', )
 //router.put('/:themeIdx/save', )
 router.get('/:sentenceIdx', detailController.getSentence);
-//router.put('/:sentenceIdx/like', )
+router.put('/:sentenceIdx/like', detailController.likeSentence);
 //router.put('/:sentenceIdx/save', )
 
 module.exports = router;
