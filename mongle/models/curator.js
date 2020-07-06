@@ -73,6 +73,38 @@ const curator = {
             console.log('subscribe ERROR : ', err);
             throw err;
         }
+    },
+
+    getCuratorInfo: async(curatorIdx) =>{
+        let query = `SELECT curatorIdx, name, img, subscribe FROM curator WHERE curatorIdx = ${curatorIdx}`;
+
+        try{
+            let tempResult = await pool.queryParam(query);
+            let keywords;
+            await Promise.all(tempResult.map(async(element) => {
+                let curatorIdx = element.curatorIdx;
+                query = `SELECT keyword FROM curator_keyword WHERE curatorIdx = ${curatorIdx}`;
+                const keywordResult = await pool.queryParam(query);
+                // console.log(keywordResult[0].keyword);
+                var string=JSON.stringify(keywordResult);
+                var json = JSON.parse(string);
+                
+                keywords = json.reduce(function(r, e) {
+                    return Object.keys(e).forEach(function(k) {
+                        if(!r[k]) r[k] = [].concat(e[k])
+                        else r[k] = r[k].concat(e[k])
+                    }), r
+                }, {});
+                
+                element.keyword = keywords.keyword;
+                
+            }));
+            return tempResult.map(CuratorData);
+        }
+        catch(err){
+            console.log('getCuratorInfo err : ', err);
+            throw err;
+        }
     }
 };
 

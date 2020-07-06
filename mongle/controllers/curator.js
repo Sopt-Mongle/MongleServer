@@ -34,5 +34,22 @@ module.exports = {
         const result = await CuratorModel.subscribe(curatorIdx, followedIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUBSCRIBE_SUCCESS, result));
+    },
+
+    getCuratorInfo : async(req, res) => {
+        const curatorIdx = req.params.curatorIdx;
+        if(!curatorIdx){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        const result = await CuratorModel.getCuratorInfo(curatorIdx);
+
+        if(result.length === 0){
+            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CONTENT_CURATOR));
+            return;
+        }
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATER_SHOW_ALL, result));
     }
 };
