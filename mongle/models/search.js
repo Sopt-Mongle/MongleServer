@@ -1,14 +1,27 @@
 const pool = require('../modules/pool');
 
 const SentenceData = require('../modules/data/sentenceData');
+const ThemeData = require('../modules/data/themeData');
 
 const search = {
     searchCurator: async()=>{
 
     },
 
-    searchTheme: async()=>{
-
+    searchTheme: async(words)=>{
+        const queryWords = words.replace(/(\s)/g, "%");
+        // console.log(queryWords);
+        
+        let query = `SELECT * FROM theme WHERE theme LIKE "%${queryWords}%"`;
+        try{
+            const result = await pool.queryParam(query);
+            // console.log(result);
+            return result.map(ThemeData);
+        }
+        catch(err){
+            console.log('searchTheme ERROR : ', err);
+            throw err;
+        }
     },
 
     searchSentence: async(words)=>{

@@ -10,7 +10,22 @@ module.exports = {
     },
 
     searchTheme : async(req, res) =>{
+        const words = req.body.words;
+        // console.log(words);
 
+        if(!words){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
+            return;
+        }
+
+        const result = await SearchModel.searchTheme(words);
+        
+        if(result.length === 0){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_THEMES));
+            return;
+        }
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEARCH_THEMES_SUCCESS, result));
     },
 
     searchSentence : async(req, res)=>{
