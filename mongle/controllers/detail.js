@@ -62,7 +62,7 @@ module.exports = {
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LIKE_SENTENCE, result));
     },
 
-    saveSentence : async(req, res) =>{
+    bookmarkSentence : async(req, res) =>{
         const sentenceIdx = req.params.sentenceIdx;
         if(!sentenceIdx){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_SENTENCE));
@@ -73,7 +73,7 @@ module.exports = {
         }
 
         function Func1(){
-            const isSave = detail.isSave(curatorIdx, sentenceIdx);
+            const isSave = detail.isBookmark(curatorIdx, sentenceIdx);
             return isSave;
         };
 
@@ -81,10 +81,10 @@ module.exports = {
         var result = {};
         async function Func2(isSave){
             if(!isSave){//이미 구독중이니까 구독취소
-                data = await detail.deleteSave(curatorIdx, sentenceIdx);
+                data = await detail.deleteBookmark(curatorIdx, sentenceIdx);
             }
             else{//구독 추가
-                data = await detail.addSave(curatorIdx, sentenceIdx);
+                data = await detail.addBookmark(curatorIdx, sentenceIdx);
             }
             result.isSave = isSave;
             result.saves = data[0].saves;
@@ -95,7 +95,7 @@ module.exports = {
             console.log(elem);
         }).then((res) => Func2(res));
 
-        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SAVE_SENTENCE, result));
+        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SENTENCE, result));
     },
 
     likeTheme : async(req, res) =>{
@@ -134,7 +134,7 @@ module.exports = {
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LIKE_THEME, result));
     },
 
-    saveTheme : async(req, res) =>{
+    bookmarkTheme : async(req, res) =>{
         const themeIdx = req.params.themeIdx;
         if(!themeIdx){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_THEME));
@@ -145,7 +145,7 @@ module.exports = {
         }
 
         function Func1(){
-            const isSave = detail.themeIsSave(curatorIdx, themeIdx);
+            const isSave = detail.themeIsBookmark(curatorIdx, themeIdx);
             return isSave;
         };
 
@@ -153,10 +153,10 @@ module.exports = {
         var result = {};
         async function Func2(isSave){
             if(!isSave){//이미 구독중이니까 구독취소
-                data = await detail.themeDeleteSave(curatorIdx, themeIdx);
+                data = await detail.themeDeleteBookmark(curatorIdx, themeIdx);
             }
             else{//구독 추가
-                data = await detail.themeAddSave(curatorIdx, themeIdx);
+                data = await detail.themeAddBookmark(curatorIdx, themeIdx);
             }
             result.isSave = isSave;
             result.saves = data[0].saves;
@@ -167,7 +167,7 @@ module.exports = {
             console.log(elem);
         }).then((res) => Func2(res));
 
-        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SAVE_THEME, result));
+        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_THEME, result));
     },
 
     bookSearch : async(req, res) =>{

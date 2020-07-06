@@ -62,7 +62,7 @@ const detail = {
         }throw err;
     },
 
-    isSave: async(curatorIdx, sentenceIdx) => {
+    isBookmark: async(curatorIdx, sentenceIdx) => {
         let query = `SELECT COUNT(*) as cnt FROM curator_sentence WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
         try{
             const result = await pool.queryParam(query);
@@ -73,11 +73,11 @@ const detail = {
                 return false;
             }
         }catch(err){
-            console.log('isSave err' + err);
+            console.log('isBookmark err' + err);
         }throw err;
     },
 
-    deleteSave: async(curatorIdx, sentenceIdx) =>{
+    deleteBookmark: async(curatorIdx, sentenceIdx) =>{
         let query1 = `DELETE FROM curator_sentence WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
         let query2 = `UPDATE ${sentence} SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
         let query3 = `SELECT saves FROM ${sentence} WHERE sentenceIdx="${sentenceIdx}"`;
@@ -87,11 +87,11 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('deleteSave err' + err);
+            console.log('deleteBookmark err' + err);
         }throw err;
     },
 
-    addSave: async(curatorIdx, sentenceIdx) =>{
+    addBookmark: async(curatorIdx, sentenceIdx) =>{
         const fields = `curatorIdx, sentenceIdx`;
         const question = `?,?`;
         const values = [curatorIdx, sentenceIdx];
@@ -105,7 +105,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('addSave err' + err);
+            console.log('addBookmark err' + err);
         }throw err;
     },
 
@@ -156,7 +156,7 @@ const detail = {
         }throw err;
     },
 
-    themeIsSave: async(curatorIdx, themeIdx) => {
+    themeIsBookmark: async(curatorIdx, themeIdx) => {
         let query = `SELECT COUNT(*) as cnt FROM curator_theme WHERE curatorIdx = ${curatorIdx} and themeIdx = ${themeIdx}`;
         try{
             const result = await pool.queryParam(query);
@@ -167,11 +167,11 @@ const detail = {
                 return false;
             }
         }catch(err){
-            console.log('themeIsSave err' + err);
+            console.log('themeIsBookmark err' + err);
         }throw err;
     },
 
-    themeDeleteSave: async(curatorIdx, themeIdx) =>{
+    themeDeleteBookmark: async(curatorIdx, themeIdx) =>{
         let query1 = `DELETE FROM curator_theme WHERE curatorIdx="${curatorIdx}" and themeIdx="${themeIdx}"`;
         let query2 = `UPDATE theme SET saves = saves-1 WHERE themeIdx="${themeIdx}"`;
         let query3 = `SELECT saves FROM theme WHERE themeIdx="${themeIdx}"`;
@@ -181,11 +181,11 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('themeDeleteSave err' + err);
+            console.log('themeDeleteBookmark err' + err);
         }throw err;
     },
 
-    themeAddSave: async(curatorIdx, themeIdx) =>{
+    themeAddBookmark: async(curatorIdx, themeIdx) =>{
         const fields = `curatorIdx, themeIdx`;
         const question = `?,?`;
         const values = [curatorIdx, themeIdx];
@@ -199,7 +199,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('themeAddSave err' + err);
+            console.log('themeAddBookmark err' + err);
         }throw err;
     },
 }
