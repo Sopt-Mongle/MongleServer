@@ -15,7 +15,7 @@ module.exports = {
         const result = await CuratorModel.getAllCurators(curatorIdx);
 
         if(result.length === 0){
-            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CONTENT_CURATOR));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
             return;
         }
 
