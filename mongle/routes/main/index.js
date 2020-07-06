@@ -4,7 +4,7 @@ const mainController = require('../../controllers/main');
 
 
 // router.use('/curator');
-// router.use('/illust');
+router.get('/illust', mainController.getIllust);
 // router.use('/sentences');
 // router.use('/themes');
 

@@ -21,6 +21,10 @@ module.exports = {
     NO_CONTENT_CURATOR: "큐레이터가 없습니다.",
     SUBSCRIBE_SUCCESS:"구독/구독취소 성공",
 
+    //메인
+    ILLUST_CONTENTS_SUCCESS: "일러스트 컨텐츠 조회 성공",
+    NO_ILLUST: "일러스트 컨텐츠가 없습니다.",
+
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
 
