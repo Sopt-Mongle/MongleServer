@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-// router.use('/curator',require('./curator'));
+const SearchController = require('../../controllers/search');
+
+router.get('/curator', SearchController.searchCurator);
 // router.use('/theme',require('./theme'));
-// router.use('/sentence',require('./sentence'));
+router.get('/sentence', SearchController.searchSentence);
 
 module.exports = router;

@@ -18,7 +18,7 @@ module.exports = {
     
     //큐레이터
     CURATER_SHOW_ALL: "큐레이터 전체 목록 조회 성공",
-    NO_CONTENT_CURATOR: "큐레이터가 없습니다.",
+    NO_CURATOR: "큐레이터가 없습니다.",
     SUBSCRIBE_SUCCESS:"구독/구독취소 성공",
 
     //메인
@@ -27,6 +27,11 @@ module.exports = {
 
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
+
+    //검색
+    NO_SEARCH_WORDS: "입력한 검색어가 없습니다.",
+    NO_SEARCH_SENTENCES: "해당하는 문장이 없습니다.",
+    SEARCH_SENTENCES_SUCCESS:"문장 검색 성공",
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: "프로필 조회 성공",
