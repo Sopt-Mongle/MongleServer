@@ -31,7 +31,9 @@ module.exports = {
     //검색
     NO_SEARCH_WORDS: "입력한 검색어가 없습니다.",
     NO_SEARCH_SENTENCES: "해당하는 문장이 없습니다.",
+    NO_SEARCH_THEMES:"해당하는 테마가 없습니다.",
     SEARCH_SENTENCES_SUCCESS:"문장 검색 성공",
+    SEARCH_THEMES_SUCCESS:"테마 검색 성공",
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: "프로필 조회 성공",
