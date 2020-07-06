@@ -76,12 +76,18 @@ const curator = {
     },
 
     getCuratorInfo: async(curatorIdx) =>{
-        let query = `SELECT curatorIdx, name, img, subscribe FROM curator WHERE curatorIdx = ${curatorIdx}`;
+        let profilequery = `SELECT curatorIdx, name, img, subscribe FROM curator WHERE curatorIdx = ${curatorIdx}`;
+        let themequery = `SELECT theme.themeIdx, theme, likes, saves FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
+        let sentencequery = `SELECT sentence.sentenceIdx, sentence, title, author, likes, saves, writer 
+                            FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx 
+                            WHERE curator_sentence.curatorIdx = ${curatorIdx}`;
 
         try{
-            let tempResult = await pool.queryParam(query);
+            let profileResult = await pool.queryParam(profilequery);
+            let themeResult = await pool.queryParam(themequery);
+            let sentenceResult = await pool.queryParam(sentencequery);
             let keywords;
-            await Promise.all(tempResult.map(async(element) => {
+            await Promise.all(profileResult.map(async(element) => {
                 let curatorIdx = element.curatorIdx;
                 query = `SELECT keyword FROM curator_keyword WHERE curatorIdx = ${curatorIdx}`;
                 const keywordResult = await pool.queryParam(query);
@@ -95,11 +101,15 @@ const curator = {
                         else r[k] = r[k].concat(e[k])
                     }), r
                 }, {});
-                
+            
                 element.keyword = keywords.keyword;
                 
             }));
-            return tempResult.map(CuratorData);
+            let resultArray = new Array();
+            resultArray.push(profileResult.map(CuratorData));
+            resultArray.push(themeResult);
+            resultArray.push(sentenceResult);
+            return resultArray;
         }
         catch(err){
             console.log('getCuratorInfo err : ', err);

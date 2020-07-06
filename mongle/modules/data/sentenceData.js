@@ -9,7 +9,7 @@ module.exports =
             "title": rawSentenceData.title,
             "author": rawSentenceData.author,
             "publisher": rawSentenceData.publisher
-           
+        
         };
         return sentenceData;
     };

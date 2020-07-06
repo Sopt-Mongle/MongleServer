@@ -50,6 +50,6 @@ module.exports = {
             return;
         }
 
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATER_SHOW_ALL, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATORINFO_SUCCESS, result));
     }
 };
