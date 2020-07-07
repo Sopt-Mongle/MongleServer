@@ -4,6 +4,9 @@ const crypto = require('crypto');
 const sentence = 'sentence';
 const curator_sentence_like = 'curator_sentence_like';
 
+const ThemeData = require('../modules/data/themeData');
+const SentenceData = require('../modules/data/sentenceData');
+
 const detail = {
     getSentence : async(sentenceIdx) =>{
         const query = `SELECT * FROM ${sentence} WHERE sentenceIdx = "${sentenceIdx}"`;
@@ -11,7 +14,7 @@ const detail = {
             const result = await pool.queryParam(query);
             return result;
         }catch(err){
-            console.log('getSentence err' + err);
+            console.log('getSentence err: ' + err);
         }throw err;
     },
 
@@ -26,7 +29,7 @@ const detail = {
                 return false;
             }
         }catch(err){
-            console.log('isLike err' + err);
+            console.log('isLike err: ' + err);
         }throw err;
     },
 
@@ -40,7 +43,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('deleteLike err' + err);
+            console.log('deleteLike err: ' + err);
         }throw err;
     },
 
@@ -58,7 +61,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('addLike err' + err);
+            console.log('addLike err: ' + err);
         }throw err;
     },
 
@@ -73,7 +76,7 @@ const detail = {
                 return false;
             }
         }catch(err){
-            console.log('isBookmark err' + err);
+            console.log('isBookmark err: ' + err);
         }throw err;
     },
 
@@ -87,7 +90,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('deleteBookmark err' + err);
+            console.log('deleteBookmark err: ' + err);
         }throw err;
     },
 
@@ -105,7 +108,26 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('addBookmark err' + err);
+            console.log('addBookmark err: ' + err);
+        }throw err;
+    },
+
+    getTheme : async(themeIdx) =>{
+        let query = `SELECT * FROM theme WHERE themeIdx = ${themeIdx}`;
+        try{
+            const firstResult = await pool.queryParam(query);
+            
+            query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence JOIN theme WHERE theme_sentence.themeIdx = theme.themeIdx AND theme.themeIdx = ${themeIdx})`;
+            const secondResult = await pool.queryParam(query);
+
+            let result = {};
+            result.theme = firstResult.map(ThemeData);
+            result.sentence = secondResult.map(SentenceData);
+
+            return result;
+        }
+        catch(err){
+            console.log('getTheme err: ' + err);
         }throw err;
     },
 
@@ -120,7 +142,7 @@ const detail = {
                 return false;
             }
         }catch(err){
-            console.log('themeIsLike err' + err);
+            console.log('themeIsLike err: ' + err);
         }throw err;
     },
 
@@ -134,7 +156,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('themeDeleteLike err' + err);
+            console.log('themeDeleteLike err: ' + err);
         }throw err;
     },
 
@@ -152,7 +174,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('themeAddLike err' + err);
+            console.log('themeAddLike err: ' + err);
         }throw err;
     },
 
@@ -167,7 +189,7 @@ const detail = {
                 return false;
             }
         }catch(err){
-            console.log('themeIsBookmark err' + err);
+            console.log('themeIsBookmark err: ' + err);
         }throw err;
     },
 
@@ -181,7 +203,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('themeDeleteBookmark err' + err);
+            console.log('themeDeleteBookmark err: ' + err);
         }throw err;
     },
 
@@ -199,7 +221,7 @@ const detail = {
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('themeAddBookmark err' + err);
+            console.log('themeAddBookmark err: ' + err);
         }throw err;
     },
 }

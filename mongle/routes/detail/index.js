@@ -2,12 +2,14 @@ var express = require('express');
 var router = express.Router();
 const detailController = require('../../controllers/detail');
 
-//router.get('/:themeIdx', )
-router.put('/:themeIdx/themelike', detailController.likeTheme);
-router.put('/:themeIdx/themebookmark', detailController.bookmarkTheme);
 router.get('/bookSearch', detailController.bookSearch);
-router.get('/:sentenceIdx', detailController.getSentence);
-router.put('/:sentenceIdx/sentencelike', detailController.likeSentence);
-router.put('/:sentenceIdx/sentencebookmark', detailController.bookmarkSentence);
+
+router.get('/theme/:themeIdx', detailController.getTheme);
+router.put('/theme/:themeIdx/like', detailController.likeTheme);
+router.put('/theme/:themeIdx/bookmark', detailController.bookmarkTheme);
+
+router.get('/sentence/:sentenceIdx', detailController.getSentence);
+router.put('/sentence/:sentenceIdx/like', detailController.likeSentence);
+router.put('/sentence/:sentenceIdx/bookmark', detailController.bookmarkSentence);
 
 module.exports = router;
