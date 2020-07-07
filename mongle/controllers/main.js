@@ -18,7 +18,12 @@ module.exports = {
     },
 
     getTodaySentence: async(req, res)=>{
-        const now = moment().format('YYYY-MM-DD HH:mm');
-        const result = await MainModel.getTodaySentence(now);
+        const result = await MainModel.getTodaySentence();
+        if(result.length == 0){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAYSENTENCE));
+            return;
+        }
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAYSENTENCE_SUCCESS, result));
+        
     }
 };
