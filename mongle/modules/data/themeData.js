@@ -4,7 +4,8 @@ module.exports =
             "themeIdx": rawThemeData.themeIdx,
             "theme": rawThemeData.theme,
             "saves": rawThemeData.saves,
-            "writer": rawThemeData.writer
+            "writer": rawThemeData.writer,
+            // "img": rawThemeData.img
         };
         return themeData;
     };

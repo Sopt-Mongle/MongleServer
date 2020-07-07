@@ -21,6 +21,10 @@ module.exports = {
     NO_CURATOR: "큐레이터가 없습니다.",
     SUBSCRIBE_SUCCESS:"구독/구독취소 성공",
     CURATORINFO_SUCCESS: "큐레이터 상세정보 조회 성공",
+    CURATORINFO_SUCCESS: "큐레이터 상세정보 조회 성공",
+
+    //내정보
+    MYINFO_SUCCESS: "내 서재 조회 성공",
 
     //메인
     ILLUST_CONTENTS_SUCCESS: "일러스트 컨텐츠 조회 성공",

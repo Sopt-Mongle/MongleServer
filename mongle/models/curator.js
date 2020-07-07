@@ -1,7 +1,8 @@
 const pool = require('../modules/pool');
 const table = 'curator';
 const CuratorData = require('../modules/data/curatorData');
-
+const ThemeData = require('../modules/data/themeData');
+const SentenceData = require('../modules/data/sentenceData');
 const curator = {
     getAllCurators: async(curatorIdx) =>{
         let query = `SELECT curatorIdx, name, img, subscribe FROM follow JOIN ${table} ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
@@ -77,9 +78,8 @@ const curator = {
 
     getCuratorInfo: async(curatorIdx) =>{
         let profilequery = `SELECT curatorIdx, name, img, subscribe FROM curator WHERE curatorIdx = ${curatorIdx}`;
-        let themequery = `SELECT theme.themeIdx, theme, likes, saves FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
-        let sentencequery = `SELECT sentence.sentenceIdx, sentence, title, author, likes, saves, writer 
-                            FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx 
+        let themequery = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
+        let sentencequery = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx 
                             WHERE curator_sentence.curatorIdx = ${curatorIdx}`;
 
         try{
@@ -107,8 +107,8 @@ const curator = {
             }));
             let resultArray = new Array();
             resultArray.push(profileResult.map(CuratorData));
-            resultArray.push(themeResult);
-            resultArray.push(sentenceResult);
+            resultArray.push(themeResult.map(ThemeData));
+            resultArray.push(sentenceResult.map(SentenceData));
             return resultArray;
         }
         catch(err){
