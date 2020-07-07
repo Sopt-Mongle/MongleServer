@@ -112,6 +112,17 @@ const detail = {
         }throw err;
     },
 
+    otherSentence: async(sentenceIdx)=>{
+        let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx})) ORDER BY timestamp DESC LIMIT 2`;
+        try{
+            const result = await pool.queryParam(query);
+            return result.map(SentenceData);
+        }
+        catch(err){
+            console.log('otherSentence err: ' + err);
+        }throw err;
+    },
+
     getTheme : async(themeIdx) =>{
         let query = `SELECT * FROM theme WHERE themeIdx = ${themeIdx}`;
         try{
