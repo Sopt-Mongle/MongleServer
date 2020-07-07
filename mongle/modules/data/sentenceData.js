@@ -8,8 +8,8 @@ module.exports =
             "writer": rawSentenceData.writer,
             "title": rawSentenceData.title,
             "author": rawSentenceData.author,
-            "publisher": rawSentenceData.publisher
-        
+            "publisher": rawSentenceData.publisher,
+            "timestamp": rawSentenceData.timestamp
         };
         return sentenceData;
     };

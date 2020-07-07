@@ -28,6 +28,12 @@ module.exports = {
 
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
+    READ_SENTENCE:"문장 조회 성공",
+    LIKE_SENTENCE:"문장 좋아요 토글 성공",
+    BOOKMARK_SENTENCE:"문장 북마크 성공",
+    READ_THEME:"테마 조회 성공",
+    LIKE_THEME:"테마 좋아요 토글 성공",
+    BOOKMARK_THEME:"테마 북마크 성공",
 
     //검색
     NO_SEARCH_WORDS: "입력한 검색어가 없습니다.",
@@ -42,12 +48,7 @@ module.exports = {
 
     //포스트
     CREATED_POST:"포스팅 성공",
-    READ_SENTENCE:"문장 조회 성공",
-    LIKE_SENTENCE:"문장 좋아요 토글 성공",
-    BOOKMARK_SENTENCE:"문장 북마크 성공",
-    LIKE_THEME:"테마 좋아요 토글 성공",
-    BOOKMARK_THEME:"테마 북마크 성공",
-    Read_All_POST:"포스트 전체 조회 성공",
+    READ_All_POST:"포스트 전체 조회 성공",
     NO_POST_IDX:"포스트 인덱스 없음",
     DELETE_POST:"포스트 삭제 완료",
     UPDATE_POST:"포스트 수정 완료",

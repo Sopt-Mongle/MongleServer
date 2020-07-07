@@ -3,7 +3,6 @@ module.exports =
         themeData = {
             "themeIdx": rawThemeData.themeIdx,
             "theme": rawThemeData.theme,
-            "likes": rawThemeData.likes,
             "saves": rawThemeData.saves,
             "writer": rawThemeData.writer
         };
