@@ -1,8 +1,9 @@
 const util = require('../modules/util');
 const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/responseMessage');
-
 const MainModel = require('../models/main');
+const moment = require('moment');
+
 
 module.exports = {
     getIllust: async(req, res)=>{
@@ -14,6 +15,10 @@ module.exports = {
         }
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ILLUST_CONTENTS_SUCCESS, result));
-    }
+    },
 
+    getTodaySentence: async(req, res)=>{
+        const now = moment().format('YYYY-MM-DD HH:mm');
+        const result = await MainModel.getTodaySentence(now);
+    }
 };

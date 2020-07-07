@@ -11,6 +11,9 @@ const main = {
             console.log('getIllust ERROR : ', err);
             throw err;
         }
+    },
+    getTodaySentence: async(now)=>{
+        
     }
 };
 
