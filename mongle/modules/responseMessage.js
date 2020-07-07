@@ -28,7 +28,9 @@ module.exports = {
 
     //메인
     ILLUST_CONTENTS_SUCCESS: "일러스트 컨텐츠 조회 성공",
+    TODAYSENTENCE_SUCCESS: "오늘의 문장 조회 성공",
     NO_ILLUST: "일러스트 컨텐츠가 없습니다.",
+    NO_TODAYSENTENCE: "오늘의 문장이 없습니다",
 
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
