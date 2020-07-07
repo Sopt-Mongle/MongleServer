@@ -5,7 +5,7 @@ const resMessage = require('../modules/responseMessage');
 const MainModel = require('../models/main');
 
 module.exports = {
-    getIllust: async(req, res)=>{
+    editorsPick: async(req, res)=>{
         const result = await MainModel.getIllust();
 
         if(result.length == 0){
