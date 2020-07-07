@@ -1,7 +1,7 @@
 const pool = require('../modules/pool');
 
 const main = {
-    getIllust: async()=>{
+    editorsPick: async()=>{
         let query = `SELECT * FROM illust`;
         try{
             let result = await pool.queryParam(query);

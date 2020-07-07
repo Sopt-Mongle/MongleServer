@@ -6,7 +6,7 @@ const moment = require('moment');
 
 
 module.exports = {
-    getIllust: async(req, res)=>{
+    editorsPick: async(req, res)=>{
         const result = await MainModel.getIllust();
 
         if(result.length == 0){
