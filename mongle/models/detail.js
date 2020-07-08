@@ -128,11 +128,29 @@ const detail = {
         }throw err;
     },
 
-    otherSentence: async(sentenceIdx)=>{
-        let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx})) ORDER BY timestamp DESC LIMIT 2`;
+    otherSentence: async(curatorIdx, sentenceIdx)=>{
+        let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}) AND sentenceIdx != ${sentenceIdx}) ORDER BY timestamp DESC LIMIT 2`;
         try{
-            const result = await pool.queryParam(query);
-            return result.map(SentenceData);
+            const firstResult = await pool.queryParam(query);
+            
+            await Promise.all(firstResult.map(async(element) => {
+                let elemSentenceIdx = element.sentenceIdx;
+                query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${elemSentenceIdx}`;
+                let alreadyResult = await pool.queryParam(query);
+
+                let alreadyBookmarked;
+                if(alreadyResult.length == 0){
+                    alreadyBookmarked = false;
+                }
+                else{
+                    alreadyBookmarked = true;
+                }
+
+                element.alreadyBookmarked = alreadyBookmarked;
+
+            }));
+
+            return firstResult.map(SentenceData);
         }
         catch(err){
             console.log('otherSentence err: ' + err);
