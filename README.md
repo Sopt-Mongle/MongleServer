@@ -2,16 +2,20 @@
 <br><br>
 
 <div align="center" style="display:flex;"><img src="https://user-images.githubusercontent.com/41534832/86881142-c4090700-c128-11ea-85e1-de398680a3a9.png" width="20%"></div>
-<center><img src="https://user-images.githubusercontent.com/41534832/86881182-d6834080-c128-11ea-9f99-caa82b7850d0.png" width="30%"></center>
+<div align="center" style="display:flex;"><img src="https://user-images.githubusercontent.com/41534832/86881182-d6834080-c128-11ea-9f99-caa82b7850d0.png" width="30%"></div>
 
 <div align="center">
-## 📚나를 위한 문장이 모이는 곳, 몽글
+📚 나를 위한 문장이 모이는 곳, 몽글
 </div>
+
+<br><br>
 
 ```
 📌 책도 가볍게 즐길 수 없을까?
 📌 우리가 만드는 문장 큐레이션 플랫폼
 ```
+
+<br>
 
 - - -
 
