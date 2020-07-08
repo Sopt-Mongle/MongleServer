@@ -8,7 +8,7 @@ module.exports =
             "publisher": rawBookData.publisher,
             "thumbnail": rawBookData.thumbnail,
             "title": rawBookData.title
-           
+        
         };
         return bookData;
     };

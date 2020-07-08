@@ -13,17 +13,18 @@ const main = {
         }
     },
     getTodaySentence: async()=>{
-        //now에서 24시간전~지금까지의 문장들을 좋아요순으로 정렬해서 ~
+        //now에서 24시간전~지금까지 좋아요가 가장 많이 찍힌 순으로 정렬해서 ~
+        let themequery = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
         let query = `SELECT * FROM sentence WHERE date(timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) ORDER BY likes DESC`;
         
         try{
             let result = await pool.queryParam(query);
-            return result.map(SentenceData);    
+            return result.map(SentenceData);
         }
         catch(err){
             console.log('getTodaySentence err' + err);
         }throw err;
-    }
+        }
 };
 
 module.exports = main;
