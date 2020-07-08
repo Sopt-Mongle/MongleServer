@@ -7,6 +7,6 @@ const mainController = require('../../controllers/main');
 router.get('/sentences', mainController.getTodaySentence);
 router.get('/editorsPick', mainController.editorsPick);
 // router.use('/sentences');
-// router.get('/themes', mainController.getTodayCurator);
+router.get('/curators', mainController.getTodayCurator);
 
 module.exports = router;

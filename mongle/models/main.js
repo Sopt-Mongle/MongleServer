@@ -1,5 +1,6 @@
 const pool = require('../modules/pool');
 const SentenceData = require('../modules/data/sentenceData');
+const curatorData = require('../modules/data/curatorData');
 const main = {
     editorsPick: async()=>{
         let query = `SELECT * FROM illust`;
@@ -27,14 +28,30 @@ const main = {
 
     getTodayCurator: async()=>{
         //24시간전~지금까지 구독수가 가장 많이 찍힌 큐레이터 순으로~
-        let query = `SELECT * FROM curator JOIN follow ON sentence.sentenceIdx = curator_sentence_like.sentenceIdx
-                    WHERE date(curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY sentence.likes DESC`;
+        let query = `SELECT * FROM curator JOIN follow ON curator.curatorIdx = follow.followedIdx
+        WHERE date(follow.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY follow.followedIdx ORDER BY count(follow.followedIdx) DESC`;
         try{
             let result = await pool.queryParam(query);
-            return result.map(SentenceData);
+            let keywords;
+            await Promise.all(result.map(async(element) => {
+                let curatorIdx = element.curatorIdx;
+                query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+                const keywordResult = await pool.queryParam(query);
+                var string=JSON.stringify(keywordResult);
+                var json = JSON.parse(string);
+                
+                keywords = json.reduce(function(r, e) {
+                    return Object.keys(e).forEach(function(k) {
+                        if(!r[k]) r[k] = [].concat(e[k])
+                        else r[k] = r[k].concat(e[k])
+                    }), r
+                }, {});
+                element.keyword = keywords.keyword;
+            }));
+            return result.map(curatorData);
         }
         catch(err){
-            console.log('getTodaySentence err' + err);
+            console.log('getTodayCurator err' + err);
         }throw err;
     }
 };
