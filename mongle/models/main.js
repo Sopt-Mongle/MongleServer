@@ -24,7 +24,7 @@ const main = {
         catch(err){
             console.log('getTodaySentence err' + err);
         }throw err;
-    }
+        }
 };
 
 module.exports = main;
