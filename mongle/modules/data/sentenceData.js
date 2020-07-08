@@ -6,10 +6,12 @@ module.exports =
             "likes": rawSentenceData.likes,
             "saves": rawSentenceData.saves,
             "writer": rawSentenceData.writer,
+            "writerImg": rawSentenceData.writerImg,
             "title": rawSentenceData.title,
             "author": rawSentenceData.author,
             "publisher": rawSentenceData.publisher,
-            "timestamp": rawSentenceData.timestamp
+            "timestamp": rawSentenceData.timestamp,
+            "alreadyBookmarked": rawSentenceData.alreadyBookmarked
         };
         return sentenceData;
     };

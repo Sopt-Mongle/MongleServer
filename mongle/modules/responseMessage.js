@@ -37,8 +37,8 @@ module.exports = {
     READ_SENTENCE:"문장 조회 성공",
     LIKE_SENTENCE:"문장 좋아요 토글 성공",
     BOOKMARK_SENTENCE:"문장 북마크 성공",
+    SHOW_OTHER_SENTENCE:"이 테마의 다른 문장 조회 성공",
     READ_THEME:"테마 조회 성공",
-    LIKE_THEME:"테마 좋아요 토글 성공",
     BOOKMARK_THEME:"테마 북마크 성공",
 
     //검색

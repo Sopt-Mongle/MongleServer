@@ -12,10 +12,16 @@ const BookData = require('../modules/data/bookData');
 module.exports = {
     getSentence : async(req,res) =>{
         const sentenceIdx = req.params.sentenceIdx;
+        const curatorIdx = req.body.curatorIdx;
+
         if(!sentenceIdx){
-            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_SENTENCE));
         }
-        const data = await detailModel.getSentence(sentenceIdx);
+        if(!curatorIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        }
+
+        const data = await detailModel.getSentence(curatorIdx, sentenceIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_SENTENCE, data));
     },
 
@@ -98,17 +104,38 @@ module.exports = {
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_SENTENCE, result));
     },
 
+    otherSentence : async(req, res) =>{
+        const sentenceIdx = req.params.sentenceIdx;
+        const curatorIdx = req.body.curatorIdx;
+
+        if(!sentenceIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_SENTENCE));
+        }
+        if(!curatorIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        }
+
+        const result = await detailModel.otherSentence(curatorIdx, sentenceIdx);
+        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SHOW_OTHER_SENTENCE, result));
+    },
+
     getTheme : async(req, res) =>{
         const themeIdx = req.params.themeIdx;
+        const curatorIdx = req.body.curatorIdx;
         
         if(!themeIdx){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_THEME));
         }
+
+        if(!curatorIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        }
         
-        const result = await detailModel.getTheme(themeIdx);
+        const result = await detailModel.getTheme(curatorIdx, themeIdx);
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_THEME, result));
     },
 
+    /*
     likeTheme : async(req, res) =>{
         const themeIdx = req.params.themeIdx;
         if(!themeIdx){
@@ -144,6 +171,7 @@ module.exports = {
 
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LIKE_THEME, result));
     },
+    */
 
     bookmarkTheme : async(req, res) =>{
         const themeIdx = req.params.themeIdx;
