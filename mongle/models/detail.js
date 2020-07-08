@@ -8,10 +8,26 @@ const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
 
 const detail = {
-    getSentence : async(sentenceIdx) =>{
-        const query = `SELECT * FROM ${sentence} WHERE sentenceIdx = "${sentenceIdx}"`;
+    getSentence : async(curatorIdx, sentenceIdx) =>{
+        let query = `SELECT * FROM ${sentence} WHERE sentenceIdx = "${sentenceIdx}"`;
         try{
-            const result = await pool.queryParam(query);
+            const firstResult = await pool.queryParam(query);
+
+            query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+            const alreadyResult = await pool.queryParam(query);
+
+            let alreadyBookmarked;
+            if(alreadyResult.length == 0){
+                alreadyBookmarked = false;
+            }
+            else{
+                alreadyBookmarked = true;
+            }
+
+            let result;
+            result = firstResult.map(SentenceData);
+            result[0].alreadyBookmarked = alreadyBookmarked;
+            
             return result;
         }catch(err){
             console.log('getSentence err: ' + err);
@@ -123,17 +139,32 @@ const detail = {
         }throw err;
     },
 
-    getTheme : async(themeIdx) =>{
+    getTheme : async(curatorIdx, themeIdx) =>{
         let query = `SELECT * FROM theme WHERE themeIdx = ${themeIdx}`;
         try{
-            const firstResult = await pool.queryParam(query);
+            const themeResult = await pool.queryParam(query);
+
+            query = `UPDATE theme SET count = count+1 WHERE themeIdx = ${themeIdx}`;
+            await pool.queryParam(query);
+
+            query = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
+            const alreadyResult = await pool.queryParam(query);
+
+            let alreadyBookmarked;
+            if(alreadyResult.length == 0){
+                alreadyBookmarked = false;
+            }
+            else{
+                alreadyBookmarked = true;
+            }
             
             query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence JOIN theme WHERE theme_sentence.themeIdx = theme.themeIdx AND theme.themeIdx = ${themeIdx})`;
-            const secondResult = await pool.queryParam(query);
-
+            const sentenceResult = await pool.queryParam(query);
+;
             let result = {};
-            result.theme = firstResult.map(ThemeData);
-            result.sentence = secondResult.map(SentenceData);
+            result.theme = themeResult.map(ThemeData);
+            result.theme[0].alreadyBookmarked = alreadyBookmarked;
+            result.sentence = sentenceResult.map(SentenceData);
 
             return result;
         }
