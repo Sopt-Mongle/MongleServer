@@ -31,6 +31,7 @@ module.exports = {
     TODAYSENTENCE_SUCCESS: "오늘의 문장 조회 성공",
     NO_ILLUST: "일러스트 컨텐츠가 없습니다.",
     NO_TODAYSENTENCE: "오늘의 문장이 없습니다",
+    TODAYCURATOR_SUCCESS: "지금 인기있는 큐레이터 목록 조회 성공",
 
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",

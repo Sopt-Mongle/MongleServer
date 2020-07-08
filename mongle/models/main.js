@@ -15,6 +15,19 @@ const main = {
     getTodaySentence: async()=>{
         //now에서 24시간전~지금까지 좋아요가 가장 많이 찍힌 순으로 정렬해서 ~
         let query = `SELECT * FROM sentence JOIN curator_sentence_like ON sentence.sentenceIdx = curator_sentence_like.sentenceIdx
+        WHERE date(curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY count(curator_sentence_like.sentenceIdx) DESC;`;
+        try{
+            let result = await pool.queryParam(query);
+            return result.map(SentenceData);
+        }
+        catch(err){
+            console.log('getTodaySentence err' + err);
+        }throw err;
+    },
+
+    getTodayCurator: async()=>{
+        //24시간전~지금까지 구독수가 가장 많이 찍힌 큐레이터 순으로~
+        let query = `SELECT * FROM curator JOIN follow ON sentence.sentenceIdx = curator_sentence_like.sentenceIdx
                     WHERE date(curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY sentence.likes DESC`;
         try{
             let result = await pool.queryParam(query);
@@ -23,7 +36,7 @@ const main = {
         catch(err){
             console.log('getTodaySentence err' + err);
         }throw err;
-        }
+    }
 };
 
 module.exports = main;
