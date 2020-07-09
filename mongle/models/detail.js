@@ -1,15 +1,11 @@
 const pool = require('../modules/pool');
-const encryption = require('../modules/encryption');
-const crypto = require('crypto');
-const sentence = 'sentence';
-const curator_sentence_like = 'curator_sentence_like';
 
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
 
 const detail = {
     getSentence : async(curatorIdx, sentenceIdx) =>{
-        let query = `SELECT * FROM ${sentence} WHERE sentenceIdx = "${sentenceIdx}"`;
+        let query = `SELECT * FROM sentence WHERE sentenceIdx = "${sentenceIdx}"`;
         try{
             const firstResult = await pool.queryParam(query);
 
@@ -35,7 +31,7 @@ const detail = {
     },
 
     isLike: async(curatorIdx, sentenceIdx) => {
-        let query = `SELECT COUNT(*) as cnt FROM ${curator_sentence_like} WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
+        let query = `SELECT COUNT(*) as cnt FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
         try{
             const result = await pool.queryParam(query);
             if(result[0].cnt === 0){
@@ -50,9 +46,9 @@ const detail = {
     },
 
     deleteLike: async(curatorIdx, sentenceIdx) =>{
-        let query1 = `DELETE FROM ${curator_sentence_like} WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
-        let query2 = `UPDATE ${sentence} SET likes = likes-1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT likes FROM ${sentence} WHERE sentenceIdx="${sentenceIdx}"`;
+        let query1 = `DELETE FROM curator_sentence_like WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
+        let query2 = `UPDATE sentence SET likes = likes-1 WHERE sentenceIdx="${sentenceIdx}"`;
+        let query3 = `SELECT likes FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
         try{
             const result1 = await pool.queryParam(query1);
             const result2 = await pool.queryParam(query2);
@@ -68,9 +64,9 @@ const detail = {
         const question = `?,?`;
         const values = [curatorIdx, sentenceIdx];
         
-        let query1 = `INSERT INTO ${curator_sentence_like}(${fields}) VALUES(${question})`;
-        let query2 = `UPDATE ${sentence} SET likes = likes+1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT likes FROM ${sentence} WHERE sentenceIdx="${sentenceIdx}"`;
+        let query1 = `INSERT INTO curator_sentence_like(${fields}) VALUES(${question})`;
+        let query2 = `UPDATE sentence SET likes = likes+1 WHERE sentenceIdx="${sentenceIdx}"`;
+        let query3 = `SELECT likes FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
         try{
             const result1 = await pool.queryParamArr(query1, values);
             const result2 = await pool.queryParam(query2);
@@ -98,8 +94,8 @@ const detail = {
 
     deleteBookmark: async(curatorIdx, sentenceIdx) =>{
         let query1 = `DELETE FROM curator_sentence WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
-        let query2 = `UPDATE ${sentence} SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT saves FROM ${sentence} WHERE sentenceIdx="${sentenceIdx}"`;
+        let query2 = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
+        let query3 = `SELECT saves FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
         try{
             const result1 = await pool.queryParam(query1);
             const result2 = await pool.queryParam(query2);
@@ -116,8 +112,8 @@ const detail = {
         const values = [curatorIdx, sentenceIdx];
         
         let query1 = `INSERT INTO curator_sentence(${fields}) VALUES(${question})`;
-        let query2 = `UPDATE ${sentence} SET saves = saves+1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT saves FROM ${sentence} WHERE sentenceIdx="${sentenceIdx}"`;
+        let query2 = `UPDATE sentence SET saves = saves+1 WHERE sentenceIdx="${sentenceIdx}"`;
+        let query3 = `SELECT saves FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
         try{
             const result1 = await pool.queryParamArr(query1, values);
             const result2 = await pool.queryParam(query2);
@@ -132,7 +128,7 @@ const detail = {
         let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}) AND sentenceIdx != ${sentenceIdx}) ORDER BY timestamp DESC LIMIT 2`;
         try{
             const firstResult = await pool.queryParam(query);
-            
+
             await Promise.all(firstResult.map(async(element) => {
                 let elemSentenceIdx = element.sentenceIdx;
                 query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${elemSentenceIdx}`;

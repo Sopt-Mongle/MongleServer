@@ -15,6 +15,19 @@ module.exports = {
     LOGIN_FAIL: "로그인 실패",
     NO_USER: "존재하지 않는 회원입니다.",
     MISS_MATCH_PW: "비밀번호가 맞지 않습니다.",
+
+    //메인
+    ILLUST_CONTENTS_SUCCESS: "일러스트 컨텐츠 조회 성공",
+    TODAY_SENTENCE_SUCCESS: "오늘의 문장 조회 성공",
+    NO_ILLUST: "일러스트 컨텐츠가 없습니다.",
+    NO_TODAY_SENTENCE: "오늘의 문장이 없습니다",
+    TODAY_CURATOR_SUCCESS: "지금 인기있는 큐레이터 목록 조회 성공",
+    NO_TODAY_THEME: "오늘 하루 저장이 가장 많이 된 테마가 없습니다.",
+    TODAY_THEME_SUCCESS: "오늘 하루 저장이 가장 많이 된 테마 목록 조회 성공",
+    NO_WAIT_THEME: "저장된 문장이 2개 미만인 테마가 없습니다.",
+    WAIT_THEME_SUCCESS: "저장된 문장이 2개 미만인 테마 목록 조회 성공",
+    NO_NOW_THEME: "요즘 인기있는 테마가 없습니다.",
+    NOW_THEME_SUCCESS: "요즘 인기있는 테마 목록 조회 성공",
     
     //큐레이터
     CURATER_SHOW_ALL: "큐레이터 전체 목록 조회 성공",
@@ -26,19 +39,6 @@ module.exports = {
     //내정보
     MYINFO_SUCCESS: "내 서재 조회 성공",
 
-    //메인
-    ILLUST_CONTENTS_SUCCESS: "일러스트 컨텐츠 조회 성공",
-    TODAYSENTENCE_SUCCESS: "오늘의 문장 조회 성공",
-    NO_ILLUST: "일러스트 컨텐츠가 없습니다.",
-    NO_TODAYSENTENCE: "오늘의 문장이 없습니다",
-    TODAYCURATOR_SUCCESS: "지금 인기있는 큐레이터 목록 조회 성공",
-    NO_TODAYTHEME: "오늘 하루 저장이 가장 많이 된 테마가 없습니다.",
-    TODAYTHEME_SUCCESS: "오늘 하루 저장이 가장 많이 된 테마 목록 조회 성공",
-    NO_WAITTHEME: "저장된 문장이 2개 미만인 테마가 없습니다.",
-    WAITTHEME_SUCCESS: "저장된 문장이 2개 미만인 테마 목록 조회 성공",
-
-    NO_NOWTHEME: "요즘 인기있는 테마가 없습니다.",
-    NOWTHEME_SUCCESS: "요즘 인기있는 테마 목록 조회 성공",
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
     READ_SENTENCE:"문장 조회 성공",

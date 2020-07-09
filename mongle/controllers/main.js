@@ -1,6 +1,7 @@
 const util = require('../modules/util');
 const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/responseMessage');
+
 const MainModel = require('../models/main');
 const moment = require('moment');
 
@@ -20,10 +21,10 @@ module.exports = {
     getTodaySentence: async(req, res)=>{
         const result = await MainModel.getTodaySentence();
         if(result.length == 0){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAYSENTENCE));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAY_SENTENCE));
             return;
         }
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAYSENTENCE_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAY_SENTENCE_SUCCESS, result));
         
     },
     getTodayCurator: async(req, res)=>{
@@ -32,33 +33,33 @@ module.exports = {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
             return;
         }
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAYCURATOR_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAY_CURATOR_SUCCESS, result));
         
     },
     getTodayTheme: async(req, res)=>{
         const result = await MainModel.getTodayTheme();
         if(result.length == 0){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAYTHEME));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAY_THEME));
             return;
         }
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAYTHEME_SUCCESS, result));        
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAY_THEME_SUCCESS, result));        
     },
 
     getWaitTheme: async(req, res)=>{
         const result = await MainModel.getWaitTheme();
         if(result.length == 0){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_WAITTHEME));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_WAIT_THEME));
             return;
         }
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.WAITTHEME_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.WAIT_THEME_SUCCESS, result));
     },
 
     getNowTheme: async(req, res)=>{
         const result = await MainModel.getNowTheme();
         if(result.length == 0){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_NOWTHEME));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_NOW_THEME));
             return;
         }
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NOWTHEME_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NOW_THEME_SUCCESS, result));
     }
 };

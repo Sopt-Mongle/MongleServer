@@ -1,5 +1,5 @@
 const pool = require('../modules/pool');
-const table = 'curator';
+
 const CuratorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
@@ -45,6 +45,6 @@ const my = {
             throw err;
         }
     }
-}
+};
 
 module.exports = my;

@@ -1,10 +1,8 @@
-const encryption = require('../modules/encryption');
-const detailModel = require('../models/detail');
 const util = require('../modules/util');
 const resMessage = require('../modules/responseMessage');
 const statusCode = require('../modules/statusCode');
-const crypto = require('crypto');
-//const jwt = require('../modules/jwt');
+
+const detailModel = require('../models/detail');
 
 const kakaoAPI = require('../modules/kakao');
 const BookData = require('../modules/data/bookData');

@@ -1,9 +1,10 @@
 const pool = require('../modules/pool');
+
 const SentenceData = require('../modules/data/sentenceData');
 const curatorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
-const main = 
-{
+
+const main = {
     editorsPick: async()=>{
         let query = `SELECT * FROM illust`;
         try{
@@ -95,7 +96,7 @@ const main =
 
                 element.themeImg = result2[0].img;
             }));
-            
+
             return result.map(ThemeData);
         }
         catch(err){
@@ -108,6 +109,14 @@ const main =
         let query = `SELECT * FROM theme WHERE (createdAt) >= DATE_SUB(NOW(), INTERVAL 63 HOUR) ORDER BY count DESC`;
         try{
             let result = await pool.queryParam(query);
+            await Promise.all(result.map(async(element) =>{
+                let themeIdx = element.themeImgIdx;
+
+                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeIdx}`;
+                let result2 = await pool.queryParam(query);
+
+                element.themeImg = result2[0].img;
+            }));
             return result.map(ThemeData);
         }
         catch(err){
