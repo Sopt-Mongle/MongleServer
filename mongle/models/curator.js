@@ -1,18 +1,18 @@
 const pool = require('../modules/pool');
-const table = 'curator';
+
 const CuratorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
+
 const curator = {
     getAllCurators: async(curatorIdx) =>{
-        let query = `SELECT curatorIdx, name, img, subscribe FROM follow JOIN ${table} ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
+        let query = `SELECT curatorIdx, name, img, subscribe FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
         
         try{
             let tempResult = await pool.queryParam(query);
-            // let result = new Array();
-            // console.log(CuratorData(result[0]));
+
             let keywords;
-            // console.log(tempResult);
+            
             await Promise.all(tempResult.map(async(element) => {
                 let curatorIdx = element.curatorIdx;
                 query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
