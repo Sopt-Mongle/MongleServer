@@ -33,12 +33,16 @@ module.exports = {
     },
 
     searchSentence : async(req, res)=>{
+        const curatorIdx = req.body.curatorIdx;
         const words = req.body.words;
         // console.log(words);
 
         if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
             return;
+        }
+        if(!curatorIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
         }
 
         const result = await SearchModel.searchSentence(words);
