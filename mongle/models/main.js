@@ -86,6 +86,16 @@ const main =
         group by theme_sentence.themeIdx HAVING count(theme_sentence.sentenceIdx) < 2`;
         try{
             let result = await pool.queryParam(query);
+
+            await Promise.all(result.map(async(element) =>{
+                let themeIdx = element.themeImgIdx;
+
+                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeIdx}`;
+                let result2 = await pool.queryParam(query);
+
+                element.themeImg = result2[0].img;
+            }));
+            
             return result.map(ThemeData);
         }
         catch(err){
