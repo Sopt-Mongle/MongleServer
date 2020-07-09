@@ -68,7 +68,20 @@ const main =
         catch(err){
             console.log('getTodayTheme err' + err);
         }throw err;
-    }
+    },
+
+    getWaitTheme: async()=>{
+        //저장된 문장이 2개 미만인 테마들
+        let query = `SELECT * FROM theme JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx
+        group by theme_sentence.themeIdx HAVING count(theme_sentence.sentenceIdx) < 2`;
+        try{
+            let result = await pool.queryParam(query);
+            return result.map(ThemeData);
+        }
+        catch(err){
+            console.log('getWaitTheme err' + err);
+        }throw err;
+    },
 };
 
 module.exports = main;

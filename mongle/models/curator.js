@@ -15,7 +15,7 @@ const curator = {
             // console.log(tempResult);
             await Promise.all(tempResult.map(async(element) => {
                 let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM curator_keyword WHERE curatorIdx = ${curatorIdx}`;
+                query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
                 const keywordResult = await pool.queryParam(query);
                 // console.log(keywordResult[0].keyword);
                 var string=JSON.stringify(keywordResult);
@@ -89,7 +89,7 @@ const curator = {
             let keywords;
             await Promise.all(profileResult.map(async(element) => {
                 let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM curator_keyword WHERE curatorIdx = ${curatorIdx}`;
+                query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
                 const keywordResult = await pool.queryParam(query);
                 // console.log(keywordResult[0].keyword);
                 var string=JSON.stringify(keywordResult);

@@ -8,5 +8,6 @@ router.get('/sentences', mainController.getTodaySentence);
 router.get('/editorsPick', mainController.editorsPick);
 router.get('/themes', mainController.getTodayTheme);
 router.get('/curators', mainController.getTodayCurator);
+router.get('/waitThemes', mainController.getWaitTheme);
 
 module.exports = router;
