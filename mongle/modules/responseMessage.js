@@ -37,6 +37,8 @@ module.exports = {
     NO_WAITTHEME: "저장된 문장이 2개 미만인 테마가 없습니다.",
     WAITTHEME_SUCCESS: "저장된 문장이 2개 미만인 테마 목록 조회 성공",
 
+    NO_NOWTHEME: "요즘 인기있는 테마가 없습니다.",
+    NOWTHEME_SUCCESS: "요즘 인기있는 테마 목록 조회 성공",
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
     READ_SENTENCE:"문장 조회 성공",

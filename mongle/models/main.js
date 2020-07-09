@@ -82,6 +82,18 @@ const main =
             console.log('getWaitTheme err' + err);
         }throw err;
     },
+
+    getNowTheme: async()=>{
+        //최근 3일동안 생성된 테마들을 조회수 순으로 정렬~
+        let query = `SELECT * FROM theme WHERE (createdAt) >= DATE_SUB(NOW(), INTERVAL 63 HOUR) ORDER BY count DESC`;
+        try{
+            let result = await pool.queryParam(query);
+            return result.map(ThemeData);
+        }
+        catch(err){
+            console.log('getNowTheme err' + err);
+        }throw err;
+    }
 };
 
 module.exports = main;
