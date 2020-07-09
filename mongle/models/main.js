@@ -63,6 +63,16 @@ const main =
         WHERE curator_theme.timestamp >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY curator_theme.themeIdx ORDER BY count(curator_theme.themeIdx) DESC`;
         try{
             let result = await pool.queryParam(query);
+
+            await Promise.all(result.map(async(element) =>{
+                let themeIdx = element.themeImgIdx;
+
+                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeIdx}`;
+                let result2 = await pool.queryParam(query);
+
+                element.themeImg = result2[0].img;
+            }));
+
             return result.map(ThemeData);
         }
         catch(err){
