@@ -8,14 +8,17 @@ const search = {
 
     },
 
-    searchTheme: async(words)=>{
+    searchTheme: async(curatorIdx, words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
         // console.log(queryWords);
         
         let query = `SELECT * FROM theme WHERE theme LIKE "%${queryWords}%"`;
         try{
             const result = await pool.queryParam(query);
-            // console.log(result);
+
+            query = `INSERT INTO search_words(curatorIdx, words) VALUES(${curatorIdx}, "${words}")`;
+            await pool.queryParam(query);
+            
             return result.map(ThemeData);
         }
         catch(err){
@@ -39,6 +42,25 @@ const search = {
             throw err;
         }
 
+    },
+
+    recentSearch: async(curatorIdx) => {
+        let query = `SELECT * FROM search_words WHERE curatorIdx = ${curatorIdx} ORDER BY searchWordsIdx DESC LIMIT 5`;
+        try{
+        const result = await pool.queryParam(query);
+
+        let words = [];
+        result.valueOf(0).forEach(element => {
+            words.push(element.word);
+        });
+
+        return words;
+
+        }
+        catch(err){
+            console.log('recentSearch ERROR : ', err);
+            throw err;
+        }
     }
 
 };
