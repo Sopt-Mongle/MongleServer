@@ -10,15 +10,19 @@ module.exports = {
     },
 
     searchTheme : async(req, res) =>{
+        const curatorIdx = req.body.curatorIdx;
         const words = req.body.words;
-        // console.log(words);
+        // console.log(req.body);
 
         if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
             return;
         }
+        if(!curatorIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        }
 
-        const result = await SearchModel.searchTheme(words);
+        const result = await SearchModel.searchTheme(curatorIdx, words);
         
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_THEMES));
@@ -43,6 +47,18 @@ module.exports = {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_SENTENCES));
             return;
         }
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEARCH_SENTENCES_SUCCESS, result));
+    },
+
+    recentSearch : async(req, res) =>{
+        const curatorIdx = req.body.curatorIdx;
+
+        if(!curatorIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        }
+
+        const result = await SearchModel.recentSearch(curatorIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEARCH_SENTENCES_SUCCESS, result));
     }
