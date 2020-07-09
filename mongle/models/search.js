@@ -27,7 +27,7 @@ const search = {
         }
     },
 
-    searchSentence: async(words)=>{
+    searchSentence: async(curatorIdx, words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
         // console.log(queryWords);
         
