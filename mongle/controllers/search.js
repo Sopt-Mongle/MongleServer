@@ -15,6 +15,11 @@ module.exports = {
 
         const result = await SearchModel.searchCurator(words);
 
+        if(result.length === 0){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_CURATORS));
+            return;
+        }
+
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEARCH_CURATOR_SUCCESS, result));
     },
 
