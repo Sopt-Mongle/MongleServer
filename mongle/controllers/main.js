@@ -34,5 +34,13 @@ module.exports = {
         }
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAYCURATOR_SUCCESS, result));
         
+    },
+    getTodayTheme: async(req, res)=>{
+        const result = await MainModel.getTodayTheme();
+        if(result.length == 0){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAYTHEME));
+            return;
+        }
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.TODAYTHEME_SUCCESS, result));        
     }
 };

@@ -1,7 +1,9 @@
 const pool = require('../modules/pool');
 const SentenceData = require('../modules/data/sentenceData');
 const curatorData = require('../modules/data/curatorData');
-const main = {
+const ThemeData = require('../modules/data/themeData');
+const main = 
+{
     editorsPick: async()=>{
         let query = `SELECT * FROM illust`;
         try{
@@ -16,7 +18,7 @@ const main = {
     getTodaySentence: async()=>{
         //now에서 24시간전~지금까지 좋아요가 가장 많이 찍힌 순으로 정렬해서 ~
         let query = `SELECT * FROM sentence JOIN curator_sentence_like ON sentence.sentenceIdx = curator_sentence_like.sentenceIdx
-        WHERE date(curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY count(curator_sentence_like.sentenceIdx) DESC;`;
+        WHERE (curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY count(curator_sentence_like.sentenceIdx) DESC;`;
         try{
             let result = await pool.queryParam(query);
             return result.map(SentenceData);
@@ -29,7 +31,7 @@ const main = {
     getTodayCurator: async()=>{
         //24시간전~지금까지 구독수가 가장 많이 찍힌 큐레이터 순으로~
         let query = `SELECT * FROM curator JOIN follow ON curator.curatorIdx = follow.followedIdx
-        WHERE date(follow.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY follow.followedIdx ORDER BY count(follow.followedIdx) DESC`;
+        WHERE (follow.timestamp) >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY follow.followedIdx ORDER BY count(follow.followedIdx) DESC`;
         try{
             let result = await pool.queryParam(query);
             let keywords;
@@ -52,6 +54,19 @@ const main = {
         }
         catch(err){
             console.log('getTodayCurator err' + err);
+        }throw err;
+    },
+
+    getTodayTheme: async()=>{
+        //now에서 24시간전~지금까지 테마의 북마크가 가장 많이 된 순으로 정렬해서 ~
+        let query = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx
+        WHERE curator_theme.timestamp >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY curator_theme.themeIdx ORDER BY count(curator_theme.themeIdx) DESC`;
+        try{
+            let result = await pool.queryParam(query);
+            return result.map(ThemeData);
+        }
+        catch(err){
+            console.log('getTodayTheme err' + err);
         }throw err;
     }
 };
