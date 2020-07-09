@@ -36,6 +36,7 @@ module.exports = {
     TODAYTHEME_SUCCESS: "오늘 하루 저장이 가장 많이 된 테마 목록 조회 성공",
     NO_WAITTHEME: "저장된 문장이 2개 미만인 테마가 없습니다.",
     WAITTHEME_SUCCESS: "저장된 문장이 2개 미만인 테마 목록 조회 성공",
+
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
     READ_SENTENCE:"문장 조회 성공",
@@ -51,6 +52,8 @@ module.exports = {
     NO_SEARCH_THEMES:"해당하는 테마가 없습니다.",
     SEARCH_SENTENCES_SUCCESS:"문장 검색 성공",
     SEARCH_THEMES_SUCCESS:"테마 검색 성공",
+    RECENT_SEARCH_SUCCESS: "최근 검색어 조회 성공",
+    RECENT_DELETE_SUCCESS: "최근 검색어 전체삭제 성공",
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: "프로필 조회 성공",

@@ -45,7 +45,7 @@ module.exports = {
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
         }
 
-        const result = await SearchModel.searchSentence(words);
+        const result = await SearchModel.searchSentence(curatorIdx, words);
         
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_SENTENCES));
@@ -64,7 +64,20 @@ module.exports = {
 
         const result = await SearchModel.recentSearch(curatorIdx);
 
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SEARCH_SENTENCES_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_SEARCH_SUCCESS, result));
+    },
+
+    recentDelete : async(req, res) => {
+        const curatorIdx = req.body.curatorIdx;
+
+        if(!curatorIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        }
+
+        const result = await SearchModel.recentDelete(curatorIdx);
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_DELETE_SUCCESS));
+
     }
 
 };

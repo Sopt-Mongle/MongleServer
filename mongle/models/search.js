@@ -47,18 +47,31 @@ const search = {
     recentSearch: async(curatorIdx) => {
         let query = `SELECT * FROM search_words WHERE curatorIdx = ${curatorIdx} ORDER BY searchWordsIdx DESC LIMIT 5`;
         try{
-        const result = await pool.queryParam(query);
+            const result = await pool.queryParam(query);
 
-        let words = [];
-        result.valueOf(0).forEach(element => {
-            words.push(element.word);
-        });
+            let words = [];
+            result.valueOf(0).forEach(element => {
+                words.push(element.word);
+            });
 
-        return words;
+            return words;
 
         }
         catch(err){
             console.log('recentSearch ERROR : ', err);
+            throw err;
+        }
+    },
+
+    recentDelete: async(curatorIdx) =>{
+        let query = `DELETE FROM search_words WHERE curatorIdx = ${curatorIdx}`;
+        try{
+            const result = await pool.queryParam(query);
+            console.log(result);
+            return result;
+        }
+        catch(err){
+            console.log('recentDelete ERROR : ', err);
             throw err;
         }
     }
