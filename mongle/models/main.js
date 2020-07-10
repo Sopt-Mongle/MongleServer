@@ -32,25 +32,34 @@ const main = {
     getTodayCurator: async()=>{
         //24시간전~지금까지 구독수가 가장 많이 찍힌 큐레이터 순으로~
         let query = `SELECT * FROM curator JOIN follow ON curator.curatorIdx = follow.followedIdx
-        WHERE (follow.timestamp) >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY follow.followedIdx ORDER BY count(follow.followedIdx) DESC`;
+        WHERE (follow.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY follow.followedIdx ORDER BY count(follow.followedIdx) DESC`;
         try{
             let result = await pool.queryParam(query);
-            let keywords;
-            await Promise.all(result.map(async(element) => {
+            let keyword;
+            await Promise.all(result.map(async(element) =>{
                 let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
-                const keywordResult = await pool.queryParam(query);
-                var string=JSON.stringify(keywordResult);
-                var json = JSON.parse(string);
+                query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+                keyword = await pool.queryParam(query);
+                element.keyword = keyword[0].keyword;
+            }))
+
+            // keywords = await pool.queryParam(query);
+            // result[0].keyword = keywords;
+            // await Promise.all(result.map(async(element) => {
+            //     let curatorIdx = element.curatorIdx;
+            //     query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+            //     const keywordResult = await pool.queryParam(query);
+            //     var string=JSON.stringify(keywordResult);
+            //     var json = JSON.parse(string);
                 
-                keywords = json.reduce(function(r, e) {
-                    return Object.keys(e).forEach(function(k) {
-                        if(!r[k]) r[k] = [].concat(e[k])
-                        else r[k] = r[k].concat(e[k])
-                    }), r
-                }, {});
-                element.keyword = keywords.keyword;
-            }));
+            //     keywords = json.reduce(function(r, e) {
+            //         return Object.keys(e).forEach(function(k) {
+            //             if(!r[k]) r[k] = [].concat(e[k])
+            //             else r[k] = r[k].concat(e[k])
+            //         }), r
+            //     }, {});
+            //     element.keyword = keywords.keyword;
+            // }));
             return result.map(curatorData);
         }
         catch(err){
