@@ -28,7 +28,7 @@ module.exports = {
         if(!sentenceIdx){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_SENTENCE));
         }
-        const {curatorIdx} = req.body;
+        const curatorIdx = req.body.curatorIdx;
         if(!curatorIdx){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
         }

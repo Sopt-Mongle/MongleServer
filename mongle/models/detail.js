@@ -9,6 +9,8 @@ const detail = {
         try{
             const firstResult = await pool.queryParam(query);
 
+            const writerIdx = firstResult[0].writerIdx;
+
             query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
             const alreadyResult = await pool.queryParam(query);
 
@@ -23,6 +25,13 @@ const detail = {
             let result;
             result = firstResult.map(SentenceData);
             result[0].alreadyBookmarked = alreadyBookmarked;
+
+
+            query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+            const writerResult = await pool.queryParam(query);
+
+            result[0].writer = writerResult[0].name;
+            result[0].writerImg = writerResult[0].img;
             
             return result;
         }catch(err){
