@@ -46,10 +46,21 @@ module.exports = {
         const result = await CuratorModel.getCuratorInfo(curatorIdx);
 
         if(result.length === 0){
-            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CONTENT_CURATOR));
+            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));
+            return;
+        }
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATORINFO_SUCCESS, result));
+    },
+    getRecommendCurator : async(req, res) => {
+        const result = await CuratorModel.getRecommendCurator();
+
+        if(result.length === 0){
+            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));
             return;
         }
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATORINFO_SUCCESS, result));
     }
+
 };

@@ -33,8 +33,8 @@ module.exports = {
     CURATER_SHOW_ALL: "큐레이터 전체 목록 조회 성공",
     NO_CURATOR: "큐레이터가 없습니다.",
     SUBSCRIBE_SUCCESS:"구독/구독취소 성공",
-    CURATORINFO_SUCCESS: "큐레이터 상세정보 조회 성공",
-    CURATORINFO_SUCCESS: "큐레이터 상세정보 조회 성공",
+    CURATORINFO_SUCCESS: "큐레이터 정보 조회 성공",
+
 
     //내정보
     MYINFO_SUCCESS: "내 서재 조회 성공",
@@ -64,6 +64,8 @@ module.exports = {
     
 
     //포스트
+    ALREADY_THEME: "이미 작성된 테마입니다.",
+    CREATED_THEME:"테마 작성 성공",
     CREATE_SENTENCE_SUCCESS:"문장 올리기 성공",
     
     CREATED_POST:"포스팅 성공",
