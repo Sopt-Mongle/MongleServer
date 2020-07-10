@@ -153,6 +153,14 @@ const detail = {
 
                 element.alreadyBookmarked = alreadyBookmarked;
 
+                let writerIdx = element.writerIdx;
+
+                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                let writerResult = await pool.queryParam(query);
+
+                element.writer = writerResult[0].name;
+                element.writerImg = writerResult[0].img;
+
             }));
 
             return firstResult.map(SentenceData);
