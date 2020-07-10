@@ -64,6 +64,8 @@ module.exports = {
     
 
     //포스트
+    CREATE_SENTENCE_SUCCESS:"문장 올리기 성공",
+    
     CREATED_POST:"포스팅 성공",
     READ_All_POST:"포스트 전체 조회 성공",
     NO_POST_IDX:"포스트 인덱스 없음",
