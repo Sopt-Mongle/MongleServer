@@ -6,5 +6,6 @@ const postController = require('../../controllers/post');
 // router.use('/sentence',require('./sentence'));
 
 router.post('/sentence', postController.createSentence);
+router.get('/theme', postController.selectTheme);
 
 module.exports = router;

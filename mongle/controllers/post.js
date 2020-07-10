@@ -20,7 +20,8 @@ module.exports = {
     },
 
     selectTheme : async(req, res) => {
-
         const result = await PostModel.selectTheme();
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_SENTENCE_SUCCESS, result));
+
     }
 };
