@@ -1,8 +1,8 @@
 const pool = require('../modules/pool');
-
 const CuratorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
+const curatorData = require('../modules/data/curatorData');
 
 const curator = {
     getAllCurators: async(curatorIdx) =>{
@@ -115,6 +115,27 @@ const curator = {
             console.log('getCuratorInfo err : ', err);
             throw err;
         }
+    },
+
+    getRecommendCurator: async() =>{
+        let query = `SELECT curatorIdx, name, img, subscribe FROM curator JOIN sentence ON curator.curatorIdx = sentence.writerIdx 
+        GROUP BY sentence.writerIdx HAVING count(sentence.writerIdx) >= 5 ORDER BY rand() LIMIT 10`;
+        try{
+            let result = await pool.queryParam(query);
+            console.log(result);
+            let keyword;
+            await Promise.all(result.map(async(element) =>{
+                let curatorIdx = element.curatorIdx;
+                console.log(curatorIdx);
+                query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+                keyword = await pool.queryParam(query);
+                element.keyword = keyword[0].keyword;
+            }));
+            return result.map(curatorData);
+            
+        }catch(err){
+            console.log('getRecommendCurator err: ' + err);
+        }throw err;
     }
 };
 

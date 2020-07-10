@@ -4,6 +4,9 @@ var CuratorController = require('../../controllers/curator');
 
 router.get('/', CuratorController.getAllCurators);
 router.put('/:curatorIdx', CuratorController.subscribe);
+router.get('/recommend', CuratorController.getRecommendCurator);
 router.get('/:curatorIdx', CuratorController.getCuratorInfo);
+
+
 
 module.exports = router;
