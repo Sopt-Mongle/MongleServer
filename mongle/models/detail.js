@@ -185,7 +185,7 @@ const detail = {
             let result = {};
             result.theme = themeResult.map(ThemeData);
 
-            //themeImg
+            //테마 배경 이미지
             const themeImgIdx = themeResult[0].themeImgIdx;
             query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
             const themeImgResult = await pool.queryParam(query);
@@ -198,7 +198,7 @@ const detail = {
             result.theme[0].writer = writerResult[0].name;
             result.theme[0].writerImg = writerResult[0].img;
 
-            //count++
+            //테마 조회수
             query = `UPDATE theme SET count = count+1 WHERE themeIdx = ${themeIdx}`;
             await pool.queryParam(query);
 
@@ -211,6 +211,11 @@ const detail = {
             else{
                 result.theme[0].alreadyBookmarked = true;
             }
+
+            //안에 문장 수
+            query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
+            const sentenceNum = await pool.queryParam(query);
+            result.theme[0].sentenceNum = sentenceNum[0].num;
             
             //--- sentences ---
             query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence JOIN theme WHERE theme_sentence.themeIdx = theme.themeIdx AND theme.themeIdx = ${themeIdx})`;

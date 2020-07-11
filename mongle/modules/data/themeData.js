@@ -7,7 +7,8 @@ module.exports =
             "saves": rawThemeData.saves,
             "writer": rawThemeData.writer,
             "writerImg": rawThemeData.writerImg,
-            "alreadyBookmarked": rawThemeData.alreadyBookmarked
+            "alreadyBookmarked": rawThemeData.alreadyBookmarked,
+            "sentenceNum": rawThemeData.sentenceNum
         };
         return themeData;
     };
