@@ -6,5 +6,6 @@ router.post('/theme', postController.createTheme);
 // router.use('/sentence',require('./sentence'));
 
 router.post('/sentence', postController.createSentence);
+router.get('/theme', postController.selectTheme);
 
 module.exports = router;

@@ -6,33 +6,20 @@ const curatorData = require('../modules/data/curatorData');
 
 const curator = {
     getAllCurators: async(curatorIdx) =>{
-        let query = `SELECT curatorIdx, name, img, subscribe FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
+        let query = `SELECT * FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
         
         try{
             let tempResult = await pool.queryParam(query);
 
-            let keywords;
-            
             await Promise.all(tempResult.map(async(element) => {
-                let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+                let keywordIdx = element.keywordIdx;
+                console.log(element);
+                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
                 const keywordResult = await pool.queryParam(query);
-                // console.log(keywordResult[0].keyword);
-                var string=JSON.stringify(keywordResult);
-                var json = JSON.parse(string);
                 
-                keywords = json.reduce(function(r, e) {
-                    return Object.keys(e).forEach(function(k) {
-                        if(!r[k]) r[k] = [].concat(e[k])
-                        else r[k] = r[k].concat(e[k])
-                    }), r
-                }, {});
-                
-                element.keyword = keywords.keyword;
+                element.keyword = keywordResult[0].keyword;
                 
             }));
-
-            // console.log(tempResult);
 
             return tempResult.map(CuratorData);
         }

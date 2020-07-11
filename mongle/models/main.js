@@ -43,23 +43,6 @@ const main = {
                 element.keyword = keyword[0].keyword;
             }))
 
-            // keywords = await pool.queryParam(query);
-            // result[0].keyword = keywords;
-            // await Promise.all(result.map(async(element) => {
-            //     let curatorIdx = element.curatorIdx;
-            //     query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
-            //     const keywordResult = await pool.queryParam(query);
-            //     var string=JSON.stringify(keywordResult);
-            //     var json = JSON.parse(string);
-                
-            //     keywords = json.reduce(function(r, e) {
-            //         return Object.keys(e).forEach(function(k) {
-            //             if(!r[k]) r[k] = [].concat(e[k])
-            //             else r[k] = r[k].concat(e[k])
-            //         }), r
-            //     }, {});
-            //     element.keyword = keywords.keyword;
-            // }));
             return result.map(curatorData);
         }
         catch(err){
