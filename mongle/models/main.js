@@ -6,7 +6,7 @@ const ThemeData = require('../modules/data/themeData');
 
 const main = {
     editorsPick: async()=>{
-        let query = `SELECT * FROM illust`;
+        let query = `SELECT * FROM editorpick`;
         try{
             let result = await pool.queryParam(query);
             return result;

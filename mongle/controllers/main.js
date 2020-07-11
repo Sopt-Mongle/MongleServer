@@ -8,14 +8,14 @@ const moment = require('moment');
 
 module.exports = {
     editorsPick: async(req, res)=>{
-        const result = await MainModel.getIllust();
+        const result = await MainModel.editorsPick();
 
         if(result.length == 0){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_ILLUST));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_EDITORS_PICK));
             return;
         }
 
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ILLUST_CONTENTS_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDITORS_PICK_SUCCESS, result));
     },
 
     getTodaySentence: async(req, res)=>{
