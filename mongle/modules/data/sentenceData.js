@@ -11,6 +11,7 @@ module.exports =
             "author": rawSentenceData.author,
             "publisher": rawSentenceData.publisher,
             "timestamp": rawSentenceData.timestamp,
+            "alreadyLiked": rawSentenceData.alreadyLiked,
             "alreadyBookmarked": rawSentenceData.alreadyBookmarked
         };
         return sentenceData;

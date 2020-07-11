@@ -5,7 +5,8 @@ module.exports =
             "name": rawCuratorData.name,
             "img": rawCuratorData.img,
             "keyword": rawCuratorData.keyword,
-            "subscribe": rawCuratorData.subscribe
+            "subscribe": rawCuratorData.subscribe,
+            "alreadySubscribed": rawCuratorData.alreadySubscribed
         };
         return curatorData;
     };
