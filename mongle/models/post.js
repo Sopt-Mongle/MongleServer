@@ -9,13 +9,13 @@ const post = {
         try{
         const result = await pool.queryParam(query);
         if(result.length === 0)
-        {
-            return false;
-        }
+            {
+                return false;
+            }
         else
-        {
-            return true;
-        }
+            {
+                return true;
+            }
         }catch(err){
             console.log('checkTheme err: ', err);
             throw err;
@@ -35,22 +35,22 @@ const post = {
             console.log('crateTheme err: ' + err);
         }throw err;
     },
-    
+
     createSentence: async({curatorIdx, sentence, title, author, publisher}) => {
         const fields = `sentence, title, author, likes, saves, writerIdx, publisher`;
         const questions = `?, ?, ?, ?, ?, ?, ?`;
-        const values = [];
+        const values = [sentence, title, author, 0, 0, curatorIdx, publisher];
 
         try{
-            values.push(sentence);
-            values.push(title);
-            values.push(author);
-            values.push(0);
-            values.push(0);
-            values.push(curatorIdx);
-            values.push(publisher);
+            // values.push(sentence);
+            // values.push(title);
+            // values.push(author);
+            // values.push(0);
+            // values.push(0);
+            // values.push(curatorIdx);
+            // values.push(publisher);
 
-            console.log(values);
+            // console.log(values);
             query = `INSERT INTO sentence(${fields}) VALUES(${questions})`;
 
             const result2 = await pool.queryParamArr(query, values);
