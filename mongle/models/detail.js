@@ -18,7 +18,6 @@ const detail = {
             result[0].writer = writerResult[0].name;
             result[0].writerImg = writerResult[0].img;
 
-            
             //문장 북마크 여부
             const sentenceIdx = firstResult[0].sentenceIdx;
             query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
@@ -39,6 +38,15 @@ const detail = {
             else{
                 result[0].alreadyLiked = true;
             }
+
+            //테마 정보
+            query = `SELECT * FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}`;
+            const themeInfoResult = await pool.queryParam(query);
+            const themeIdx = themeInfoResult[0].themeIdx;
+            result[0].themeIdx = themeIdx;
+            query = `SELECT theme FROM theme WHERE themeIdx = ${themeIdx}`;
+            const themeNameResult = await pool.queryParam(query);
+            result[0].theme = themeNameResult[0].theme;
             
             return result;
         }catch(err){
@@ -141,30 +149,37 @@ const detail = {
     },
 
     otherSentence: async(curatorIdx, sentenceIdx)=>{
-        let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}) AND sentenceIdx != ${sentenceIdx}) ORDER BY timestamp DESC LIMIT 4`;
+        let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}) AND sentenceIdx != ${sentenceIdx}) ORDER BY timestamp DESC LIMIT 2`;
         try{
             const firstResult = await pool.queryParam(query);
 
             await Promise.all(firstResult.map(async(element) => {
                 let elemSentenceIdx = element.sentenceIdx;
+
+                //북마크 여부
                 query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${elemSentenceIdx}`;
                 let alreadyResult = await pool.queryParam(query);
-
-                let alreadyBookmarked;
                 if(alreadyResult.length == 0){
-                    alreadyBookmarked = false;
+                    element.alreadyBookmarked = false;
                 }
                 else{
-                    alreadyBookmarked = true;
+                    element.alreadyBookmarked = true;
                 }
 
-                element.alreadyBookmarked = alreadyBookmarked;
+                //좋아요 여부
+                query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${elemSentenceIdx}`;
+                let sentenceLikedResult = await pool.queryParam(query);
+                if(sentenceLikedResult.length == 0){
+                    element.alreadyLiked = false;
+                }
+                else{
+                    element.alreadyLiked = true;
+                }
 
+                //writer 정보
                 let writerIdx = element.writerIdx;
-
                 query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
                 let writerResult = await pool.queryParam(query);
-
                 element.writer = writerResult[0].name;
                 element.writerImg = writerResult[0].img;
 

@@ -6,7 +6,7 @@ const ThemeData = require('../modules/data/themeData');
 
 const main = {
     editorsPick: async()=>{
-        let query = `SELECT * FROM illust`;
+        let query = `SELECT * FROM editorpick`;
         try{
             let result = await pool.queryParam(query);
             return result;
@@ -16,12 +16,43 @@ const main = {
             throw err;
         }
     },
-    getTodaySentence: async()=>{
+    getTodaySentence: async(curatorIdx)=>{
         //now에서 24시간전~지금까지 좋아요가 가장 많이 찍힌 순으로 정렬해서 ~
         let query = `SELECT * FROM sentence JOIN curator_sentence_like ON sentence.sentenceIdx = curator_sentence_like.sentenceIdx
         WHERE (curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY count(curator_sentence_like.sentenceIdx) DESC;`;
         try{
             let result = await pool.queryParam(query);
+
+            await Promise.all(result.map(async(element) =>{
+                //writer 정보
+                const writerIdx = element.writerIdx;
+                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                const writerResult = await pool.queryParam(query);
+                element.writer = writerResult[0].name;
+                element.writerImg = writerResult[0].img;
+
+                //북마크 여부
+                const sentenceIdx = element.sentenceIdx;
+                query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+                const sentenceBookmarkedResult = await pool.queryParam(query);
+                if(sentenceBookmarkedResult.length == 0){
+                    element.alreadyBookmarked = false;
+                }
+                else{
+                    element.alreadyBookmarked = true;
+                }
+
+                //좋아요 여부
+                query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+                const sentenceLikedResult = await pool.queryParam(query);
+                if(sentenceLikedResult.length == 0){
+                    element.alreadyLiked = false;
+                }
+                else{
+                    element.alreadyLiked = true;
+                }
+            }));
+
             return result.map(SentenceData);
         }
         catch(err){
