@@ -20,5 +20,16 @@ module.exports = {
         }
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MYINFO_SUCCESS, result));
+    },
+
+    deleteSentence : async(req, res) => {
+        const sentenceIdx = req.params.sentenceIdx;
+        if(!sentenceIdx){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        const result = await MyModel.deleteSentence(sentenceIdx);
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_SENTENCE_SUCCESS, {deleteSentenceIdx:sentenceIdx}));
     }
 };

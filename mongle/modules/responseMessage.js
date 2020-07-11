@@ -38,6 +38,7 @@ module.exports = {
 
     //내정보
     MYINFO_SUCCESS: "내 서재 조회 성공",
+    DELETE_SENTENCE_SUCCESS: "문장 삭제 성공",
 
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
