@@ -37,13 +37,14 @@ module.exports = {
     },
 
     getCuratorInfo : async(req, res) => {
-        const curatorIdx = req.params.curatorIdx;
-        if(!curatorIdx){
+        const curatorIdx = req.body.curatorIdx; //내 idx
+        const curatorIdx2 = req.params.curatorIdx;
+        if(!curatorIdx || !curatorIdx2){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await CuratorModel.getCuratorInfo(curatorIdx);
+        const result = await CuratorModel.getCuratorInfo(curatorIdx, curatorIdx2);
 
         if(result.length === 0){
             res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));

@@ -11,13 +11,16 @@ const curator = {
         try{
             let tempResult = await pool.queryParam(query);
 
+            //구독 중인 큐레이터
             await Promise.all(tempResult.map(async(element) => {
                 let keywordIdx = element.keywordIdx;
-                console.log(element);
+                //키워드
                 query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
                 const keywordResult = await pool.queryParam(query);
-                
                 element.keyword = keywordResult[0].keyword;
+                
+                //북마크 여부
+                element.alreadySubscribed = true;
                 
             }));
 
@@ -63,40 +66,108 @@ const curator = {
         }
     },
 
-    getCuratorInfo: async(curatorIdx) =>{
-        let profilequery = `SELECT curatorIdx, name, img, subscribe FROM curator WHERE curatorIdx = ${curatorIdx}`;
-        let themequery = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
-        let sentencequery = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx 
-                            WHERE curator_sentence.curatorIdx = ${curatorIdx}`;
+    getCuratorInfo: async(curatorIdx, curatorIdx2) =>{
+        let profilequery = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx2}`;
+        let themequery = `SELECT * FROM theme WHERE writerIdx = ${curatorIdx2}`;
+        let sentencequery = `SELECT * FROM sentence WHERE writerIdx = ${curatorIdx2}`;
 
         try{
+            //--- 프로필 ---
             let profileResult = await pool.queryParam(profilequery);
+
+            //프로필 - 키워드
+            let keywordIdx = profileResult[0].keywordIdx;
+            query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
+            const keywordResult = await pool.queryParam(query);            
+            profileResult[0].keyword = keywordResult[0].keyword;
+
+            //프로필 - 구독 여부
+            query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
+            const followResult = await pool.queryParam(query);
+            if(followResult.length == 0){
+                profileResult[0].alreadySubscribed = false;
+            }
+            else{
+                profileResult[0].alreadySubscribed = true;
+            }
+
+            //--- 테마 ---
             let themeResult = await pool.queryParam(themequery);
-            let sentenceResult = await pool.queryParam(sentencequery);
-            let keywords;
-            await Promise.all(profileResult.map(async(element) => {
-                let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
-                const keywordResult = await pool.queryParam(query);
-                // console.log(keywordResult[0].keyword);
-                var string=JSON.stringify(keywordResult);
-                var json = JSON.parse(string);
-                
-                keywords = json.reduce(function(r, e) {
-                    return Object.keys(e).forEach(function(k) {
-                        if(!r[k]) r[k] = [].concat(e[k])
-                        else r[k] = r[k].concat(e[k])
-                    }), r
-                }, {});
-            
-                element.keyword = keywords.keyword;
-                
+
+            await Promise.all(themeResult.map(async(element) =>{
+                let writerIdx = element.writerIdx;
+                let themeImgIdx = element.themeImgIdx;
+                let themeIdx = element.themeIdx;
+
+                //테마 - 테마 배경 이미지                
+                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
+                const themeImgResult = await pool.queryParam(query);
+                element.themeImg = themeImgResult[0].img;
+
+                //테마 - writer 정보
+                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                let writerResult = await pool.queryParam(query);
+                element.writer = writerResult[0].name;
+                element.writerImg = writerResult[0].img;
+
+                //테마 - 북마크 여부
+                query = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
+                const alreadyResult = await pool.queryParam(query);
+                if(alreadyResult.length == 0){
+                    element.alreadyBookmarked = false;
+                }
+                else{
+                    element.alreadyBookmarked = true;
+                }
+
+                //테마 - 안에 문장 수
+                query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
+                const sentenceNum = await pool.queryParam(query);
+                element.sentenceNum = sentenceNum[0].num;
+
             }));
-            let resultArray = new Array();
-            resultArray.push(profileResult.map(CuratorData));
-            resultArray.push(themeResult.map(ThemeData));
-            resultArray.push(sentenceResult.map(SentenceData));
-            return resultArray;
+
+            //--- 문장 ---
+            let sentenceResult = await pool.queryParam(sentencequery);
+
+            await Promise.all(sentenceResult.map(async(element) =>{
+                let writerIdx = element.writerIdx;
+                let sentenceIdx = element.sentenceIdx;
+
+                //문장 - writer 정보
+                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                let writerResult = await pool.queryParam(query);
+                element.writer = writerResult[0].name;
+                element.writerImg = writerResult[0].img;
+
+                //문장 - 북마크 여부
+                query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+                const alreadyBookmarkedResult = await pool.queryParam(query);
+                if(alreadyBookmarkedResult.length == 0){
+                    element.alreadyBookmarked = false;
+                }
+                else{
+                    element.alreadyBookmarked = true;
+                }
+
+                //문장 - 좋아요 여부
+                query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+                const sentenceLikedResult = await pool.queryParam(query);
+                if(sentenceLikedResult.length == 0){
+                    element.alreadyLiked = false;
+                }
+                else{
+                    element.alreadyLiked = true;
+                }
+
+            }));
+
+            let result = {};
+            result.profile = profileResult.map(CuratorData);
+            result.theme = themeResult.map(ThemeData);
+            result.sentence = sentenceResult.map(SentenceData);
+            
+            return result;
         }
         catch(err){
             console.log('getCuratorInfo err : ', err);
