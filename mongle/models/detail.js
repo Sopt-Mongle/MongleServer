@@ -8,30 +8,37 @@ const detail = {
         let query = `SELECT * FROM sentence WHERE sentenceIdx = "${sentenceIdx}"`;
         try{
             const firstResult = await pool.queryParam(query);
-
-            const writerIdx = firstResult[0].writerIdx;
-
-            query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-            const alreadyResult = await pool.queryParam(query);
-
-            let alreadyBookmarked;
-            if(alreadyResult.length == 0){
-                alreadyBookmarked = false;
-            }
-            else{
-                alreadyBookmarked = true;
-            }
-
             let result;
             result = firstResult.map(SentenceData);
-            result[0].alreadyBookmarked = alreadyBookmarked;
 
-
+            //문장 writer 정보
+            const writerIdx = firstResult[0].writerIdx;
             query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
             const writerResult = await pool.queryParam(query);
-
             result[0].writer = writerResult[0].name;
             result[0].writerImg = writerResult[0].img;
+
+            
+            //문장 북마크 여부
+            const sentenceIdx = firstResult[0].sentenceIdx;
+            query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+            const sentenceBookmarkedResult = await pool.queryParam(query);
+            if(sentenceBookmarkedResult.length == 0){
+                result[0].alreadyBookmarked = false;
+            }
+            else{
+                result[0].alreadyBookmarked = true;
+            }
+
+            //문장 좋아요 여부
+            query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+            const sentenceLikedResult = await pool.queryParam(query);
+            if(sentenceLikedResult.length == 0){
+                result[0].alreadyLiked = false;
+            }
+            else{
+                result[0].alreadyLiked = true;
+            }
             
             return result;
         }catch(err){
