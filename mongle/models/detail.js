@@ -175,9 +175,16 @@ const detail = {
         try{
             const themeResult = await pool.queryParam(query);
 
+            //writer 정보
+            const writerIdx = themeResult[0].writerIdx;
+            query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+            const writerResult = await pool.queryParam(query);
+
+            //count++
             query = `UPDATE theme SET count = count+1 WHERE themeIdx = ${themeIdx}`;
             await pool.queryParam(query);
 
+            //북마크 여부
             query = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
             const alreadyResult = await pool.queryParam(query);
 
@@ -189,12 +196,25 @@ const detail = {
                 alreadyBookmarked = true;
             }
             
+            //해당 테마의 문장들
             query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence JOIN theme WHERE theme_sentence.themeIdx = theme.themeIdx AND theme.themeIdx = ${themeIdx})`;
             const sentenceResult = await pool.queryParam(query);
+
+            await Promise.all(sentenceResult.map(async(element) =>{
+                let writerIdx = element.writerIdx;
+                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                let writerResult = await pool.queryParam(query);
+
+                element.writer = writerResult[0].name;
+                element.writerImg = writerResult[0].img;
+
+            }));
 ;
             let result = {};
             result.theme = themeResult.map(ThemeData);
             result.theme[0].alreadyBookmarked = alreadyBookmarked;
+            result.theme[0].writer = writerResult[0].name;
+            result.theme[0].writerImg = writerResult[0].img;
             result.sentence = sentenceResult.map(SentenceData);
 
             return result;
