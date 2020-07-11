@@ -4,9 +4,7 @@ const myController = require('../../controllers/my');
 
 router.get('/', myController.getMyInfo);
 // router.use('/profile');
-//router.put('/:themeIdx', )
 //router.put('/:sentenceIdx', )
-//router.delete('/:themeIdx', )
-//router.delete('/:sentenceIdx', )
+router.delete('/:sentenceIdx', myController.deleteSentence);
 
 module.exports = router;
