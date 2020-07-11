@@ -8,8 +8,8 @@ const my = {
     getMyInfo: async(curatorIdx) =>{
         let profilequery = `SELECT curatorIdx, name, img, subscribe FROM curator WHERE curatorIdx = ${curatorIdx}`;//프로필조회
         let themequery = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;//테마조회
-        let sentencequery = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx //문장조회
-                            WHERE curator_sentence.curatorIdx = ${curatorIdx}`;
+        let sentencequery = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx 
+                            WHERE curator_sentence.curatorIdx = ${curatorIdx}`;//문장조회
 
         try{
             let profileResult = await pool.queryParam(profilequery);
@@ -42,6 +42,18 @@ const my = {
             return result;
         }catch(err){
             console.log('deleteSentence err: ', err);
+        }throw err;
+    },
+
+    editSentence: async(sentenceIdx, sentence) => {
+        let query = `UPDATE sentence SET sentence = "${sentence}" WHERE sentenceIdx = ${sentenceIdx}`;
+        try{
+            let result = await pool.queryParam(query);
+            let query1 = `SELECT sentence FROM sentence WHERE sentenceIdx = ${sentenceIdx}`;//수정한 문장 리턴
+            let result1 = await pool.queryParam(query1);
+            return result1;
+        }catch(err){
+            console.log('editSentence err: ', err);
         }throw err;
     }
 };

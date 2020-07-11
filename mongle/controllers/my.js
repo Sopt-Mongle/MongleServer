@@ -31,5 +31,17 @@ module.exports = {
 
         const result = await MyModel.deleteSentence(sentenceIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_SENTENCE_SUCCESS, {deleteSentenceIdx:sentenceIdx}));
+    },
+
+    editSentence : async(req, res) => {
+        const sentenceIdx = req.params.sentenceIdx;
+        const {sentence} = req.body;
+        if(!sentenceIdx || !sentence){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        const result = await MyModel.editSentence(sentenceIdx, sentence);
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_SENTENCE_SUCCESS, result));
     }
 };
