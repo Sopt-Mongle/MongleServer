@@ -38,7 +38,8 @@ module.exports = {
         
     },
     getTodayTheme: async(req, res)=>{
-        const result = await MainModel.getTodayTheme();
+        const curatorIdx = req.body.curatorIdx;
+        const result = await MainModel.getTodayTheme(curatorIdx);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAY_THEME));
             return;
