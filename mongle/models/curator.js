@@ -190,11 +190,59 @@ const curator = {
                 element.keyword = keyword[0].keyword;
             }));
             return result.map(curatorData);
-            
+
         }catch(err){
             console.log('getRecommendCurator err: ' + err);
         }throw err;
-    }
+    },
+
+    getThemeInCurator: async() =>{
+        let query = `SELECT curatorIdx, name, img, subscribe FROM curator JOIN sentence ON curator.curatorIdx = sentence.writerIdx 
+        GROUP BY sentence.writerIdx HAVING count(sentence.writerIdx) >= 5 ORDER BY rand() LIMIT 10`;
+        try{
+            let result = await pool.queryParam(query);
+            let keyword;
+            await Promise.all(result.map(async(element) =>{
+                let curatorIdx = element.curatorIdx;
+                query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+                keyword = await pool.queryParam(query);
+                element.keyword = keyword[0].keyword;
+            }));
+            return result.map(curatorData);
+
+        }catch(err){
+            console.log('getRecommendCurator err: ' + err);
+        }throw err;
+    },
+
+    getCuratorByKeyword: async(keywordIdx, followerIdx) =>{
+        let query = `SELECT * FROM curator WHERE keywordIdx = ${keywordIdx}`;
+        try{
+            let result = await pool.queryParam(query);
+            let keyword;
+            let alreadySave;
+            await Promise.all(result.map(async(element) =>{
+                let curatorIdx = element.curatorIdx;
+                query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+                keyword = await pool.queryParam(query);
+                element.keyword = keyword[0].keyword;
+
+                let savequery = `SELECT * FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${curatorIdx}`;
+                alreadySave = await pool.queryParam(savequery);
+                if(alreadySave.length === 0){
+                    element.alreadySubscribed = false;
+                }
+                else{
+                    element.alreadySubscribed = true;
+                }
+                
+            }));
+            return result.map(curatorData);
+
+        }catch(err){
+            console.log('getCuratorByKeyword err: ' + err);
+        }throw err;
+    },
 };
 
 module.exports = curator;
