@@ -4,7 +4,9 @@ const myController = require('../../controllers/my');
 
 router.get('/', myController.getMyInfo);
 // router.use('/profile');
-//router.put('/:sentenceIdx', )
+router.put('/:sentenceIdx', myController.editSentence);
 router.delete('/:sentenceIdx', myController.deleteSentence);
+
+
 
 module.exports = router;
