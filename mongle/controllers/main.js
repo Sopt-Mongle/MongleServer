@@ -48,7 +48,8 @@ module.exports = {
     },
 
     getWaitTheme: async(req, res)=>{
-        const result = await MainModel.getWaitTheme();
+        const curatorIdx = req.body.curatorIdx;
+        const result = await MainModel.getWaitTheme(curatorIdx);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_WAIT_THEME));
             return;
@@ -57,7 +58,8 @@ module.exports = {
     },
 
     getNowTheme: async(req, res)=>{
-        const result = await MainModel.getNowTheme();
+        const curatorIdx = req.body.curatorIdx;
+        const result = await MainModel.getNowTheme(curatorIdx);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_NOW_THEME));
             return;
