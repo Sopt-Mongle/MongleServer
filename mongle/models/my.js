@@ -155,6 +155,26 @@ const my = {
         }catch(err){
             console.log('editSentence err: ', err);
         }throw err;
+    },
+
+    editProfile: async(curatorIdx, name, introduce, keywordIdx) => {
+        let query = `UPDATE curator SET name = "${name}", introduce = "${introduce}", keywordIdx = ${keywordIdx} WHERE curatorIdx = ${curatorIdx}`;
+        try{
+            let result = await pool.queryParam(query);
+            query = `SELECT name, introduce, keywordIdx FROM curator WHERE curatorIdx = ${curatorIdx}`;
+            const result1 = await pool.queryParam(query);
+            result1[0].name = result1[0].name;
+            result1[0].introduce = result1[0].introduce;
+
+            //키워드
+            const keywordIdx = result1[0].keywordIdx;
+            query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
+            const keywordResult = await pool.queryParam(query);
+            result1[0].keyword = keywordResult[0].keyword;            
+            return result1.map(CuratorData);
+        }catch(err){
+            console.log('editProfile err: ', err);
+        }throw err;
     }
 };
 
