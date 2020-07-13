@@ -36,8 +36,11 @@ module.exports = {
     CURATORINFO_SUCCESS: "큐레이터 정보 조회 성공",
 
 
-    //내정보
-    MYINFO_SUCCESS: "내 서재 조회 성공",
+    //내정보(My)
+    NO_CONTENT_CURATOR: "일치하는 정보가 없습니다.",
+    MY_PROFILE_SUCCESS: "내 서재 프로필 조회 성공",
+    MY_THEME_SUCCESS: "내 서재 테마 조회 성공",
+    MY_SENTENCE_SUCCESS: "내 서재 문장 조회 성공",
     DELETE_SENTENCE_SUCCESS: "문장 삭제 성공",
     EDIT_SENTENCE_SUCCESS: "문장 수정 성공",
     
