@@ -55,7 +55,7 @@ module.exports = {
 
         const result = await MyModel.getMySubscribe(curatorIdx);
 
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MYINFO_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MY_SUBSCRIBE_SUCCESS, result));
     },
 
 
