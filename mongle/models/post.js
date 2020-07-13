@@ -30,9 +30,38 @@ const post = {
 
         try{
             const result1 = await pool.queryParamArr(query1, values);
+            const themeIdx = result1[0].themeIdx;
+            
+            //curator_theme 테이블에도 Insert
+            const query2 = `INSERT INTO curator_theme(curatorIdx, themeIdx) VALUES(${writerIdx}, ${themeIdx})`;
+            await pool.queryParam(query2);
+
             return;
         }catch(err){
             console.log('crateTheme err: ' + err);
+        }throw err;
+    },
+
+    makeTheme : async(curatorIdx, theme, themeImgIdx) => {
+        let query = `SELECT * FROM theme WHERE theme = "${theme}"`;
+        try{
+            const sameCheckResult = await pool.queryParam(query);
+            if(sameCheckResult.length != 0){ //같은 이름의 테마가 있을 때
+                return -1;
+            }
+            else{
+                query = `INSERT INTO theme(theme, themeImgIdx, saves, writerIdx, count) VALUES("${theme}", "${themeImgIdx}", 0, ${curatorIdx}, 0)`;
+                const themeInsertResult = await pool.queryParam(query);
+                const themeIdx = themeInsertResult.insertId;
+
+                query = `INSERT INTO curator_theme(curatorIdx, themeIdx) VALUES(${curatorIdx}, ${themeIdx})`;
+                await pool.queryParam(query);
+
+                return 0;
+            }
+        }
+        catch(err){
+            console.log('makeTheme err: ' + err);
         }throw err;
     },
 
