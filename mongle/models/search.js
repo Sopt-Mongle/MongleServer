@@ -50,7 +50,7 @@ const search = {
         try{
             const result = await pool.queryParam(query);
 
-            query = `INSERT INTO search_words(curatorIdx, words) VALUES(${curatorIdx}, "${words}")`;
+            query = `INSERT INTO search_words(curatorIdx, word) VALUES(${curatorIdx}, "${words}")`;
             await pool.queryParam(query);
             
             return result.map(ThemeData);

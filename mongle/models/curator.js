@@ -209,7 +209,7 @@ const curator = {
             await Promise.all(themeResult.map(async(element) => {
                 let themeIdx = element.themeIdx;
                 //테마 배경 이미지
-                let themeImgIdx = themeResult[0].themeImgIdx;
+                let themeImgIdx = element.themeImgIdx;
                 query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
                 let themeImgResult = await pool.queryParam(query);
                 element.themeImg = themeImgResult[0].img;
@@ -261,7 +261,7 @@ const curator = {
                     //프로필 - 키워드
                     let keywordIdx = curatorResult2[0].keywordIdx;
                     query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-                    const keywordResult = await pool.queryParam(query);            
+                    const keywordResult = await pool.queryParam(query);
                     element.keyword = keywordResult[0].keyword;
 
                     //프로필 - 구독 여부
@@ -278,7 +278,6 @@ const curator = {
                 }));
 
             }));
-
 
 
             result.theme = themeResult.map(ThemeData);

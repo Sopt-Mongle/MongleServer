@@ -118,6 +118,17 @@ const post = {
         catch(err){
             console.log('selectTheme err: ' + err);
         }throw err;
+    },
+
+    getEmptySentence : async(curatorIdx) => {
+        let query = `SELECT * FROM empty_sentence JOIN empty_curator_sentence ON empty_sentence.sentenceIdx = empty_curator_sentence.sentenceIdx WHERE empty_curator_sentence.curatorIdx = ${curatorIdx}`;
+        try{
+            let result = await pool.queryParam(query);
+            return result;
+        }
+        catch(err){
+            console.log('getEmptySentence err: ' + err);
+        }throw err;
     }
 };
 
