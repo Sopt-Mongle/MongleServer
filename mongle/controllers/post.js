@@ -41,7 +41,25 @@ module.exports = {
 
     selectTheme : async(req, res) => {
         const result = await PostModel.selectTheme();
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_SENTENCE_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.THEME_LIST_SUCCESS, result));
 
+    },
+
+    bookSearch : async(req, res) =>{
+        const title = req.body.title;
+        const sort = 'accuracy';
+        const target = 'title';
+
+        if(!title){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        let result = await kakaoAPI.bookSearch(title, sort, target);
+
+        // console.log(result.documents.map(BookData));
+        var finalResult = result.documents.map(BookData);
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOK_SEARCH_SUCCESS, finalResult));
     }
 };

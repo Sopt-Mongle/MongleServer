@@ -74,6 +74,7 @@ module.exports = {
     CREATED_THEME:"테마 작성 성공",
     CREATE_EMPTY_SENTENCE_SUCCESS:"테마 없는 문장 올리기 성공",
     CREATE_SENTENCE_SUCCESS:"테마 있는 문장 올리기 성공",
+    THEME_LIST_SUCCESS: "선택할 테마 리스트 조회 성공",
 
     CREATED_POST:"포스팅 성공",
     READ_All_POST:"포스트 전체 조회 성공",
