@@ -45,30 +45,33 @@ const post = {
         }throw err;
     },
 
-    createSentence: async({curatorIdx, sentence, title, author, publisher}) => {
+    createSentence: async({curatorIdx, sentence, title, author, publisher, themeIdx}) => {
         const fields = `sentence, title, author, likes, saves, writerIdx, publisher`;
         const questions = `?, ?, ?, ?, ?, ?, ?`;
         const values = [sentence, title, author, 0, 0, curatorIdx, publisher];
 
         try{
-            // values.push(sentence);
-            // values.push(title);
-            // values.push(author);
-            // values.push(0);
-            // values.push(0);
-            // values.push(curatorIdx);
-            // values.push(publisher);
+            if(themeIdx === 0){ //테마없는 테마 선택한 문장일 경우
+                //empty_sentence 에 insert
+                let query = `INSERT INTO empty_sentence(sentence, title, author, publisher, writerIdx) VALUES("${sentence}", "${title}", "${author}", "${publisher}", ${curatorIdx})`;
+                const result1 = await pool.queryParam(query);
+                let sentenceIdx = result1.insertId;
+                query = `INSERT INTO empty_curator_sentence(curatorIdx, sentenceIdx) VALUES(${curatorIdx}, ${sentenceIdx})`;
+                await pool.queryParam(query);
+                return -1;
 
-            // console.log(values);
-            query = `INSERT INTO sentence(${fields}) VALUES(${questions})`;
-
-            const result2 = await pool.queryParamArr(query, values);
-
-            const sentenceIdx = result2.insertId;
-            query = `INSERT INTO curator_sentence(curatorIdx, sentenceIdx) VALUES(${curatorIdx}, ${sentenceIdx})`;
-            await pool.queryParam(query);
-
-            return;
+            }
+            else{ //특정 테마 선택한 문장일 경우
+                let query = `INSERT INTO sentence(${fields}) VALUES(${questions})`;
+                const result2 = await pool.queryParamArr(query, values);
+                let sentenceIdx = result2.insertId;
+                query = `INSERT INTO curator_sentence(curatorIdx, sentenceIdx) VALUES(${curatorIdx}, ${sentenceIdx})`;
+                await pool.queryParam(query);
+                query = `INSERT INTO theme_sentence(sentenceIdx, themeIdx) VALUES(${sentenceIdx}, ${themeIdx})`;
+                await pool.queryParam(query);
+                return 0;
+            }
+            
         }
         catch(err){
             console.log('writeSentence err: ' + err);
@@ -77,6 +80,7 @@ const post = {
     },
 
     selectTheme : async() =>{
+        //최근에 문장이 들어간 테마 순
         let query = `SELECT * FROM theme JOIN (SELECT MAX(themeSentenceIdx) as A, themeIdx FROM theme_sentence GROUP BY themeIdx ORDER BY A DESC) as T ON theme.themeIdx = T.themeIdx;`;
         try{
             const result = await pool.queryParam(query);

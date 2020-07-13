@@ -41,7 +41,7 @@ module.exports = {
     MY_PROFILE_SUCCESS: "내 서재 프로필 조회 성공",
     MY_THEME_SUCCESS: "내 서재 테마 조회 성공",
     MY_SENTENCE_SUCCESS: "내 서재 문장 조회 성공",
-    MY_CURATOR_SUCCESS: "내 서재 큐레이터 조회 성공",
+    MY_SUBSCRIBE_SUCCESS: "내 서재 구독 조회 성공",
     DELETE_SENTENCE_SUCCESS: "문장 삭제 성공",
     EDIT_SENTENCE_SUCCESS: "문장 수정 성공",
     
@@ -72,7 +72,9 @@ module.exports = {
     //포스트
     ALREADY_THEME: "이미 작성된 테마입니다.",
     CREATED_THEME:"테마 작성 성공",
-    CREATE_SENTENCE_SUCCESS:"문장 올리기 성공",
+    CREATE_EMPTY_SENTENCE_SUCCESS:"테마 없는 문장 올리기 성공",
+    CREATE_SENTENCE_SUCCESS:"테마 있는 문장 올리기 성공",
+    THEME_LIST_SUCCESS: "선택할 테마 리스트 조회 성공",
 
     CREATED_POST:"포스팅 성공",
     READ_All_POST:"포스트 전체 조회 성공",

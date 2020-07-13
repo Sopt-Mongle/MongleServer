@@ -13,21 +13,11 @@ const search = {
             let tempResult = await pool.queryParam(query);
 
             await Promise.all(tempResult.map(async(element) => {
-                let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM keyword JOIN curator_keyword ON keyword.keywordIdx = curator_keyword.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
+                let keywordIdx = element.keywordIdx;
+                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
                 const keywordResult = await pool.queryParam(query);
-                // console.log(keywordResult[0].keyword);
-                var string=JSON.stringify(keywordResult);
-                var json = JSON.parse(string);
                 
-                keywords = json.reduce(function(r, e) {
-                    return Object.keys(e).forEach(function(k) {
-                        if(!r[k]) r[k] = [].concat(e[k])
-                        else r[k] = r[k].concat(e[k])
-                    }), r
-                }, {});
-                
-                element.keyword = keywords.keyword;
+                element.keyword = keywordResult[0].keyword;
                 
             }));
 
@@ -44,14 +34,22 @@ const search = {
 
     searchTheme: async(curatorIdx, words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
-        // console.log(queryWords);
-        
+
         let query = `SELECT * FROM theme WHERE theme LIKE "%${queryWords}%"`;
         try{
-            const result = await pool.queryParam(query);
+            //최근 검색어 테이블에 저장
+            const query2 = `INSERT INTO search_words(curatorIdx, word) VALUES(${curatorIdx}, "${words}")`;
+            await pool.queryParam(query2);
 
-            query = `INSERT INTO search_words(curatorIdx, word) VALUES(${curatorIdx}, "${words}")`;
-            await pool.queryParam(query);
+            let result = await pool.queryParam(query);
+            await Promise.all(result.map(async(element) =>{
+                //안에 문장 수
+                let themeIdx = element.themeIdx;
+                query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
+                let sentenceNum = await pool.queryParam(query);
+                element.sentenceNum = sentenceNum[0].num;
+            }));
+            
             
             return result.map(ThemeData);
         }
@@ -63,12 +61,29 @@ const search = {
 
     searchSentence: async( words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
-        // console.log(queryWords);
         
         let query = `SELECT * FROM sentence WHERE sentence LIKE "%${queryWords}%"`;
         try{
             const result = await pool.queryParam(query);
-            // console.log(result);
+            await Promise.all(result.map(async(element) => {
+                //문장 writer 정보
+                let writerIdx = element.writerIdx;
+                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                let writerResult = await pool.queryParam(query);
+                element.writer = writerResult[0].name;
+                element.writerImg = writerResult[0].img;
+
+                //테마 정보
+                let sentenceIdx = element.sentenceIdx;
+                query = `SELECT * FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}`;
+                let themeInfoResult = await pool.queryParam(query);
+                let themeIdx = themeInfoResult[0].themeIdx;
+                element.themeIdx = themeIdx;
+                query = `SELECT theme FROM theme WHERE themeIdx = ${themeIdx}`;
+                let themeNameResult = await pool.queryParam(query);
+                element.theme = themeNameResult[0].theme;
+            }));
+
             return result.map(SentenceData);
         }
         catch(err){
@@ -101,7 +116,6 @@ const search = {
         let query = `DELETE FROM search_words WHERE curatorIdx = ${curatorIdx}`;
         try{
             const result = await pool.queryParam(query);
-            console.log(result);
             return result;
         }
         catch(err){

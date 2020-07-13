@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 const detailController = require('../../controllers/detail');
 
-router.get('/bookSearch', detailController.bookSearch);
-
 router.get('/theme/:themeIdx', detailController.getTheme);
 router.put('/theme/:themeIdx/bookmark', detailController.bookmarkTheme);
 

@@ -42,7 +42,7 @@ const curator = {
                 query = `INSERT INTO follow(followerIdx, followedIdx) VALUE(${followerIdx}, ${followedIdx})`;
                 await pool.queryParam(query);
             
-                query = `UPDATE ${table} SET subscribe = subscribe+1 WHERE curatorIdx = ${followedIdx}`;
+                query = `UPDATE curator SET subscribe = subscribe+1 WHERE curatorIdx = ${followedIdx}`;
                 await pool.queryParam(query);
 
                 result = true;
@@ -52,12 +52,11 @@ const curator = {
                 query = `DELETE FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${followedIdx}`;
                 await pool.queryParam(query);
 
-                query = `UPDATE ${table} SET subscribe = subscribe-1 WHERE curatorIdx = ${followedIdx}`;
+                query = `UPDATE curator SET subscribe = subscribe-1 WHERE curatorIdx = ${followedIdx}`;
                 await pool.queryParam(query);
 
                 result = false;
             }
-            console.log(result);
             return result;
         }
         catch(err){
@@ -199,12 +198,10 @@ const curator = {
         let query = `SELECT t.* FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
                     GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 ORDER BY createdAt DESC limit 2`;
         try{
-            //테마
+            //--- 테마 ---
             let result = {};
             let themeResult = await pool.queryParam(query);
-            result.theme = themeResult.map(ThemeData);
-            
-            // const themeIdx = result.theme[0].themeIdx;
+            // result.theme = themeResult.map(ThemeData);
 
             await Promise.all(themeResult.map(async(element) => {
                 let themeIdx = element.themeIdx;
@@ -214,58 +211,61 @@ const curator = {
                 let themeImgResult = await pool.queryParam(query);
                 element.themeImg = themeImgResult[0].img;
 
-                //테마 writer 정보
-                let writerIdx = themeResult[0].writerIdx;
-                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-                let writerResult = await pool.queryParam(query);
-                element.writer = writerResult[0].name;
-                element.writerImg = writerResult[0].img;
+                //테마 writer 정보(이 화면에선 필요없음)
+                // let writerIdx = themeResult[0].writerIdx;
+                // query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                // let writerResult = await pool.queryParam(query);
+                // element.writer = writerResult[0].name;
+                // element.writerImg = writerResult[0].img;
 
-                //테마 조회수
-                query = `UPDATE theme SET count = count+1 WHERE themeIdx = ${themeIdx}`;
-                await pool.queryParam(query);
+                //테마 조회수 +1(이 화면에선 필요없음)
+                // query = `UPDATE theme SET count = count+1 WHERE themeIdx = ${themeIdx}`;
+                // await pool.queryParam(query);
 
-                //북마크 여부
-                query = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
-                let alreadyResult = await pool.queryParam(query);
-                if(alreadyResult.length == 0){
-                    element.alreadyBookmarked = false;
-                }
-                else{
-                    element.alreadyBookmarked = true;
-                }
+                //북마크 여부(이 화면에선 필요없음)
+                // query = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
+                // let alreadyResult = await pool.queryParam(query);
+                // if(alreadyResult.length == 0){
+                //     element.alreadyBookmarked = false;
+                // }
+                // else{
+                //     element.alreadyBookmarked = true;
+                // }
 
                 //안에 문장 수
                 query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
-                let sentenceNum = await pool.queryParam(query);
-                element.sentenceNum = sentenceNum[0].num;
+                let sentenceNumResult = await pool.queryParam(query);
+                element.sentenceNum = sentenceNumResult[0].num;
 
 
-                //----큐레이터----
-                console.log(themeIdx);
+                //--- 큐레이터 ---
                 query = `SELECT writerIdx FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = ${themeIdx} ORDER BY likes DESC limit 3`;
                 let curatorResult = await pool.queryParam(query);
-                console.log(curatorResult);
-                let curatorResult2;
+
+
+                //   !!큐레이터 idx 정리!!
+                //1. curatorIdx : 내 정보로 이 메소드 파라미터로 받아온거!(나)
+                //2. curatorIdx2 : 뽑아낸 3개의 큐레이터 각각의 idx(상대방)
 
                 await Promise.all(curatorResult.map(async(element) => {
-                    let curatorIdx = element.writerIdx;
-                    query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx}`;
-                    curatorResult2 = await pool.queryParam(query);
+                    let curatorIdx2 = element.writerIdx; 
+                    query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx2}`;
+                    let curatorInfoResult = await pool.queryParam(query);
 
-                    element.curatorIdx = curatorResult2[0].curatorIdx;
-                    element.name = curatorResult2[0].name;
-                    element.img = curatorResult2[0].img;
-                    element.subscribe = curatorResult2[0].subscribe;
+                    //어차피 위에 .map으로 다 알아서 들어가는 정보들!!
+                    element.curatorIdx = curatorInfoResult[0].curatorIdx;
+                    element.name = curatorInfoResult[0].name;
+                    element.img = curatorInfoResult[0].img;
+                    element.subscribe = curatorInfoResult[0].subscribe;
 
                     //프로필 - 키워드
-                    let keywordIdx = curatorResult2[0].keywordIdx;
+                    let keywordIdx = curatorInfoResult[0].keywordIdx;
                     query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
                     const keywordResult = await pool.queryParam(query);
                     element.keyword = keywordResult[0].keyword;
 
                     //프로필 - 구독 여부
-                    let curatorIdx2 = curatorResult2[0].curatorIdx;
+                    // let curatorIdx2 = curatorInfoResult[0].curatorIdx;
                     query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
                     const followResult = await pool.queryParam(query);
                     if(followResult.length == 0){
@@ -274,13 +274,18 @@ const curator = {
                     else{
                         element.alreadySubscribed = true;
                     }
-                    result.curator = curatorResult.map(CuratorData);
+                    // result.curator = curatorResult.map(CuratorData);
+                    // console.log(element);
                 }));
+                // console.log(curatorResult);
+                element.curators = curatorResult.map(CuratorData);
+                // console.log(element);
 
             }));
 
+            // console.log(themeResult.map(ThemeData));
 
-            result.theme = themeResult.map(ThemeData);
+            result.theme = themeResult;
             
             return result;
         }catch(err){

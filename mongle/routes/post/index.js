@@ -8,6 +8,7 @@ router.post('/theme', postController.makeTheme);
 router.get('/emptySentence', postController.getEmptySentence);
 router.post('/sentence', postController.createSentence);
 router.get('/theme', postController.selectTheme);
+router.get('/bookSearch', postController.bookSearch);
 
 
 module.exports = router;

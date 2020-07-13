@@ -26,15 +26,11 @@ module.exports = {
     searchTheme : async(req, res) =>{
         const curatorIdx = req.body.curatorIdx;
         const words = req.body.words;
-        // console.log(req.body);
 
-        if(!words){
+        if(!words || !curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
             return;
-        }
-        if(!curatorIdx){
-            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
-        }
+        } 
         
         //검색 결과 중 제일 먼저 나오는 쪽에서 최근검색어 테이블에 insert
         const result = await SearchModel.searchTheme(curatorIdx, words);
@@ -48,9 +44,7 @@ module.exports = {
     },
 
     searchSentence : async(req, res)=>{
-        const curatorIdx = req.body.curatorIdx;
         const words = req.body.words;
-        // console.log(words);
 
         if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
