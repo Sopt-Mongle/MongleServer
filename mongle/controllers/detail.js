@@ -205,23 +205,5 @@ module.exports = {
         }).then((res) => Func2(res));
 
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_THEME, result));
-    },
-
-    bookSearch : async(req, res) =>{
-        const title = req.body.title;
-        const sort = 'accuracy';
-        const target = 'title';
-
-        if(!title){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-            return;
-        }
-
-        let result = await kakaoAPI.bookSearch(title, sort, target);
-
-        // console.log(result.documents.map(BookData));
-        var finalResult = result.documents.map(BookData);
-
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOK_SEARCH_SUCCESS, finalResult));
     }
 }
