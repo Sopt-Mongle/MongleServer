@@ -122,6 +122,23 @@ const search = {
             console.log('recentDelete ERROR : ', err);
             throw err;
         }
+    },
+
+    recommendSearch : async()=>{
+        let query = `SELECT word FROM search_words GROUP BY word ORDER BY COUNT(*) DESC LIMIT 15`;
+        try{
+            const tempResult = await pool.queryParam(query);
+            let result = [];
+            await Promise.all(tempResult.map(async(element) =>{
+                let word = element.word;
+                result.push(word);
+            }));
+            return result;
+        }
+        catch(err){
+            console.log('recommendSearch ERROR : ', err);
+            throw err;
+        }
     }
 
 };

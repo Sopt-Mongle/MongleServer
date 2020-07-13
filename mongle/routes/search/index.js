@@ -7,6 +7,7 @@ router.get('/curator', SearchController.searchCurator);
 router.get('/theme', SearchController.searchTheme);
 router.get('/sentence', SearchController.searchSentence);
 router.get('/recent', SearchController.recentSearch);
+router.get('/recommend', SearchController.recommendSearch);
 router.delete('/recent', SearchController.recentDelete);
 
 module.exports = router;

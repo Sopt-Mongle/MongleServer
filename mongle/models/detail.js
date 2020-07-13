@@ -154,28 +154,6 @@ const detail = {
             const firstResult = await pool.queryParam(query);
 
             await Promise.all(firstResult.map(async(element) => {
-                let elemSentenceIdx = element.sentenceIdx;
-
-                //북마크 여부
-                query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${elemSentenceIdx}`;
-                let alreadyResult = await pool.queryParam(query);
-                if(alreadyResult.length == 0){
-                    element.alreadyBookmarked = false;
-                }
-                else{
-                    element.alreadyBookmarked = true;
-                }
-
-                //좋아요 여부
-                query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${elemSentenceIdx}`;
-                let sentenceLikedResult = await pool.queryParam(query);
-                if(sentenceLikedResult.length == 0){
-                    element.alreadyLiked = false;
-                }
-                else{
-                    element.alreadyLiked = true;
-                }
-
                 //writer 정보
                 let writerIdx = element.writerIdx;
                 query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
