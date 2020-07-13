@@ -64,8 +64,12 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATORINFO_SUCCESS, result));
     },
     getThemeInCurator : async(req, res) => {
-        const result = await CuratorModel.getThemeInCurator();
-
+        const {curatorIdx} = req.body;
+        if(!curatorIdx){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+        const result = await CuratorModel.getThemeInCurator(curatorIdx);
         if(result.length === 0){
             res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));
             return;
@@ -74,7 +78,7 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATORINFO_SUCCESS, result));
     },
 
-    getCuratorByKeyword : async(req, res) => {
+    getCuratorByKeyword : async(req, res) => {  
         const keywordIdx = req.params.keywordIdx;
         const {curatorIdx} = req.body;
         if(!keywordIdx || !curatorIdx){

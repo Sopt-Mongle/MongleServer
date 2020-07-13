@@ -5,9 +5,10 @@ var CuratorController = require('../../controllers/curator');
 router.get('/', CuratorController.getAllCurators);
 router.put('/:curatorIdx', CuratorController.subscribe);
 router.get('/recommend', CuratorController.getRecommendCurator);
+router.get('/themeInCurator', CuratorController.getThemeInCurator);
 router.get('/:keywordIdx', CuratorController.getCuratorByKeyword);
 router.get('/:curatorIdx', CuratorController.getCuratorInfo);
-router.get('/themeInCurator', CuratorController.getThemeInCurator);
+
 
 
 
