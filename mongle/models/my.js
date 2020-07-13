@@ -5,32 +5,132 @@ const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
 
 const my = {
-    getMyInfo: async(curatorIdx) =>{
-        let profilequery = `SELECT curatorIdx, name, img, subscribe FROM curator WHERE curatorIdx = ${curatorIdx}`;//프로필조회
-        let themequery = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;//테마조회
-        let sentencequery = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx 
-                            WHERE curator_sentence.curatorIdx = ${curatorIdx}`;//문장조회
-
+    getMyProfile: async(curatorIdx) =>{
+        let query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx}`;
         try{
-            let profileResult = await pool.queryParam(profilequery);
-            let themeResult = await pool.queryParam(themequery);
-            let sentenceResult = await pool.queryParam(sentencequery);
-            let resultArray = new Array();
-            let keyword;
-            await Promise.all(profileResult.map(async(element) =>{
-                let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
-                keyword = await pool.queryParam(query);
-                element.keyword = keyword[0].keyword;
-            }));
+            let result = await pool.queryParam(query);
+            //키워드
+            const keywordIdx = result[0].keywordIdx;
+            query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
+            const keywordResult = await pool.queryParam(query);
+            result[0].keyword = keywordResult[0].keyword;
+            
+            return result.map(CuratorData);
+        }
+        catch(err){
+            console.log('getMyProfile err : ', err);
+            throw err;
+        }
+    },
 
-            resultArray.push(profileResult.map(CuratorData));
-            resultArray.push(themeResult.map(ThemeData));
-            resultArray.push(sentenceResult.map(SentenceData));
+    getMyTheme: async(curatorIdx) => {
+        let query = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
+        try{
+            let result = await pool.queryParam(query);
+
+            let resultArray = {};
+            let save = [];
+            let write = [];
+            await Promise.all(result.map(async(element) => {
+                let writerIdx = element.writerIdx;
+                let themeIdx = element.themeIdx;
+
+                //안에 문장 수
+                query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
+                const sentenceNum = await pool.queryParam(query);
+                element.sentenceNum = sentenceNum[0].num;
+
+                //저장한 테마, 내가 쓴 테마 구분
+                if(writerIdx == curatorIdx){
+                    // console.log(element);
+                    write.push(element);
+                }
+                else{
+                    save.push(element);
+                }
+
+            }));
+            
+            resultArray.write = write.map(ThemeData);
+            resultArray.save = save.map(ThemeData);
+            console.log(resultArray);
+            
             return resultArray;
         }
         catch(err){
-            console.log('getMyInfo err : ', err);
+            console.log('getMyTheme err : ', err);
+            throw err;
+        }
+    },
+
+    getMySentence: async(curatorIdx) => {
+        let query = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ${curatorIdx}`;
+        try{
+            let result = await pool.queryParam(query);
+
+            let resultArray = {};
+            let save = [];
+            let write = [];
+
+            await Promise.all(result.map(async(element) => {
+                let writerIdx = element.writerIdx;
+                let sentenceIdx = element.sentenceIdx;
+
+                //writer 정보
+                query = `SELECT name FROM curator WHERE curatorIdx = ${writerIdx}`;
+                let writerResult = await pool.queryParam(query);
+                element.writer = writerResult[0].name;
+
+                //테마 정보
+                query = `SELECT theme FROM theme JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx WHERE theme_sentence.sentenceIdx = ${sentenceIdx}`;
+                let themeResult = await pool.queryParam(query);
+                element.theme = themeResult[0].theme;
+
+                //저장한 문장, 내가 쓴 문장 구분
+                if(writerIdx == curatorIdx){
+                    write.push(element);
+                }
+                else{
+                    save.push(element);
+                }
+            }));
+            
+            resultArray.write = write.map(SentenceData);
+            resultArray.save = save.map(SentenceData);
+            
+            return resultArray;            
+
+        }
+        catch(err){
+            console.log('getMySentence err : ', err);
+            throw err;
+        }
+
+    },
+
+    getMySubscribe: async(curatorIdx) =>{
+        let query = `SELECT * FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
+        
+        try{
+            let result = await pool.queryParam(query);
+
+            //구독 중인 큐레이터
+            await Promise.all(result.map(async(element) => {
+                let keywordIdx = element.keywordIdx;
+                //키워드
+                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
+                const keywordResult = await pool.queryParam(query);
+                element.keyword = keywordResult[0].keyword;
+                
+                //북마크 여부
+                element.alreadySubscribed = true;
+                
+            }));
+
+            return result.map(CuratorData);
+        }
+        catch(err){
+            console.log('getAllCurators ERROR : ', err);
             throw err;
         }
     },

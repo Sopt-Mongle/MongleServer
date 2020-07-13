@@ -37,6 +37,21 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_THEME));
 
     },
+
+    makeTheme: async(req, res) => {
+        const {curatorIdx, theme, themeImgIdx} = req.body;
+        if(!curatorIdx || !theme || !themeImgIdx){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+
+        const result = await PostModel.makeTheme(curatorIdx, theme, themeImgIdx);
+        if(result == -1){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_THEME));
+        }
+        else{
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_THEME));
+        }
+    },
     
     createSentence : async(req, res) =>{
 

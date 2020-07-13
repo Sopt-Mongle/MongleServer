@@ -4,6 +4,7 @@ module.exports =
             "curatorIdx": rawCuratorData.curatorIdx,
             "name": rawCuratorData.name,
             "img": rawCuratorData.img,
+            "introduce": rawCuratorData.introduce,
             "keyword": rawCuratorData.keyword,
             "subscribe": rawCuratorData.subscribe,
             "alreadySubscribed": rawCuratorData.alreadySubscribed
