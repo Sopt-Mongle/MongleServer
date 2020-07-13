@@ -58,6 +58,7 @@ const post = {
                 let sentenceIdx = result1.insertId;
                 query = `INSERT INTO empty_curator_sentence(curatorIdx, sentenceIdx) VALUES(${curatorIdx}, ${sentenceIdx})`;
                 await pool.queryParam(query);
+                return -1;
 
             }
             else{ //특정 테마 선택한 문장일 경우
@@ -68,9 +69,9 @@ const post = {
                 await pool.queryParam(query);
                 query = `INSERT INTO theme_sentence(sentenceIdx, themeIdx) VALUES(${sentenceIdx}, ${themeIdx})`;
                 await pool.queryParam(query);
+                return 0;
             }
             
-            return;
         }
         catch(err){
             console.log('writeSentence err: ' + err);

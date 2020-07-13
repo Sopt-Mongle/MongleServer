@@ -29,8 +29,14 @@ module.exports = {
         }
 
         const result = await PostModel.createSentence(req.body);
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_SENTENCE_SUCCESS));
 
+        if(result == -1){
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_EMPTY_SENTENCE_SUCCESS));
+
+        }
+        else{
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_SENTENCE_SUCCESS));
+        }
     },
 
     selectTheme : async(req, res) => {
