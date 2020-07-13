@@ -59,11 +59,14 @@ module.exports = {
     NO_SEARCH_CURATORS:"해당하는 큐레이터가 없습니다.",
     NO_SEARCH_SENTENCES: "해당하는 문장이 없습니다.",
     NO_SEARCH_THEMES:"해당하는 테마가 없습니다.",
+    NO_SEARCH_RECOMMEND: "추천 키워드가 없습니다.",
     SEARCH_CURATOR_SUCCESS:"큐레이터 검색 성공",
     SEARCH_SENTENCES_SUCCESS:"문장 검색 성공",
     SEARCH_THEMES_SUCCESS:"테마 검색 성공",
     RECENT_SEARCH_SUCCESS: "최근 검색어 조회 성공",
     RECENT_DELETE_SUCCESS: "최근 검색어 전체삭제 성공",
+    RECOMMEND_SEARCH_SUCCESS: "추천 검색어 조회 성공",
+    
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: "프로필 조회 성공",
