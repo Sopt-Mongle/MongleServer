@@ -55,7 +55,7 @@ module.exports = {
     
     createSentence : async(req, res) =>{
 
-        const {curatorIdx, sentence, title, author, publisher} = req.body;
+        const {curatorIdx, sentence, title, author, publisher, themeIdx} = req.body;
 
         if(!curatorIdx || !sentence || !title || !author || !publisher){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
