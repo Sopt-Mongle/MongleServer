@@ -73,6 +73,7 @@ module.exports = {
     ALREADY_THEME: "이미 작성된 테마입니다.",
     CREATED_THEME:"테마 작성 성공",
     CREATE_EMPTY_SENTENCE_SUCCESS:"테마 없는 문장 올리기 성공",
+    EMPTY_SENTENCE_LIST_SUCCESS:"테마 없는 문장 목록 조회 성공",
     CREATE_SENTENCE_SUCCESS:"테마 있는 문장 올리기 성공",
     THEME_LIST_SUCCESS: "선택할 테마 리스트 조회 성공",
 

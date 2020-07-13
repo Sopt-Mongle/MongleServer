@@ -2,6 +2,7 @@ const pool = require('../modules/pool');
 const SentenceData = require('../modules/data/sentenceData');
 const curatorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
+const sentenceData = require('../modules/data/sentenceData');
 
 const post = {
     checkTheme : async (theme) =>{
@@ -128,6 +129,7 @@ const post = {
         let query = `SELECT * FROM empty_sentence JOIN empty_curator_sentence ON empty_sentence.sentenceIdx = empty_curator_sentence.sentenceIdx WHERE empty_curator_sentence.curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
+            query = `SELECT * FROM empty_sentence JOIN empty_curator_sentence ON empty_sentence.sentenceIdx = empty_curator_sentence.sentenceIdx WHERE empty_curator_sentence.curatorIdx = ${curatorIdx}`;
             return result;
         }
         catch(err){
