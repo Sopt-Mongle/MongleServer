@@ -274,16 +274,14 @@ const curator = {
                     else{
                         element.alreadySubscribed = true;
                     }
+                    result.curator = curatorResult.map(CuratorData);
                 }));
-                result.curator[0] = curatorResult.map(CuratorData);
+
             }));
 
 
 
             result.theme = themeResult.map(ThemeData);
-            
-            // const themeIdx = themeResult[0].themeIdx;
-            // result.curator = curatorResult.map(CuratorData);
             
             return result;
         }catch(err){
