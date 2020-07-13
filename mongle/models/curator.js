@@ -42,7 +42,7 @@ const curator = {
                 query = `INSERT INTO follow(followerIdx, followedIdx) VALUE(${followerIdx}, ${followedIdx})`;
                 await pool.queryParam(query);
             
-                query = `UPDATE ${table} SET subscribe = subscribe+1 WHERE curatorIdx = ${followedIdx}`;
+                query = `UPDATE curator SET subscribe = subscribe+1 WHERE curatorIdx = ${followedIdx}`;
                 await pool.queryParam(query);
 
                 result = true;
@@ -52,12 +52,11 @@ const curator = {
                 query = `DELETE FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${followedIdx}`;
                 await pool.queryParam(query);
 
-                query = `UPDATE ${table} SET subscribe = subscribe-1 WHERE curatorIdx = ${followedIdx}`;
+                query = `UPDATE curator SET subscribe = subscribe-1 WHERE curatorIdx = ${followedIdx}`;
                 await pool.queryParam(query);
 
                 result = false;
             }
-            console.log(result);
             return result;
         }
         catch(err){

@@ -22,9 +22,9 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATER_SHOW_ALL, result));
     },*/
 
-    subscribe : async(req, res) => { //고쳐야함!!!!!!!
-        const curatorIdx = req.params.curatorIdx; //현재 사용자 큐레이터
-        const followedIdx = req.body.followedIdx; //구독 or 구독취소 할 큐레이터
+    subscribe : async(req, res) => {
+        const followedIdx = req.params.followedIdx; //현재 사용자 큐레이터
+        const curatorIdx = req.body.curatorIdx; //구독 or 구독취소 할 큐레이터
 
         if(!curatorIdx || !followedIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
