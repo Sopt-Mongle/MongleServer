@@ -22,26 +22,6 @@ const post = {
         }
     },
 
-    createTheme : async(theme, themeImgIdx, writerIdx) => {
-        const fields = `theme, themeImgIdx, saves, writerIdx, count`;
-        const question = `?, ?, ?, ?, ?`;
-        const values = [theme, themeImgIdx, 0, writerIdx, 0];
-        const query1 = `INSERT INTO theme(${fields}) VALUES(${question})`;
-
-        try{
-            const result1 = await pool.queryParamArr(query1, values);
-            const themeIdx = result1[0].themeIdx;
-            
-            //curator_theme 테이블에도 Insert
-            const query2 = `INSERT INTO curator_theme(curatorIdx, themeIdx) VALUES(${writerIdx}, ${themeIdx})`;
-            await pool.queryParam(query2);
-
-            return;
-        }catch(err){
-            console.log('crateTheme err: ' + err);
-        }throw err;
-    },
-
     makeTheme : async(curatorIdx, theme, themeImgIdx) => {
         let query = `SELECT * FROM theme WHERE theme = "${theme}"`;
         try{
