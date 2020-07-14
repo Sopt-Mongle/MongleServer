@@ -263,21 +263,6 @@ const detail = {
         }throw err;
     },
 
-    themeIsLike: async(curatorIdx, themeIdx) => {
-        let query = `SELECT COUNT(*) as cnt FROM curator_theme_like WHERE curatorIdx = ${curatorIdx} and themeIdx = ${themeIdx}`;
-        try{
-            const result = await pool.queryParam(query);
-            if(result[0].cnt === 0){
-                return true;
-            }
-            else{
-                return false;
-            }
-        }catch(err){
-            console.log('themeIsLike err: ' + err);
-        }throw err;
-    },
-
     themeIsBookmark: async(token, themeIdx) => {
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT COUNT(*) as cnt FROM curator_theme WHERE curatorIdx = ${curatorIdx} and themeIdx = ${themeIdx}`;
