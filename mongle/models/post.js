@@ -138,6 +138,30 @@ const post = {
         catch(err){
             console.log('getEmptySentence err: ' + err);
         }throw err;
+    },
+
+    setTheme : async(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher) => {
+        const deleteQuery1 = `DELETE FROM empty_sentence WHERE sentenceIdx = ${sentenceIdx}`;
+        const insertQuery1 = `INSERT INTO sentence(sentence, title, author, publisher, likes, saves, writerIdx)
+                                             VALUES("${sentence}", "${title}", "${author}", "${publisher}", 0, 0, ${curatorIdx})`;
+        
+        try{
+            await pool.queryParam(deleteQuery1);
+
+            const insertResult = await pool.queryParam(insertQuery1);
+            const sentenceIdx2 = insertResult.insertId;
+            const insertQuery2 = `INSERT INTO theme_sentence(sentenceIdx, themeIdx) VALUES(${sentenceIdx2}, ${themeIdx})`;
+            await pool.queryParam(insertQuery2);
+
+            const insertQuery3 = `INSERT INTO curator_sentence(curatorIdx, sentenceIdx) VALUES(${curatorIdx}, ${sentenceIdx2})`;
+            await pool.queryParam(insertQuery3);
+
+            return;
+            
+        }
+        catch(err){
+            console.log('setTheme err: ' + err);
+        }throw err;
     }
 };
 

@@ -44,6 +44,7 @@ module.exports = {
     MY_SUBSCRIBE_SUCCESS: "내 서재 구독 조회 성공",
     DELETE_SENTENCE_SUCCESS: "문장 삭제 성공",
     EDIT_SENTENCE_SUCCESS: "문장 수정 성공",
+    EDIT_PROFILE_SUCCESS: "내 정보 수정 성공",
     
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
@@ -79,6 +80,7 @@ module.exports = {
     EMPTY_SENTENCE_LIST_SUCCESS:"테마 없는 문장 목록 조회 성공",
     CREATE_SENTENCE_SUCCESS:"테마 있는 문장 올리기 성공",
     THEME_LIST_SUCCESS: "선택할 테마 리스트 조회 성공",
+    EMPTY_SENTENCE_SET_THEME_SUCCESS: "테마 없는 문장 테마 지정하기 성공",
 
     CREATED_POST:"포스팅 성공",
     READ_All_POST:"포스트 전체 조회 성공",
