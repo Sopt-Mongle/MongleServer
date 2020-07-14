@@ -44,6 +44,7 @@ module.exports = {
     MY_SUBSCRIBE_SUCCESS: "내 서재 구독 조회 성공",
     DELETE_SENTENCE_SUCCESS: "문장 삭제 성공",
     EDIT_SENTENCE_SUCCESS: "문장 수정 성공",
+    EDIT_PROFILE_SUCCESS: "내 정보 수정 성공",
     
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",

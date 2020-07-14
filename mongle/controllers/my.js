@@ -90,6 +90,6 @@ module.exports = {
         }
 
         const result = await MyModel.editProfile(curatorIdx, name, introduce, keywordIdx);
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_SENTENCE_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_PROFILE_SUCCESS, result));
     }
 };
