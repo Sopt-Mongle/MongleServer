@@ -45,6 +45,7 @@ module.exports = {
     DELETE_SENTENCE_SUCCESS: "문장 삭제 성공",
     EDIT_SENTENCE_SUCCESS: "문장 수정 성공",
     EDIT_PROFILE_SUCCESS: "내 정보 수정 성공",
+    CURATOR_SENTENCE_UNMATCH: "내 문장이 아닙니다.",
     
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
