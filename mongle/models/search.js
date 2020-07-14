@@ -3,7 +3,7 @@ const pool = require('../modules/pool');
 const CuratorData = require('../modules/data/curatorData');
 const SentenceData = require('../modules/data/sentenceData');
 const ThemeData = require('../modules/data/themeData');
-
+const jwt = require('../modules/jwt');
 const search = {
     searchCurator: async(words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
@@ -32,7 +32,8 @@ const search = {
 
     },
 
-    searchTheme: async(curatorIdx, words)=>{
+    searchTheme: async(token, words)=>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const queryWords = words.replace(/(\s)/g, "%");
 
         let query = `SELECT * FROM theme WHERE theme LIKE "%${queryWords}%"`;
@@ -93,7 +94,8 @@ const search = {
 
     },
 
-    recentSearch: async(curatorIdx) => {
+    recentSearch: async(token) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM search_words WHERE curatorIdx = ${curatorIdx} ORDER BY searchWordsIdx DESC LIMIT 5`;
         try{
             const result = await pool.queryParam(query);
@@ -112,7 +114,8 @@ const search = {
         }
     },
 
-    recentDelete: async(curatorIdx) =>{
+    recentDelete: async(token) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `DELETE FROM search_words WHERE curatorIdx = ${curatorIdx}`;
         try{
             const result = await pool.queryParam(query);

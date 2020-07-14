@@ -8,7 +8,7 @@ const SentenceData = require('../modules/data/sentenceData');
 const my = {
     getMyProfile: async(token) =>{
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
-        // console.log(curatorIdx);
+        console.log(curatorIdx);
         let query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);

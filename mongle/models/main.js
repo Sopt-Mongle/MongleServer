@@ -3,6 +3,7 @@ const pool = require('../modules/pool');
 const SentenceData = require('../modules/data/sentenceData');
 const curatorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
+const jwt = require('../modules/jwt');
 
 const main = {
     editorsPick: async()=>{
@@ -16,10 +17,11 @@ const main = {
             throw err;
         }
     },
-    getTodaySentence: async(curatorIdx)=>{
+    getTodaySentence: async(token)=>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         //now에서 24시간전~지금까지 좋아요가 가장 많이 찍힌 순으로 정렬해서 ~
         let query = `SELECT sentence.sentenceIdx, sentence.sentence, sentence.title FROM sentence JOIN curator_sentence_like ON sentence.sentenceIdx = curator_sentence_like.sentenceIdx
-        WHERE (curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY count(curator_sentence_like.sentenceIdx) DESC LIMIT 10`;
+        WHERE (curator_sentence_like.timestamp) >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY curator_sentence_like.sentenceIdx ORDER BY count(curator_sentence_like.sentenceIdx) DESC LIMIT 10`;
         try{
             let result = await pool.queryParam(query);
 
@@ -81,10 +83,11 @@ const main = {
         }throw err;
     },
 
-    getTodayTheme: async(curatorIdx)=>{
+    getTodayTheme: async(token)=>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         //now에서 24시간전~지금까지 테마의 북마크가 가장 많이 된 순으로 정렬해서 ~
         let query = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx
-        WHERE curator_theme.timestamp >= DATE_SUB(NOW(), INTERVAL 15 HOUR) GROUP BY curator_theme.themeIdx ORDER BY count(curator_theme.themeIdx) DESC LIMIT 10`;
+        WHERE curator_theme.timestamp >= DATE_SUB(NOW(), INTERVAL 24 HOUR) GROUP BY curator_theme.themeIdx ORDER BY count(curator_theme.themeIdx) DESC LIMIT 10`;
         try{
             let result = await pool.queryParam(query);
 
@@ -127,7 +130,8 @@ const main = {
         }throw err;
     },
 
-    getWaitTheme: async(curatorIdx)=>{
+    getWaitTheme: async(token)=>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         //저장된 문장이 2개 미만인 테마들
         let query = `SELECT * FROM theme JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx
         group by theme_sentence.themeIdx HAVING count(theme_sentence.sentenceIdx) < 2 LIMIT 10`;
@@ -166,7 +170,8 @@ const main = {
         }throw err;
     },
 
-    getNowTheme: async(curatorIdx)=>{
+    getNowTheme: async(token)=>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         //최근 3일동안 생성된 테마들을 조회수 순으로 정렬~
         let query = `SELECT * FROM theme WHERE (createdAt) >= DATE_SUB(NOW(), INTERVAL 63 HOUR) ORDER BY count DESC LIMIT 10`;
         try{

@@ -19,8 +19,14 @@ module.exports = {
     },
 
     getTodaySentence: async(req, res)=>{
-        const curatorIdx = req.body.curatorIdx;
-        const result = await MainModel.getTodaySentence(curatorIdx);
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        const result = await MainModel.getTodaySentence(token);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAY_SENTENCE));
             return;
@@ -38,8 +44,13 @@ module.exports = {
         
     },
     getTodayTheme: async(req, res)=>{
-        const curatorIdx = req.body.curatorIdx;
-        const result = await MainModel.getTodayTheme(curatorIdx);
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+        const result = await MainModel.getTodayTheme(token);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAY_THEME));
             return;
@@ -48,8 +59,13 @@ module.exports = {
     },
 
     getWaitTheme: async(req, res)=>{
-        const curatorIdx = req.body.curatorIdx;
-        const result = await MainModel.getWaitTheme(curatorIdx);
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+        const result = await MainModel.getWaitTheme(token);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_WAIT_THEME));
             return;
@@ -58,8 +74,13 @@ module.exports = {
     },
 
     getNowTheme: async(req, res)=>{
-        const curatorIdx = req.body.curatorIdx;
-        const result = await MainModel.getNowTheme(curatorIdx);
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+        const result = await MainModel.getNowTheme(token);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_NOW_THEME));
             return;
