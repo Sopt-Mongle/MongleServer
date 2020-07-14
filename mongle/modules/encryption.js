@@ -1,26 +1,34 @@
 const crypto = require('crypto');
+const pbkdf2 = require('pbkdf2');
+
 module.exports = {
-    encrypt: (password, salt) => {
-        return new Promise((resolved, rejected) => {
-            crypto.pbkdf2(password, salt.toString(), 1, 32, 'sha512', async (err, derivedKey) => {
-                if (err) throw err;
-                const hashed = derivedKey.toString('hex');
-                resolved(hashed);
-            });
-        })
-    },
-    salt: async () => {
+    encrypt: async (password) => {
         return new Promise(async (resolve, reject) => {
             try {
-                const buf = crypto.randomBytes(16);
-                const salt = buf.toString('base64');
-                resolve(salt);
-            }
-            catch(err) {
+                const salt = (await crypto.randomBytes(32)).toString('hex');
+                pbkdf2.pbkdf2(password, salt.toString(), 1, 32, 'sha512', (err, derivedKey) => {
+                    if(err) throw err;
+                    const hashed = derivedKey.toString('hex');
+                    resolve({salt,hashed});
+                });
+            } catch (err) {
                 console.log(err);
                 reject(err);
             }
         })
-
+    },
+    encryptWithSalt: async (password, salt) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                pbkdf2.pbkdf2(password, salt, 1, 32, 'sha512', (err, derivedKey) => {
+                    if(err) throw err;
+                    const hashed = derivedKey.toString('hex');
+                    resolve(hashed);
+                });
+            } catch (err) {
+                console.log(err);
+                reject(err);
+            }
+        })
     }
 }

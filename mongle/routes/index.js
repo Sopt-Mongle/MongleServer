@@ -12,7 +12,7 @@ router.use('/my',require('./my'));
 router.use('/curator',require('./curator'));
 router.use('/detail',require('./detail'));
 router.use('/search',require('./search'));
-//router.use('/users',require('./users'));
+router.use('/users',require('./users'));
 router.use('/post',require('./post'));
 
 module.exports = router;
