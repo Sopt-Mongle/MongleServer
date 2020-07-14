@@ -168,7 +168,6 @@ const my = {
         let query = `UPDATE sentence SET sentence = "${sentence}" WHERE sentenceIdx = ${sentenceIdx}`;
         try{
             const preResult = await pool.queryParam(preQuery);
-            console.log(preResult.length);
             if(preResult.length == 0){
                 return -1;
             }
@@ -176,32 +175,51 @@ const my = {
                 let result = await pool.queryParam(query);
                 let query1 = `SELECT sentence FROM sentence WHERE sentenceIdx = ${sentenceIdx}`;//수정한 문장 리턴
                 let result1 = await pool.queryParam(query1);
-                return result1;
+                return result1[0];
             }
         }catch(err){
             console.log('editSentence err: ', err);
         }throw err;
     },
 
-    editProfile: async(curatorIdx, name, introduce, keywordIdx) => {
+    editProfile: async(token, name, introduce, keywordIdx) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+        const preQuery = `SELECT * FROM curator WHERE name = "${name}"`;
         let query = `UPDATE curator SET name = "${name}", introduce = "${introduce}", keywordIdx = ${keywordIdx} WHERE curatorIdx = ${curatorIdx}`;
         try{
-            await pool.queryParam(query);
-            query = `SELECT name, introduce, keywordIdx FROM curator WHERE curatorIdx = ${curatorIdx}`;
-            const result1 = await pool.queryParam(query);
-            result1[0].name = result1[0].name;
-            result1[0].introduce = result1[0].introduce;
+            const preResult = await pool.queryParam(preQuery);
+            if(preResult.length > 0){ //이미 있는 닉네임일때
+                return -1;
+            }
+            else{
+                await pool.queryParam(query);
+                query = `SELECT name, introduce, keywordIdx FROM curator WHERE curatorIdx = ${curatorIdx}`;
+                const result1 = await pool.queryParam(query);
+                result1[0].name = result1[0].name;
+                result1[0].introduce = result1[0].introduce;
 
-            //키워드
-            const keywordIdx = result1[0].keywordIdx;
-            query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
-            const keywordResult = await pool.queryParam(query);
-            result1[0].keyword = keywordResult[0].keyword;            
-            return result1.map(CuratorData);
+                //키워드
+                const keywordIdx = result1[0].keywordIdx;
+                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
+                const keywordResult = await pool.queryParam(query);
+                result1[0].keyword = keywordResult[0].keyword;
+                return result1.map(CuratorData);
+            }
         }catch(err){
             console.log('editProfile err: ', err);
         }throw err;
-    }
+    },
+    checkUserName: async (name) => {
+        const query = `SELECT * FROM curator WHERE name = "${name}"`;
+        try{
+            const result = await pool.queryParam(query);
+            if(result.length > 0) return true;
+            else return false;
+        } catch(err){
+            console.log('checkUserName err : ', err);
+            throw err;
+        }
+    },
 };
 
 module.exports = my;

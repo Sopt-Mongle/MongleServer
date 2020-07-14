@@ -72,9 +72,8 @@ module.exports = {
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.CURATOR_SENTENCE_UNMATCH));
         }
-        else{
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_SENTENCE_SUCCESS, {deleteSentenceIdx:sentenceIdx}));
-        }
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_SENTENCE_SUCCESS, {deleteSentenceIdx:sentenceIdx}));
+        
     },
 
     editSentence : async(req, res) => {
@@ -91,19 +90,24 @@ module.exports = {
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.CURATOR_SENTENCE_UNMATCH));
         }
-        else{
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_SENTENCE_SUCCESS, result));
-        }
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_SENTENCE_SUCCESS, result));
+        
     },
 
     editProfile : async(req, res) => {
-        const {curatorIdx, name, introduce, keywordIdx} = req.body;
-        if(!curatorIdx || !name || !introduce || !keywordIdx){
+        const token = req.headers.token;
+        const {name, introduce, keywordIdx} = req.body;
+        if(!token || !name || !introduce || !keywordIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.editProfile(curatorIdx, name, introduce, keywordIdx);
+        const result = await MyModel.editProfile(token, name, introduce, keywordIdx);
+
+        if(result == -1){
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_ID));
+        }
+
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_PROFILE_SUCCESS, result));
     }
 };
