@@ -1,10 +1,11 @@
 const pool = require('../modules/pool');
-
+const jwt = require('../modules/jwt');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
 
 const detail = {
-    getSentence : async(curatorIdx, sentenceIdx) =>{
+    getSentence : async(token, sentenceIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM sentence WHERE sentenceIdx = "${sentenceIdx}"`;
         try{
             const firstResult = await pool.queryParam(query);
@@ -54,7 +55,8 @@ const detail = {
         }throw err;
     },
 
-    isLike: async(curatorIdx, sentenceIdx) => {
+    isLike: async(token, sentenceIdx) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT COUNT(*) as cnt FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
         try{
             const result = await pool.queryParam(query);
@@ -69,7 +71,8 @@ const detail = {
         }throw err;
     },
 
-    deleteLike: async(curatorIdx, sentenceIdx) =>{
+    deleteLike: async(token, sentenceIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query1 = `DELETE FROM curator_sentence_like WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
         let query2 = `UPDATE sentence SET likes = likes-1 WHERE sentenceIdx="${sentenceIdx}"`;
         let query3 = `SELECT likes FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
@@ -83,7 +86,8 @@ const detail = {
         }throw err;
     },
 
-    addLike: async(curatorIdx, sentenceIdx) =>{
+    addLike: async(token, sentenceIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const fields = `curatorIdx, sentenceIdx`;
         const question = `?,?`;
         const values = [curatorIdx, sentenceIdx];
@@ -101,7 +105,8 @@ const detail = {
         }throw err;
     },
 
-    isBookmark: async(curatorIdx, sentenceIdx) => {
+    isBookmark: async(token, sentenceIdx) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT COUNT(*) as cnt FROM curator_sentence WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
         try{
             const result = await pool.queryParam(query);
@@ -116,7 +121,8 @@ const detail = {
         }throw err;
     },
 
-    deleteBookmark: async(curatorIdx, sentenceIdx) =>{
+    deleteBookmark: async(token, sentenceIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query1 = `DELETE FROM curator_sentence WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
         let query2 = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
         let query3 = `SELECT saves FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
@@ -130,7 +136,8 @@ const detail = {
         }throw err;
     },
 
-    addBookmark: async(curatorIdx, sentenceIdx) =>{
+    addBookmark: async(token, sentenceIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const fields = `curatorIdx, sentenceIdx`;
         const question = `?,?`;
         const values = [curatorIdx, sentenceIdx];
@@ -148,7 +155,8 @@ const detail = {
         }throw err;
     },
 
-    otherSentence: async(curatorIdx, sentenceIdx)=>{
+    otherSentence: async(token, sentenceIdx)=>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}) AND sentenceIdx != ${sentenceIdx}) ORDER BY timestamp DESC LIMIT 2`;
         try{
             const firstResult = await pool.queryParam(query);
@@ -170,7 +178,8 @@ const detail = {
         }throw err;
     },
 
-    getTheme : async(curatorIdx, themeIdx) =>{
+    getTheme : async(token, themeIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM theme WHERE themeIdx = ${themeIdx}`;
         try{
             //--- theme ---
@@ -269,39 +278,8 @@ const detail = {
         }throw err;
     },
 
-    themeDeleteLike: async(curatorIdx, themeIdx) =>{
-        let query1 = `DELETE FROM curator_theme_like WHERE curatorIdx="${curatorIdx}" and themeIdx="${themeIdx}"`;
-        let query2 = `UPDATE theme SET likes = likes-1 WHERE themeIdx="${themeIdx}"`;
-        let query3 = `SELECT likes FROM theme WHERE themeIdx="${themeIdx}"`;
-        try{
-            const result1 = await pool.queryParam(query1);
-            const result2 = await pool.queryParam(query2);
-            const result3 = await pool.queryParam(query3);
-            return result3;
-        }catch(err){
-            console.log('themeDeleteLike err: ' + err);
-        }throw err;
-    },
-
-    themeAddLike: async(curatorIdx, themeIdx) =>{
-        const fields = `curatorIdx, themeIdx`;
-        const question = `?,?`;
-        const values = [curatorIdx, themeIdx];
-        
-        let query1 = `INSERT INTO curator_theme_like(${fields}) VALUES(${question})`;
-        let query2 = `UPDATE theme SET likes = likes+1 WHERE themeIdx="${themeIdx}"`;
-        let query3 = `SELECT likes FROM theme WHERE themeIdx="${themeIdx}"`;
-        try{
-            const result1 = await pool.queryParamArr(query1, values);
-            const result2 = await pool.queryParam(query2);
-            const result3 = await pool.queryParam(query3);
-            return result3;
-        }catch(err){
-            console.log('themeAddLike err: ' + err);
-        }throw err;
-    },
-
-    themeIsBookmark: async(curatorIdx, themeIdx) => {
+    themeIsBookmark: async(token, themeIdx) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT COUNT(*) as cnt FROM curator_theme WHERE curatorIdx = ${curatorIdx} and themeIdx = ${themeIdx}`;
         try{
             const result = await pool.queryParam(query);
@@ -316,7 +294,8 @@ const detail = {
         }throw err;
     },
 
-    themeDeleteBookmark: async(curatorIdx, themeIdx) =>{
+    themeDeleteBookmark: async(token, themeIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query1 = `DELETE FROM curator_theme WHERE curatorIdx="${curatorIdx}" and themeIdx="${themeIdx}"`;
         let query2 = `UPDATE theme SET saves = saves-1 WHERE themeIdx="${themeIdx}"`;
         let query3 = `SELECT saves FROM theme WHERE themeIdx="${themeIdx}"`;
@@ -330,7 +309,8 @@ const detail = {
         }throw err;
     },
 
-    themeAddBookmark: async(curatorIdx, themeIdx) =>{
+    themeAddBookmark: async(token, themeIdx) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const fields = `curatorIdx, themeIdx`;
         const question = `?,?`;
         const values = [curatorIdx, themeIdx];
