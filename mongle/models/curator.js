@@ -1,4 +1,6 @@
 const pool = require('../modules/pool');
+const jwt = require('../modules/jwt');
+
 const CuratorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
@@ -32,7 +34,8 @@ const curator = {
         }
     },
 
-    subscribe: async(followerIdx, followedIdx) =>{
+    subscribe: async(token, followedIdx) =>{
+        const followerIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${followedIdx}`;
         try{
             let result = "";
@@ -65,7 +68,8 @@ const curator = {
         }
     },
 
-    getCuratorInfo: async(curatorIdx, curatorIdx2) =>{
+    getCuratorInfo: async(token, curatorIdx2) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let profilequery = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx2}`;
         let themequery = `SELECT * FROM theme WHERE writerIdx = ${curatorIdx2}`;
         let sentencequery = `SELECT * FROM sentence WHERE writerIdx = ${curatorIdx2}`;
@@ -194,7 +198,8 @@ const curator = {
         }throw err;
     },
 
-    getThemeInCurator: async(curatorIdx) =>{
+    getThemeInCurator: async(token) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT t.* FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
                     GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 ORDER BY createdAt DESC limit 2`;
         try{
@@ -260,7 +265,8 @@ const curator = {
         }throw err;
     },
 
-    getCuratorByKeyword: async(keywordIdx, followerIdx) =>{
+    getCuratorByKeyword: async(keywordIdx, token) =>{
+        const followerIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM curator WHERE keywordIdx = ${keywordIdx}`;
         try{
             let result = await pool.queryParam(query);
