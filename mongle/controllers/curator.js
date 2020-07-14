@@ -5,22 +5,6 @@ const resMessage = require('../modules/responseMessage');
 const CuratorModel = require('../models/curator');
 
 module.exports = {
-    /*getAllCurators : async(req, res) => {
-        const curatorIdx = req.body.curatorIdx;
-        if(!curatorIdx){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-            return;
-        }
-
-        const result = await CuratorModel.getAllCurators(curatorIdx);
-
-        if(result.length === 0){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
-            return;
-        }
-
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATER_SHOW_ALL, result));
-    },*/
 
     subscribe : async(req, res) => {
         const followedIdx = req.params.followedIdx; //현재 사용자 큐레이터
