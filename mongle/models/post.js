@@ -116,7 +116,6 @@ const post = {
 
             }));
 
-            // console.log(result.map(ThemeData));
             return result.map(ThemeData);
 
         }
@@ -128,8 +127,12 @@ const post = {
     getEmptySentence : async(curatorIdx) => {
         let query = `SELECT * FROM empty_sentence JOIN empty_curator_sentence ON empty_sentence.sentenceIdx = empty_curator_sentence.sentenceIdx WHERE empty_curator_sentence.curatorIdx = ${curatorIdx}`;
         try{
-            let result = await pool.queryParam(query);
-            query = `SELECT * FROM empty_sentence JOIN empty_curator_sentence ON empty_sentence.sentenceIdx = empty_curator_sentence.sentenceIdx WHERE empty_curator_sentence.curatorIdx = ${curatorIdx}`;
+            let result = {};
+            sentenceResult = await pool.queryParam(query);
+            const sentenceNum = sentenceResult.length;
+            result.num = sentenceNum;
+            result.sentences = sentenceResult.map(SentenceData);
+
             return result;
         }
         catch(err){
