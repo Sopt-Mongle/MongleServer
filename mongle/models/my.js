@@ -1,11 +1,14 @@
 const pool = require('../modules/pool');
+const jwt = require('../modules/jwt');
 
 const CuratorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
 
 const my = {
-    getMyProfile: async(curatorIdx) =>{
+    getMyProfile: async(token) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+        // console.log(curatorIdx);
         let query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
@@ -13,7 +16,13 @@ const my = {
             const keywordIdx = result[0].keywordIdx;
             query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
             const keywordResult = await pool.queryParam(query);
-            result[0].keyword = keywordResult[0].keyword;
+            // console.log(keywordResult[0]);
+            if(keywordResult[0] === undefined){
+                result[0].keyword = null;
+            }
+            else{
+                result[0].keyword = keywordResult[0].keyword;
+            }
             
             return result.map(CuratorData);
         }
