@@ -208,18 +208,7 @@ const my = {
         }catch(err){
             console.log('editProfile err: ', err);
         }throw err;
-    },
-    checkUserName: async (name) => {
-        const query = `SELECT * FROM curator WHERE name = "${name}"`;
-        try{
-            const result = await pool.queryParam(query);
-            if(result.length > 0) return true;
-            else return false;
-        } catch(err){
-            console.log('checkUserName err : ', err);
-            throw err;
-        }
-    },
+    }
 };
 
 module.exports = my;
