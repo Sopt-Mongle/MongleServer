@@ -182,10 +182,10 @@ const my = {
         }throw err;
     },
 
-    editProfile: async(token, name, introduce, keywordIdx) => {
+    editProfile: async(token, name, img, introduce, keywordIdx) => {
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const preQuery = `SELECT * FROM curator WHERE name = "${name}" AND curatorIdx != ${curatorIdx}`;
-        let query = `UPDATE curator SET name = "${name}", introduce = "${introduce}", keywordIdx = ${keywordIdx} WHERE curatorIdx = ${curatorIdx}`;
+        let query = `UPDATE curator SET name = "${name}", img = "${img}", introduce = "${introduce}", keywordIdx = ${keywordIdx} WHERE curatorIdx = ${curatorIdx}`;
         try{
             const preResult = await pool.queryParam(preQuery);
             if(preResult.length > 0){ //이미 있는 닉네임일때
@@ -193,9 +193,10 @@ const my = {
             }
             else{
                 await pool.queryParam(query);
-                query = `SELECT name, introduce, keywordIdx FROM curator WHERE curatorIdx = ${curatorIdx}`;
+                query = `SELECT name, img, introduce, keywordIdx FROM curator WHERE curatorIdx = ${curatorIdx}`;
                 const result1 = await pool.queryParam(query);
                 result1[0].name = result1[0].name;
+                result1[0].img = result1[0].img;
                 result1[0].introduce = result1[0].introduce;
 
                 //키워드

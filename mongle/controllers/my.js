@@ -96,13 +96,13 @@ module.exports = {
 
     editProfile : async(req, res) => {
         const token = req.headers.token;
-        const {name, introduce, keywordIdx} = req.body;
-        if(!token || !name || !introduce || !keywordIdx){
+        const {name, img, introduce, keywordIdx} = req.body;
+        if(!token || !img || !name || !introduce || !keywordIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.editProfile(token, name, introduce, keywordIdx);
+        const result = await MyModel.editProfile(token, name, img, introduce, keywordIdx);
 
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
