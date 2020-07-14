@@ -105,7 +105,7 @@ module.exports = {
         const result = await MyModel.editProfile(token, name, introduce, keywordIdx);
 
         if(result == -1){
-            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_ID));
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
         }
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_PROFILE_SUCCESS, result));
