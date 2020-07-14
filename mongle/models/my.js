@@ -168,7 +168,6 @@ const my = {
         let query = `UPDATE sentence SET sentence = "${sentence}" WHERE sentenceIdx = ${sentenceIdx}`;
         try{
             const preResult = await pool.queryParam(preQuery);
-            console.log(preResult.length);
             if(preResult.length == 0){
                 return -1;
             }
@@ -176,7 +175,7 @@ const my = {
                 let result = await pool.queryParam(query);
                 let query1 = `SELECT sentence FROM sentence WHERE sentenceIdx = ${sentenceIdx}`;//수정한 문장 리턴
                 let result1 = await pool.queryParam(query1);
-                return result1;
+                return result1[0];
             }
         }catch(err){
             console.log('editSentence err: ', err);
