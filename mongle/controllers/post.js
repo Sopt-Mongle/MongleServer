@@ -70,5 +70,17 @@ module.exports = {
 
         const result = await PostModel.getEmptySentence(curatorIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMPTY_SENTENCE_LIST_SUCCESS, result));  
+    },
+
+    setTheme : async(req, res) => {
+        const {curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher} = req.body;
+        if(!curatorIdx || !themeIdx || !sentenceIdx || !sentence || !title || !author || !publisher){
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+
+        const result = await PostModel.setTheme(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher);
+        
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMPTY_SENTENCE_SET_THEME_SUCCESS));  
+
     }
 };
