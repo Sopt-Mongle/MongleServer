@@ -8,7 +8,7 @@ const TOKEN_INVALID = -2;
 module.exports = {
     sign: async (user) => {
         const payload = {
-            idx: user.userIdx,
+            idx: user.curatorIdx,
             name: user.name
         };
         const result = {

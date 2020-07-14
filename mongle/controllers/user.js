@@ -19,7 +19,7 @@ module.exports = {
         }
 
         const {salt, hashed} = await encryption.encrypt(password);
-        // console.log(salt, hashed);
+        console.log(salt, hashed);
         const idx = await UserModel.signup(email, hashed, name, salt);
         if (idx === -1) {
             return await res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
@@ -33,18 +33,19 @@ module.exports = {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
 
-        if(await UserModel.checkUserEmail(email) === false)//이메일 있는지 확인
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_USER));
-
-        const user = await UserModel.getUserByEmail(email);
-        if(user[0] === undefined){
+        const alreadyEmail = await UserModel.checkUserEmail(email);
+        if(alreadyEmail === false){//이메일 있는지 확인
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_USER));
         }
+
+        const user = await UserModel.getUserByEmail(email);
 
         const hashed = await encryption.encryptWithSalt(password, user[0].salt);
         if(hashed !== user[0].password){//비밀번호 확인
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
         }
+
+        console.log(user[0]);
 
         const {token, _} = await jwt.sign(user[0]);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {accessToken : token}));

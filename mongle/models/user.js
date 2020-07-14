@@ -71,7 +71,7 @@ const user = {
             return result;
         }
         catch(err){
-            console.log('getUserById ERROR : ', err);
+            console.log('getUserByEmail ERROR : ', err);
             throw err;
         }
     }

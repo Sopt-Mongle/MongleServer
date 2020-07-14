@@ -6,13 +6,16 @@ const MyModel = require('../models/my');
 
 module.exports = {
     getMyProfile : async(req, res) => {
-        const curatorIdx = req.body.curatorIdx;
-        if(!curatorIdx){
+        // console.log(req);
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            console.log('no token!!');
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMyProfile(curatorIdx);
+        const result = await MyModel.getMyProfile(token);
 
         if(result.length === 0){
             res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CONTENT_CURATOR));
