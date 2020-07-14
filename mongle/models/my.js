@@ -184,7 +184,7 @@ const my = {
 
     editProfile: async(token, name, introduce, keywordIdx) => {
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
-        const preQuery = `SELECT * FROM curator WHERE name = "${name}"`;
+        const preQuery = `SELECT * FROM curator WHERE name = "${name}" AND curatorIdx != ${curatorIdx}`;
         let query = `UPDATE curator SET name = "${name}", introduce = "${introduce}", keywordIdx = ${keywordIdx} WHERE curatorIdx = ${curatorIdx}`;
         try{
             const preResult = await pool.queryParam(preQuery);

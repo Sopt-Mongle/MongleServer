@@ -19,7 +19,6 @@ module.exports = {
         }
 
         const {salt, hashed} = await encryption.encrypt(password);
-        console.log(salt, hashed);
         const idx = await UserModel.signup(email, hashed, name, salt);
         if (idx === -1) {
             return await res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
