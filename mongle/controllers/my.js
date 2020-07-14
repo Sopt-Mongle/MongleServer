@@ -83,8 +83,7 @@ module.exports = {
     },
 
     editProfile : async(req, res) => {
-        const curatorIdx = req.params.curatorIdx;
-        const {name, introduce, keywordIdx} = req.body;
+        const {curatorIdx, name, introduce, keywordIdx} = req.body;
         if(!curatorIdx || !name || !introduce || !keywordIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;

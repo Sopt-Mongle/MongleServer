@@ -6,9 +6,9 @@ router.get('/profile', myController.getMyProfile);
 router.get('/theme', myController.getMyTheme);
 router.get('/sentence', myController.getMySentence);
 router.get('/subscribe', myController.getMySubscribe);
+router.put('/profile', myController.editProfile);
 router.put('/:sentenceIdx', myController.editSentence);
 router.delete('/:sentenceIdx', myController.deleteSentence);
-router.put('/profile/settings/:curatorIdx/editProfile', myController.editProfile);
 
 
 module.exports = router;

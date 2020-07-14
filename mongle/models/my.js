@@ -160,7 +160,7 @@ const my = {
     editProfile: async(curatorIdx, name, introduce, keywordIdx) => {
         let query = `UPDATE curator SET name = "${name}", introduce = "${introduce}", keywordIdx = ${keywordIdx} WHERE curatorIdx = ${curatorIdx}`;
         try{
-            let result = await pool.queryParam(query);
+            await pool.queryParam(query);
             query = `SELECT name, introduce, keywordIdx FROM curator WHERE curatorIdx = ${curatorIdx}`;
             const result1 = await pool.queryParam(query);
             result1[0].name = result1[0].name;
