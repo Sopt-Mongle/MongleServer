@@ -1,8 +1,9 @@
 const pool = require('../modules/pool');
+const jwt = require('../modules/jwt');
+
 const SentenceData = require('../modules/data/sentenceData');
 const curatorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
-const sentenceData = require('../modules/data/sentenceData');
 
 const post = {
     checkTheme : async (theme) =>{
@@ -46,7 +47,8 @@ const post = {
         }throw err;
     },
 
-    createSentence: async({curatorIdx, sentence, title, author, publisher, themeIdx}) => {
+    createSentence: async(token, {sentence, title, author, publisher, themeIdx}) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const fields = `sentence, title, author, likes, saves, writerIdx, publisher`;
         const questions = `?, ?, ?, ?, ?, ?, ?`;
         const values = [sentence, title, author, 0, 0, curatorIdx, publisher];

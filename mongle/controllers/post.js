@@ -20,15 +20,15 @@ module.exports = {
     },
     
     createSentence : async(req, res) =>{
+        const token = req.headers.token;
+        const {sentence, title, author, publisher, themeIdx} = req.body;
 
-        const {curatorIdx, sentence, title, author, publisher, themeIdx} = req.body;
-
-        if(!curatorIdx || !sentence || !title || !author || !publisher){
+        if(!token || !sentence || !title || !author || !publisher || !themeIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await PostModel.createSentence(req.body);
+        const result = await PostModel.createSentence(token, req.body);
 
         if(result == -1){
             return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_EMPTY_SENTENCE_SUCCESS));

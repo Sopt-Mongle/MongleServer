@@ -8,7 +8,6 @@ const SentenceData = require('../modules/data/sentenceData');
 const my = {
     getMyProfile: async(token) =>{
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
-        // console.log(curatorIdx);
         let query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
@@ -16,7 +15,6 @@ const my = {
             const keywordIdx = result[0].keywordIdx;
             query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
             const keywordResult = await pool.queryParam(query);
-            // console.log(keywordResult[0]);
             if(keywordResult[0] === undefined){
                 result[0].keyword = null;
             }
@@ -32,7 +30,8 @@ const my = {
         }
     },
 
-    getMyTheme: async(curatorIdx) => {
+    getMyTheme: async(token) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
@@ -51,7 +50,6 @@ const my = {
 
                 //저장한 테마, 내가 쓴 테마 구분
                 if(writerIdx == curatorIdx){
-                    // console.log(element);
                     write.push(element);
                 }
                 else{
@@ -62,7 +60,6 @@ const my = {
             
             resultArray.write = write.map(ThemeData);
             resultArray.save = save.map(ThemeData);
-            console.log(resultArray);
             
             return resultArray;
         }
@@ -72,7 +69,8 @@ const my = {
         }
     },
 
-    getMySentence: async(curatorIdx) => {
+    getMySentence: async(token) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
@@ -117,7 +115,8 @@ const my = {
 
     },
 
-    getMySubscribe: async(curatorIdx) =>{
+    getMySubscribe: async(token) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         let query = `SELECT * FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
         
         try{
@@ -144,23 +143,41 @@ const my = {
         }
     },
 
-    deleteSentence: async(sentenceIdx) => {
+    deleteSentence: async(token, sentenceIdx) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+        const preQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
         let query = `DELETE FROM sentence WHERE sentenceIdx = ${sentenceIdx}`;
         try{
-            let result = await pool.queryParam(query);
-            return result;
+            const preResult = await pool.queryParam(preQuery);
+            if(preResult.length == 0){
+                return -1;
+            }
+            else{
+                let result = await pool.queryParam(query);
+                return result;
+            }
+            
         }catch(err){
             console.log('deleteSentence err: ', err);
         }throw err;
     },
 
-    editSentence: async(sentenceIdx, sentence) => {
+    editSentence: async(token, sentenceIdx, sentence) => {
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+        const preQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
         let query = `UPDATE sentence SET sentence = "${sentence}" WHERE sentenceIdx = ${sentenceIdx}`;
         try{
-            let result = await pool.queryParam(query);
-            let query1 = `SELECT sentence FROM sentence WHERE sentenceIdx = ${sentenceIdx}`;//수정한 문장 리턴
-            let result1 = await pool.queryParam(query1);
-            return result1;
+            const preResult = await pool.queryParam(preQuery);
+            console.log(preResult.length);
+            if(preResult.length == 0){
+                return -1;
+            }
+            else{
+                let result = await pool.queryParam(query);
+                let query1 = `SELECT sentence FROM sentence WHERE sentenceIdx = ${sentenceIdx}`;//수정한 문장 리턴
+                let result1 = await pool.queryParam(query1);
+                return result1;
+            }
         }catch(err){
             console.log('editSentence err: ', err);
         }throw err;

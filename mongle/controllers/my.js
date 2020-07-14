@@ -6,11 +6,8 @@ const MyModel = require('../models/my');
 
 module.exports = {
     getMyProfile : async(req, res) => {
-        // console.log(req);
         const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
         if(!token){
-            console.log('no token!!');
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
@@ -26,63 +23,77 @@ module.exports = {
     },
 
     getMyTheme : async(req, res) => {
-        const curatorIdx = req.body.curatorIdx;
-        if(!curatorIdx){
+        const token = req.headers.token;
+        if(!token){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMyTheme(curatorIdx);
+        const result = await MyModel.getMyTheme(token);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MY_THEME_SUCCESS, result));
     },
 
     getMySentence : async(req, res) => {
-        const curatorIdx = req.body.curatorIdx;
-        if(!curatorIdx){
+        const token = req.headers.token;
+        if(!token){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMySentence(curatorIdx);
+        const result = await MyModel.getMySentence(token);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MY_SENTENCE_SUCCESS, result));
     },
 
     getMySubscribe : async(req, res) => {
-        const curatorIdx = req.body.curatorIdx;
-        if(!curatorIdx){
+        const token = req.headers.token;
+        if(!token){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMySubscribe(curatorIdx);
+        const result = await MyModel.getMySubscribe(token);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MY_SUBSCRIBE_SUCCESS, result));
     },
 
 
     deleteSentence : async(req, res) => {
+        const token = req.headers.token;
         const sentenceIdx = req.params.sentenceIdx;
-        if(!sentenceIdx){
+        if(!token || !sentenceIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.deleteSentence(sentenceIdx);
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_SENTENCE_SUCCESS, {deleteSentenceIdx:sentenceIdx}));
+        const result = await MyModel.deleteSentence(token, sentenceIdx);
+
+        if(result == -1){
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.CURATOR_SENTENCE_UNMATCH));
+        }
+        else{
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_SENTENCE_SUCCESS, {deleteSentenceIdx:sentenceIdx}));
+        }
     },
 
     editSentence : async(req, res) => {
+        const token = req.headers.token;
         const sentenceIdx = req.params.sentenceIdx;
         const {sentence} = req.body;
-        if(!sentenceIdx || !sentence){
+        if(!token || !sentenceIdx || !sentence){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.editSentence(sentenceIdx, sentence);
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_SENTENCE_SUCCESS, result));
+        const result = await MyModel.editSentence(token, sentenceIdx, sentence);
+
+        if(result == -1){
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.CURATOR_SENTENCE_UNMATCH));
+        }
+        else{
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EDIT_SENTENCE_SUCCESS, result));
+        }
     },
 
     editProfile : async(req, res) => {
