@@ -2,7 +2,6 @@ const encryption = require('../modules/encryption');
 const util = require('../modules/util');
 const resMessage = require('../modules/responseMessage');
 const statusCode = require('../modules/statusCode');
-const crypto = require('crypto');
 const jwt = require('../modules/jwt');
 
 const UserModel = require('../models/user');
@@ -16,7 +15,7 @@ module.exports = {
         // 사용중인 닉네임이 있는지 확인
         const check = await UserModel.checkUserName(name);
         if (check) {
-            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_ID));
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
         }
 
         const {salt, hashed} = await encryption.encrypt(password);
@@ -25,7 +24,7 @@ module.exports = {
         if (idx === -1) {
             return await res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER, {userId: idx}));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER));
     },
 
     signin : async(req, res) =>{
@@ -42,7 +41,7 @@ module.exports = {
         const user = await UserModel.getUserByEmail(email);
 
         const hashed = await encryption.encryptWithSalt(password, user[0].salt);
-        if(hashed !== user[0].password){
+        if(hashed !== user[0].password){//비밀번호 확인
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
         }
 

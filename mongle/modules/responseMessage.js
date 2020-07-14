@@ -8,7 +8,7 @@ module.exports = {
     // 회원가입
     CREATED_USER: "회원 가입 성공",
     DELETE_USER: "회원 탈퇴 성공",
-    ALREADY_NAME: "이미 사용중인 이름입니다.",
+    ALREADY_NAME: "이미 사용중인 닉네임입니다.",
     
     // 로그인
     LOGIN_SUCCESS: "로그인 성공",

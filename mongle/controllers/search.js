@@ -24,16 +24,21 @@ module.exports = {
     },
 
     searchTheme : async(req, res) =>{
-        const curatorIdx = req.body.curatorIdx;
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
         const words = req.body.words;
 
-        if(!words || !curatorIdx){
+        if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
             return;
         } 
         
         //검색 결과 중 제일 먼저 나오는 쪽에서 최근검색어 테이블에 insert
-        const result = await SearchModel.searchTheme(curatorIdx, words);
+        const result = await SearchModel.searchTheme(token, words);
         
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_THEMES));
@@ -62,25 +67,26 @@ module.exports = {
     },
 
     recentSearch : async(req, res) =>{
-        const curatorIdx = req.body.curatorIdx;
-
-        if(!curatorIdx){
-            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
         }
-
-        const result = await SearchModel.recentSearch(curatorIdx);
+        const result = await SearchModel.recentSearch(token);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_SEARCH_SUCCESS, result));
     },
 
     recentDelete : async(req, res) => {
-        const curatorIdx = req.body.curatorIdx;
-
-        if(!curatorIdx){
-            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_CURATOR));
+        const token = req.headers.token;
+        // const curatorIdx = req.body.curatorIdx;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
         }
 
-        const result = await SearchModel.recentDelete(curatorIdx);
+        const result = await SearchModel.recentDelete(token);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_DELETE_SUCCESS));
 
@@ -96,5 +102,4 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECOMMEND_SEARCH_SUCCESS, result));
 
     }
-
 };
