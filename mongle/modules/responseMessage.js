@@ -33,7 +33,10 @@ module.exports = {
     CURATER_SHOW_ALL: "큐레이터 전체 목록 조회 성공",
     NO_CURATOR: "큐레이터가 없습니다.",
     SUBSCRIBE_SUCCESS:"구독/구독취소 성공",
-    CURATORINFO_SUCCESS: "큐레이터 정보 조회 성공",
+    CURATOR_INFO_SUCCESS: "큐레이터 정보 조회 성공",
+    RECOMMEND_CURATOR_SUCCESS: "추천 큐레이터 목록 조회 성공",
+    THEME_IN_CURATOR_SUCCESS: "테마 속 큐레이터 목록 조회 성공",
+    CURATOR_KEYWORD_SUCCESS: "키워드로 큐레이터 목록 조회 성공",
 
 
     //내서재(My)
