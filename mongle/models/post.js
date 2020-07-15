@@ -129,7 +129,6 @@ const post = {
 
     getEmptySentence : async(token) => {
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
-        console.log(curatorIdx);
         let query = `SELECT * FROM empty_sentence JOIN empty_curator_sentence ON empty_sentence.sentenceIdx = empty_curator_sentence.sentenceIdx WHERE empty_curator_sentence.curatorIdx = ${curatorIdx}`;
         try{
             let result = {};
