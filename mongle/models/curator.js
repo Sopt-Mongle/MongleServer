@@ -188,7 +188,6 @@ const curator = {
             let keyword;
             await Promise.all(result.map(async(element) =>{
                 let curatorIdx = element.curatorIdx;
-                console.log(curatorIdx);
                 query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
                 keyword = await pool.queryParam(query);
                 element.keyword = keyword[0].keyword;

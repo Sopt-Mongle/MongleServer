@@ -1,7 +1,11 @@
 const util = require('../modules/util');
+
 const statusCode = require('../modules/statusCode');
 const resMessage = require('../modules/responseMessage');
 const PostModel = require('../models/post');
+
+const kakaoAPI = require('../modules/kakao');
+const BookData = require('../modules/data/bookData');
 
 module.exports = {
     makeTheme: async(req, res) => {

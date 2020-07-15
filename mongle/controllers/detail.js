@@ -4,9 +4,6 @@ const statusCode = require('../modules/statusCode');
 
 const detailModel = require('../models/detail');
 
-const kakaoAPI = require('../modules/kakao');
-const BookData = require('../modules/data/bookData');
-
 module.exports = {
     getSentence : async(req,res) =>{
         const sentenceIdx = req.params.sentenceIdx;
@@ -21,6 +18,9 @@ module.exports = {
         }
 
         const data = await detailModel.getSentence(token, sentenceIdx);
+        if(data == -1){
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.READ_SENTENCE_FAIL));
+        }
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_SENTENCE, data));
     },
 
