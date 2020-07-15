@@ -296,7 +296,7 @@ const detail = {
         try{
             const result = await pool.queryParam(query);
             const timestamp = result[0].timestamp;
-            let query1 = `DELETE FROM curator_theme WHERE timestamp = ${timestamp}`;
+            let query1 = `DELETE FROM curator_theme WHERE timestamp = "${timestamp}"`;
             await pool.queryParam(query1);
 
             let query2 = `UPDATE theme SET saves = saves-1 WHERE themeIdx="${themeIdx}"`;
