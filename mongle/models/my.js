@@ -140,9 +140,11 @@ const my = {
             await Promise.all(result.map(async(element) => {
                 let keywordIdx = element.keywordIdx;
                 //키워드
-                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-                const keywordResult = await pool.queryParam(query);
-                element.keyword = keywordResult[0].keyword;
+                if(keywordIdx != null){
+                    query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
+                    const keywordResult = await pool.queryParam(query);
+                    element.keyword = keywordResult[0].keyword;
+                }
                 
                 //북마크 여부
                 element.alreadySubscribed = true;

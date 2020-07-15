@@ -6,6 +6,7 @@ module.exports =
             "img": rawCuratorData.img,
             "introduce": rawCuratorData.introduce,
             "keyword": rawCuratorData.keyword,
+            "keywordIdx": rawCuratorData.keywordIdx,
             "subscribe": rawCuratorData.subscribe,
             "alreadySubscribed": rawCuratorData.alreadySubscribed
         };

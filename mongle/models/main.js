@@ -73,7 +73,11 @@ const main = {
                 let curatorIdx = element.curatorIdx;
                 query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
                 keyword = await pool.queryParam(query);
-                element.keyword = keyword[0].keyword;
+                // console.log(keyword[0].keyword);
+                if(keyword.length !== 0){
+                    element.keyword = keyword[0].keyword;
+                }
+                
             }))
 
             return result.map(curatorData);
