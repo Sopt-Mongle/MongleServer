@@ -39,6 +39,8 @@ const my = {
             let resultArray = {};
             let save = [];
             let write = [];
+            console.log(result);
+
             await Promise.all(result.map(async(element) => {
                 let writerIdx = element.writerIdx;
                 let themeIdx = element.themeIdx;
@@ -75,6 +77,8 @@ const my = {
         try{
             let result = await pool.queryParam(query);
 
+            // console.log(result);
+
             let resultArray = {};
             let save = [];
             let write = [];
@@ -91,11 +95,17 @@ const my = {
                 //테마 정보
                 query = `SELECT theme FROM theme JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx WHERE theme_sentence.sentenceIdx = ${sentenceIdx}`;
                 let themeResult = await pool.queryParam(query);
-                element.theme = themeResult[0].theme;
+                element.theme = themeResult[0].theme;              
 
                 //저장한 문장, 내가 쓴 문장 구분
                 if(writerIdx == curatorIdx){
-                    write.push(element);
+                    let temp = write.find(s => s.sentenceIdx == sentenceIdx);
+                    if(temp !== undefined){
+                        save.push(element);
+                    }
+                    else{
+                        write.push(element);
+                    }
                 }
                 else{
                     save.push(element);
