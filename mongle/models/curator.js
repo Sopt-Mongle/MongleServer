@@ -80,9 +80,11 @@ const curator = {
 
             //프로필 - 키워드
             let keywordIdx = profileResult[0].keywordIdx;
-            query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-            const keywordResult = await pool.queryParam(query);            
-            profileResult[0].keyword = keywordResult[0].keyword;
+            if(keywordIdx != null){
+                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
+                const keywordResult = await pool.queryParam(query);            
+                profileResult[0].keyword = keywordResult[0].keyword;
+            }
 
             //프로필 - 구독 여부
             query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
