@@ -39,7 +39,6 @@ const my = {
             let resultArray = {};
             let save = [];
             let write = [];
-            console.log(result);
 
             await Promise.all(result.map(async(element) => {
                 let writerIdx = element.writerIdx;
@@ -52,15 +51,9 @@ const my = {
 
                 //저장한 테마, 내가 쓴 테마 구분
                 if(writerIdx == curatorIdx){
-                    let query1 = `SELECT COUNT(*) as cnt FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
-                    let cntResult = await pool.queryParam(query1);
-                    if(cntResult[0].cnt === 2){
-                        if(!save[0].includes(element.themeIdx)){
-                            save.push(element);
-                        }
-                        if(!write[0].includes(element.themeIdx)){
-                            write.push(element);
-                        }
+                    let temp = write.find(s => s.themeIdx == themeIdx);
+                    if(temp !== undefined){
+                        save.push(element);
                     }
                     else{
                         write.push(element);
