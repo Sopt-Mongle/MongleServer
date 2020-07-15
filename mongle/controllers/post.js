@@ -55,9 +55,9 @@ module.exports = {
     },
 
     bookSearch : async(req, res) =>{
-        const title = req.body.title;
-        const sort = 'accuracy';
-        const target = 'title';
+        const title = req.query.query;
+        const sort = req.query.sort;
+        const target = req.query.target;
 
         if(!title){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
