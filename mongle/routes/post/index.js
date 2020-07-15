@@ -8,6 +8,6 @@ router.post('/setTheme', postController.setTheme);
 router.get('/emptySentence', postController.getEmptySentence);
 router.get('/theme', postController.selectTheme);
 router.get('/bookSearch', postController.bookSearch);
-
+router.get('/themeImg', postController.themeImg);
 
 module.exports = router;

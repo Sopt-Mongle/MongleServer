@@ -93,5 +93,10 @@ module.exports = {
         
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMPTY_SENTENCE_SET_THEME_SUCCESS));  
 
-    }
+    },
+
+    themeImg : async(req, res) => {
+        const result = await PostModel.themeImg();
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_THEMEIMG_SUCCESS, result));  
+    },
 };

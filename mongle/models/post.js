@@ -78,7 +78,7 @@ const post = {
             
         }
         catch(err){
-            console.log('writeSentence err: ' + err);
+            console.log('createSentence err: ' + err);
         }throw err;
 
     },
@@ -167,6 +167,17 @@ const post = {
         }
         catch(err){
             console.log('setTheme err: ' + err);
+        }throw err;
+    },
+
+    themeImg : async() => {
+        const query = `SELECT * FROM themeImg`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }
+        catch(err){
+            console.log('themeImg err: ' + err);
         }throw err;
     }
 };
