@@ -83,7 +83,7 @@ const post = {
 
     },
 
-    selectTheme : async() =>{
+    selectTheme :   async() =>{
         //최근에 문장이 들어간 테마 순
         let query = `SELECT * FROM theme JOIN (SELECT MAX(themeSentenceIdx) as A, themeIdx FROM theme_sentence GROUP BY themeIdx ORDER BY A DESC) as T ON theme.themeIdx = T.themeIdx;`;
         try{
