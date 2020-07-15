@@ -203,6 +203,10 @@ const detail = {
             let result = {};
             result.theme = themeResult.map(ThemeData);
 
+            if(themeResult.length == 0){
+                return -1;
+            }
+
             //테마 배경 이미지
             const themeImgIdx = themeResult[0].themeImgIdx;
             query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;

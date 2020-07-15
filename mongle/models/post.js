@@ -119,7 +119,9 @@ const post = {
 
             }));
 
-            return result;
+            let finalResult = result.map(ThemeData);
+            
+            return finalResult;
 
         }
         catch(err){
