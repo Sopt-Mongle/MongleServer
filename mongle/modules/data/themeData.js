@@ -4,6 +4,7 @@ module.exports =
             "themeIdx": rawThemeData.themeIdx,
             "theme": rawThemeData.theme,
             "themeImg":rawThemeData.themeImg,
+            "themeImgIdx":rawThemeData.themeImgIdx,
             "saves": rawThemeData.saves,
             "writer": rawThemeData.writer,
             "writerImg": rawThemeData.writerImg,
