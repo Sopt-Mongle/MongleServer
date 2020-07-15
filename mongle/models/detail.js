@@ -113,7 +113,17 @@ const detail = {
             if(result[0].cnt === 0){
                 return true;
             }
-            else{
+            else if(result[0].cnt === 1){
+                query = `SELECT COUNT(*) as cnt2 FROM curator_sentence JOIN sentence ON curator_sentence.sentenceIdx = sentence.sentenceIdx WHERE curator_sentence.curatorIdx = sentence.writerIdx AND curator_sentence.curatorIdx = ${curatorIdx}`;
+                const result2 = await pool.queryParam(query);
+                if(result2[0].cnt2 === 0){ //다른 사람 문장 북마크가 된 상태
+                    return false;
+                }
+                else{//내가 쓴 문장이라서 저장된 경우
+                    return true;
+                }
+            }
+            else{//내가 쓴 문장이라서 저장 + 북마크까지 한 경우
                 return false;
             }
         }catch(err){
@@ -123,16 +133,22 @@ const detail = {
 
     deleteBookmark: async(token, sentenceIdx) =>{
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
-        let query1 = `DELETE FROM curator_sentence WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
-        let query2 = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT saves FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
+        let query = `SELECT MAX(timestamp) timestamp FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+                
         try{
-            const result1 = await pool.queryParam(query1);
-            const result2 = await pool.queryParam(query2);
+            const result = await pool.queryParam(query);
+            const timestamp = result[0].timestamp;
+            let query1 = `DELETE FROM curator_sentence WHERE timestamp = "${timestamp}"`;
+            await pool.queryParam(query1);
+
+            let query2 = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
+            await pool.queryParam(query2);
+
+            let query3 = `SELECT saves FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
             const result3 = await pool.queryParam(query3);
             return result3;
         }catch(err){
-            console.log('deleteBookmark err: ' + err);
+            console.log('DeleteBookmark err: ' + err);
         }throw err;
     },
 
