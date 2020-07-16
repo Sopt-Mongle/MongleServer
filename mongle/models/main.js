@@ -10,6 +10,13 @@ const main = {
         let query = `SELECT * FROM editorpick`;
         try{
             let result = await pool.queryParam(query);
+            await Promise.all(result.map(async(element) =>{
+                let themeIdx = element.themeIdx;
+                //안에 문장 수
+                query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
+                const sentenceNum = await pool.queryParam(query);
+                element.sentenceNum = sentenceNum[0].num;
+            }));
             return result;
         }
         catch(err){
