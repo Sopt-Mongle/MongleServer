@@ -7,13 +7,18 @@ const SearchModel = require('../models/search');
 module.exports = {
     searchCurator : async(req, res) =>{
         const words = req.query.words;
+        const token = req.headers.token;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
 
         if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
             return;
         }
 
-        const result = await SearchModel.searchCurator(words);
+        const result = await SearchModel.searchCurator(token, words);
 
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_CURATORS));

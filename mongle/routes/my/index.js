@@ -7,13 +7,15 @@ const upload = require('../../modules/multer');
 //     dest: 'upload/'
 // });
 
-router.get('/profile', myController.getMyProfile);
-router.get('/theme', myController.getMyTheme);
-router.get('/sentence', myController.getMySentence);
-router.get('/subscribe', myController.getMySubscribe);
-router.post('/profile', upload.single('img'), myController.editProfile);
-router.put('/:sentenceIdx', myController.editSentence);
-router.delete('/:sentenceIdx', myController.deleteSentence);
+const authUtil = require('../../modules/authUtil');
+
+router.get('/profile', authUtil.checkToken, myController.getMyProfile);
+router.get('/theme', authUtil.checkToken, myController.getMyTheme);
+router.get('/sentence', authUtil.checkToken, myController.getMySentence);
+router.get('/subscribe', authUtil.checkToken, myController.getMySubscribe);
+router.post('/profile', authUtil.checkToken, upload.single('img'), myController.editProfile);
+router.put('/:sentenceIdx', authUtil.checkToken, myController.editSentence);
+router.delete('/:sentenceIdx', authUtil.checkToken, myController.deleteSentence);
 
 
 module.exports = router;
