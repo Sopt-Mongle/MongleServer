@@ -137,8 +137,8 @@ const main = {
     getWaitTheme: async(token)=>{
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         //저장된 문장이 2개 미만인 테마들
-        let query = `SELECT * FROM theme JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx
-        group by theme_sentence.themeIdx HAVING count(theme_sentence.sentenceIdx) < 2 LIMIT 10`;
+        let query = `SELECT * FROM theme LEFT JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx
+        group by theme.themeIdx having count(theme_sentence.sentenceIdx) < 2`;
         try{
             let result = await pool.queryParam(query);
 
