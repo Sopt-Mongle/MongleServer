@@ -78,7 +78,9 @@
 <br>
 
 ### 📗 ERD
-![Screen Shot 2020-07-08 at 8 24 45 PM](https://user-images.githubusercontent.com/41534832/86913134-22e67480-c159-11ea-850d-5c8a47cf84b9.png)
+
+![Screen Shot 2020-07-16 at 11 02 37 PM](https://user-images.githubusercontent.com/41534832/87680539-83f4f480-c7b8-11ea-96bf-3239aebdaf49.png)
+
 
 
 ### 📘 Members
