@@ -23,7 +23,10 @@ module.exports = {
         if (idx === -1) {
             return await res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER));
+
+        const user = await UserModel.getUserByEmail(email);
+        const {token, _} = await jwt.sign(user[0]);
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER, {accessToken : token}));
     },
 
     signin : async(req, res) =>{
@@ -46,5 +49,21 @@ module.exports = {
 
         const {token, _} = await jwt.sign(user[0]);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {accessToken : token}));
-    }
+    },
+
+    // withdraw : async(req, res) => {
+    //     const token = req.headers.token;
+    //     if(!token){
+    //         res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    //         return;
+    //     }
+    //     const result = await CuratorModel.getCuratorInfo(token);
+
+    //     if(result.length === 0){
+    //         res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
+    //         return;
+    //     }
+
+    //     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATOR_INFO_SUCCESS, result));
+    // }
 }

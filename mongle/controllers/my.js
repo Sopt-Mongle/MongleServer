@@ -97,9 +97,22 @@ module.exports = {
 
     editProfile : async(req, res) => {
         const curatorIdx = (await req.decoded).valueOf(0).idx;
-        const {name, img, introduce, keywordIdx} = req.body;
-        if(!curatorIdx || !img || !name || !introduce || !keywordIdx){
+        const {name, introduce, keywordIdx} = req.body;
+        const img = req.files;
+        const location = img.map(image => image.location);  
+
+        if(img === undefined){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_IMAGE));
+            return;
+        }
+
+        if(!curatorIdx || !name || !introduce || !keywordIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+        const type = req.files[0].mimetype.split('/')[1];
+        if(type !== 'jpeg' && type !== 'jpg' && type !== 'png'){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.INCORRECT_IMG_FORM));
             return;
         }
 

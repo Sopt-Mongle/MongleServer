@@ -1,5 +1,6 @@
 module.exports = {
     NULL_VALUE: "필요한 값이 없습니다",
+    NULL_VALUE_IMAGE: "이미지가 없습니다",
     NULL_VALUE_SENTENCE: "sentenceIdx 값이 없습니다",
     NULL_VALUE_CURATOR: "curatorIdx 값이 없습니다",
     NULL_VALUE_THEME: "themeIdx 값이 없습니다",
@@ -49,6 +50,7 @@ module.exports = {
     EDIT_SENTENCE_SUCCESS: "문장 수정 성공",
     EDIT_PROFILE_SUCCESS: "내 정보 수정 성공",
     CURATOR_SENTENCE_UNMATCH: "내 문장이 아닙니다.",
+    INCORRECT_IMG_FORM: "올바른 이미지 형식이 아닙니다",
     
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
