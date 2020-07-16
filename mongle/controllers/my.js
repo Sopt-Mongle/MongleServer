@@ -96,9 +96,22 @@ module.exports = {
 
     editProfile : async(req, res) => {
         const token = req.headers.token;
-        const {name, img, introduce, keywordIdx} = req.body;
-        if(!token || !img || !name || !introduce || !keywordIdx){
+        const {name, introduce, keywordIdx} = req.body;
+        const img = req.file.path;
+
+        // console.log(req.file);
+        if(img === undefined){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_IMAGE));
+            return;
+        }
+
+        if(!token || !name || !introduce || !keywordIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+        const type = req.file.mimetype.split('/')[1];
+        if(type !== 'jpeg' && type !== 'jpg' && type !== 'png'){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.INCORRECT_IMG_FORM));
             return;
         }
 
