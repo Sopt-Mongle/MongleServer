@@ -12,14 +12,13 @@ module.exports = {
                 'qs' : {
                     'query' : `${keyword}`,
                     'sort' : 'accuracy',
-                    'size' : 10,
+                    'size' : 30,
                     'target' : 'title'
                 }  
             };
             
             request(options, async (err, result)=>{
                 const jsonResult = JSON.parse(result.body);
-                console.log(options);
                 if(err) {
                     console.log('request err : ' + err);
                     reject(err)
