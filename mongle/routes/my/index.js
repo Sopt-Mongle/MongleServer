@@ -13,7 +13,7 @@ router.get('/profile', authUtil.checkToken, myController.getMyProfile);
 router.get('/theme', authUtil.checkToken, myController.getMyTheme);
 router.get('/sentence', authUtil.checkToken, myController.getMySentence);
 router.get('/subscribe', authUtil.checkToken, myController.getMySubscribe);
-router.post('/profile', authUtil.checkToken, upload.single('img'), myController.editProfile);
+router.post('/profile', authUtil.checkToken, upload.array('img', 1), myController.editProfile);
 router.put('/:sentenceIdx', authUtil.checkToken, myController.editSentence);
 router.delete('/:sentenceIdx', authUtil.checkToken, myController.deleteSentence);
 

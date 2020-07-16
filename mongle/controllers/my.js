@@ -97,9 +97,9 @@ module.exports = {
     editProfile : async(req, res) => {
         const token = req.headers.token;
         const {name, introduce, keywordIdx} = req.body;
-        const img = req.file.path;
+        const img = req.files;
+        const location = img.map(image => image.location);
 
-        // console.log(req.file);
         if(img === undefined){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_IMAGE));
             return;
@@ -109,13 +109,13 @@ module.exports = {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const type = req.file.mimetype.split('/')[1];
+        const type = req.files[0].mimetype.split('/')[1];
         if(type !== 'jpeg' && type !== 'jpg' && type !== 'png'){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.INCORRECT_IMG_FORM));
             return;
         }
 
-        const result = await MyModel.editProfile(token, name, img, introduce, keywordIdx);
+        const result = await MyModel.editProfile(token, name, location, introduce, keywordIdx);
 
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
