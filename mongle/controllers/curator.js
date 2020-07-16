@@ -7,27 +7,27 @@ const CuratorModel = require('../models/curator');
 module.exports = {
     subscribe : async(req, res) => {
         const followedIdx = req.params.followedIdx; //현재 사용자 큐레이터
-        const token = req.headers.token;
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
 
-        if(!token || !followedIdx){
+        if(!curatorIdx || !followedIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await CuratorModel.subscribe(token, followedIdx);
+        const result = await CuratorModel.subscribe(curatorIdx, followedIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.SUBSCRIBE_SUCCESS, result));
     },
 
     getCuratorInfo : async(req, res) => {
-        const token = req.headers.token;
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
         const curatorIdx2 = req.params.curatorIdx;
-        if(!token || !curatorIdx2){
+        if(!curatorIdx || !curatorIdx2){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await CuratorModel.getCuratorInfo(token, curatorIdx2);
+        const result = await CuratorModel.getCuratorInfo(curatorIdx, curatorIdx2);
 
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
@@ -47,12 +47,12 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECOMMEND_CURATOR_SUCCESS, result));
     },
     getThemeInCurator : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const result = await CuratorModel.getThemeInCurator(token);
+        const result = await CuratorModel.getThemeInCurator(curatorIdx);
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
             return;
@@ -63,12 +63,12 @@ module.exports = {
 
     getCuratorByKeyword : async(req, res) => {  
         const keywordIdx = req.params.keywordIdx;
-        const token = req.headers.token;
-        if(!keywordIdx || !token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!keywordIdx || !curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const result = await CuratorModel.getCuratorByKeyword(keywordIdx, token);
+        const result = await CuratorModel.getCuratorByKeyword(keywordIdx, curatorIdx);
 
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));

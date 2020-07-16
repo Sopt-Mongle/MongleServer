@@ -13,7 +13,6 @@ const authUtil = {
             return res.json(util.fail(statusCode.BAD_REQUEST, resMessage.EMPTY_TOKEN));
         }
         const user = jwt.verify(token);
-        console.log("middleware!!");
         
         if (user == TOKEN_EXPIRED) {
             return res.json(util.fail(statusCode.UNAUTHORIZED, resMessage.EXPIRED_TOKEN));
