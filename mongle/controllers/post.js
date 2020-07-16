@@ -49,7 +49,6 @@ module.exports = {
     },
 
     selectTheme : async(req, res) => {
-        console.log(req);
         const result = await PostModel.selectTheme();
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.THEME_LIST_SUCCESS, result));
 

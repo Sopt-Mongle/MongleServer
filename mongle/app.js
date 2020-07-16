@@ -18,9 +18,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(express.static('public', {
-  maxAge: 30*1000
-}));
+app.use(function(req, res, next) {
+  req.headers['if-none-match'] = 'no-match-for-this';
+  next();    
+});
 
 app.use('/', indexRouter);
 
