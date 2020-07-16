@@ -6,7 +6,7 @@ const SearchModel = require('../models/search');
 
 module.exports = {
     searchCurator : async(req, res) =>{
-        const words = req.body.words;
+        const words = req.query.words;
 
         if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
@@ -30,13 +30,12 @@ module.exports = {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const words = req.body.words;
+        const words = req.query.words;
 
         if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
             return;
         } 
-        
         //검색 결과 중 제일 먼저 나오는 쪽에서 최근검색어 테이블에 insert
         const result = await SearchModel.searchTheme(token, words);
         
@@ -49,7 +48,7 @@ module.exports = {
     },
 
     searchSentence : async(req, res)=>{
-        const words = req.body.words;
+        const words = req.query.words;
 
         if(!words){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_WORDS));
