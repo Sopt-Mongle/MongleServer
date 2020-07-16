@@ -52,6 +52,7 @@ module.exports = {
     
     //디테일
     BOOK_SEARCH_SUCCESS: "책 제목 검색 성공",
+    BOOK_SEARCH_FAIL: "해당하는 책이 없습니다.",
     READ_SENTENCE:"문장 조회 성공",
     LIKE_SENTENCE:"문장 좋아요 토글 성공",
     BOOKMARK_SENTENCE:"문장 북마크 성공",
