@@ -5,7 +5,8 @@ const SentenceData = require('../modules/data/sentenceData');
 const ThemeData = require('../modules/data/themeData');
 const jwt = require('../modules/jwt');
 const search = {
-    searchCurator: async(words)=>{
+    searchCurator: async(token, words)=>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const queryWords = words.replace(/(\s)/g, "%");
 
         let query = `SELECT * FROM curator WHERE name LIKE "%${queryWords}%"`;
@@ -19,6 +20,17 @@ const search = {
                 console.log(keywordResult[0]);
                 if(keywordResult[0] !== undefined){
                     element.keyword = keywordResult[0].keyword;
+                }
+
+                //구독 여부
+                let curatorIdx2 = element.curatorIdx;
+                query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
+                const followResult = await pool.queryParam(query);
+                if(followResult.length == 0){
+                    element.alreadySubscribed = false;
+                }
+                else{
+                    element.alreadySubscribed = true;
                 }
                 
             }));
