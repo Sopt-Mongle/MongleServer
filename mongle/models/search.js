@@ -16,8 +16,10 @@ const search = {
                 let keywordIdx = element.keywordIdx;
                 query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
                 const keywordResult = await pool.queryParam(query);
-                
-                element.keyword = keywordResult[0].keyword;
+                console.log(keywordResult[0]);
+                if(keywordResult[0] !== undefined){
+                    element.keyword = keywordResult[0].keyword;
+                }
                 
             }));
 
@@ -102,9 +104,10 @@ const search = {
 
     recentSearch: async(token) => {
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
-        let query = `SELECT * FROM search_words WHERE curatorIdx = ${curatorIdx} ORDER BY searchWordsIdx DESC LIMIT 5`;
+        let query = `SELECT * FROM search_words WHERE curatorIdx = ${curatorIdx} ORDER BY searchWordsIdx DESC LIMIT 10`;
         try{
             const result = await pool.queryParam(query);
+            console.log(result);
 
             let words = [];
             result.valueOf(0).forEach(element => {

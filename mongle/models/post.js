@@ -120,7 +120,7 @@ const post = {
             }));
 
             let finalResult = result.map(ThemeData);
-            console.log(finalResult);
+
             return finalResult;
 
         }
