@@ -107,11 +107,16 @@ const search = {
         let query = `SELECT * FROM search_words WHERE curatorIdx = ${curatorIdx} ORDER BY searchWordsIdx DESC LIMIT 10`;
         try{
             const result = await pool.queryParam(query);
-            console.log(result);
+            // console.log(result);
 
             let words = [];
+            let test = [];
+
             result.valueOf(0).forEach(element => {
-                words.push(element.word);
+                if(!words.includes(element.word) && words.length < 5){
+                    words.push(element.word);
+                }
+                
             });
 
             return words;
