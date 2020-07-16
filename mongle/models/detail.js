@@ -13,6 +13,9 @@ const detail = {
             result = firstResult.map(SentenceData);
 
             //문장 writer 정보
+            if(result.length == 0){
+                return -1;
+            }
             const writerIdx = firstResult[0].writerIdx;
             query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
             const writerResult = await pool.queryParam(query);

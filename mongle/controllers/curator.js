@@ -30,7 +30,7 @@ module.exports = {
         const result = await CuratorModel.getCuratorInfo(token, curatorIdx2);
 
         if(result.length === 0){
-            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
             return;
         }
 
@@ -40,7 +40,7 @@ module.exports = {
         const result = await CuratorModel.getRecommendCurator();
 
         if(result.length === 0){
-            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
             return;
         }
 
@@ -54,7 +54,7 @@ module.exports = {
         }
         const result = await CuratorModel.getThemeInCurator(token);
         if(result.length === 0){
-            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
             return;
         }
 
@@ -71,7 +71,7 @@ module.exports = {
         const result = await CuratorModel.getCuratorByKeyword(keywordIdx, token);
 
         if(result.length === 0){
-            res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CURATOR));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
             return;
         }
 

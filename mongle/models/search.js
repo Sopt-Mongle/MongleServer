@@ -49,6 +49,12 @@ const search = {
                 query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
                 let sentenceNum = await pool.queryParam(query);
                 element.sentenceNum = sentenceNum[0].num;
+
+                //themeImg 뽑아주기
+                let themeImgIdx = element.themeImgIdx;
+                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
+                let themeImgResult = await pool.queryParam(query);
+                element.themeImg = themeImgResult[0].img;
             }));
             
             
