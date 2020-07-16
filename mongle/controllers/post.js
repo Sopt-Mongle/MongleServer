@@ -32,7 +32,7 @@ module.exports = {
         const token = req.headers.token;
         const {sentence, title, author, publisher, themeIdx} = req.body;
 
-        if(!token || !sentence || !title || !author || !publisher ||!themeIdx){
+        if(!token || !sentence || !title || !author || !publisher){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
