@@ -143,7 +143,6 @@ const search = {
             throw err;
         }
     }
-
 };
 
 module.exports = search;
