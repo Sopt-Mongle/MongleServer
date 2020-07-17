@@ -209,7 +209,6 @@ const curator = {
             //--- 테마 ---
             let result = {};
             let themeResult = await pool.queryParam(query);
-            // result.theme = themeResult.map(ThemeData);
 
             await Promise.all(themeResult.map(async(element) => {
                 let themeIdx = element.themeIdx;
@@ -268,7 +267,7 @@ const curator = {
         }throw err;
     },
 
-    getCuratorByKeyword: async(keywordIdx, curatorIdx) =>{
+    getCuratorByKeyword: async(keywordIdx, followerIdx) =>{
         let query = `SELECT * FROM curator WHERE keywordIdx = ${keywordIdx}`;
         try{
             let result = await pool.queryParam(query);
