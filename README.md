@@ -106,6 +106,12 @@
 
 <br>
 
+### 📗 Architecture
+
+![Web App Reference Architecture-2](https://user-images.githubusercontent.com/41534832/87792326-b23d0780-c87e-11ea-93e5-20790161d81d.png)
+
+<br>
+
 
 ### :closed_book: 배포
 
