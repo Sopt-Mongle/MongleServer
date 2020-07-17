@@ -52,14 +52,9 @@ module.exports = {
     },
 
     withdraw : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-            return;
-        }
-
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
         const {email, password} = req.body;
-        if (!email || !password) {
+        if (!curatorIdx || !email || !password) {
         return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
         const user = await UserModel.getUserByEmail(email);
@@ -68,7 +63,7 @@ module.exports = {
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
         }
 
-        const result = await UserModel.withdraw(token);
+        const result = await UserModel.withdraw(curatorIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.WITHDRAW_SUCCESS, result));
     }
 }

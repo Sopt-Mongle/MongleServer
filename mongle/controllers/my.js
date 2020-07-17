@@ -116,7 +116,7 @@ module.exports = {
             return;
         }
 
-        const result = await MyModel.editProfile(curatorIdx, name, img, introduce, keywordIdx);
+        const result = await MyModel.editProfile(curatorIdx, name, location, introduce, keywordIdx);
 
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));

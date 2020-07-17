@@ -76,8 +76,7 @@ const user = {
         }
     },
 
-    withdraw : async (token) =>{
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    withdraw : async (curatorIdx) =>{
         const query = `DELETE FROM curator WHERE curatorIdx = ${curatorIdx}`;
         try{
             const result = await pool.queryParam(query);
