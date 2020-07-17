@@ -24,8 +24,7 @@ const post = {
         }
     },
 
-    makeTheme : async(token, theme, themeImgIdx) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    makeTheme : async(curatorIdx, theme, themeImgIdx) => {
         let query = `SELECT * FROM theme WHERE theme = "${theme}"`;
         try{
             const sameCheckResult = await pool.queryParam(query);
@@ -48,16 +47,15 @@ const post = {
         }throw err;
     },
 
-    createSentence: async(token, {sentence, title, author, publisher, themeIdx}) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
-        const fields = `sentence, title, author, likes, saves, writerIdx, publisher`;
-        const questions = `?, ?, ?, ?, ?, ?, ?`;
-        const values = [sentence, title, author, 0, 0, curatorIdx, publisher];
+    createSentence: async(curatorIdx, {sentence, title, author, publisher, thumbnail, themeIdx}) => {
+        const fields = `sentence, title, author, likes, saves, writerIdx, publisher, thumbnail`;
+        const questions = `?, ?, ?, ?, ?, ?, ?, ?`;
+        const values = [sentence, title, author, 0, 0, curatorIdx, publisher, thumbnail];
 
         try{
             if(themeIdx === 0){ //테마없는 테마 선택한 문장일 경우
                 //empty_sentence 에 insert
-                let query = `INSERT INTO empty_sentence(sentence, title, author, publisher, writerIdx) VALUES("${sentence}", "${title}", "${author}", "${publisher}", ${curatorIdx})`;
+                let query = `INSERT INTO empty_sentence(sentence, title, author, publisher, thumbnail, writerIdx) VALUES("${sentence}", "${title}", "${author}", "${publisher}", "${thumbnail}", ${curatorIdx})`;
                 const result1 = await pool.queryParam(query);
                 let sentenceIdx = result1.insertId;
                 query = `INSERT INTO empty_curator_sentence(curatorIdx, sentenceIdx) VALUES(${curatorIdx}, ${sentenceIdx})`;
@@ -129,8 +127,7 @@ const post = {
         }throw err;
     },
 
-    getEmptySentence : async(token) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    getEmptySentence : async(curatorIdx) => {
         let query = `SELECT * FROM empty_sentence JOIN empty_curator_sentence ON empty_sentence.sentenceIdx = empty_curator_sentence.sentenceIdx WHERE empty_curator_sentence.curatorIdx = ${curatorIdx}`;
         try{
             let result = {};
@@ -146,8 +143,7 @@ const post = {
         }throw err;
     },
 
-    setTheme : async(token, themeIdx, sentenceIdx, sentence, title, author, publisher) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    setTheme : async(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher) => {
         const deleteQuery1 = `DELETE FROM empty_sentence WHERE sentenceIdx = ${sentenceIdx}`;
         const insertQuery1 = `INSERT INTO sentence(sentence, title, author, publisher, likes, saves, writerIdx)
                                             VALUES("${sentence}", "${title}", "${author}", "${publisher}", 0, 0, ${curatorIdx})`;

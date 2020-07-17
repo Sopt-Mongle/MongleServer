@@ -9,8 +9,8 @@ const BookData = require('../modules/data/bookData');
 
 module.exports = {
     makeTheme: async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
@@ -19,7 +19,7 @@ module.exports = {
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
 
-        const result = await PostModel.makeTheme(token, theme, themeImgIdx);
+        const result = await PostModel.makeTheme(curatorIdx, theme, themeImgIdx);
         if(result == -1){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_THEME));
         }
@@ -29,15 +29,15 @@ module.exports = {
     },
     
     createSentence : async(req, res) =>{
-        const token = req.headers.token;
-        const {sentence, title, author, publisher, themeIdx} = req.body;
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        const {sentence, title, author, publisher, thumbnail, themeIdx} = req.body;
 
-        if(!token || !sentence || !title || !author || !publisher){
+        if(!curatorIdx || !sentence || !title || !author || !publisher){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await PostModel.createSentence(token, req.body);
+        const result = await PostModel.createSentence(curatorIdx, req.body);
 
         if(result == -1){
             return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_EMPTY_SENTENCE_SUCCESS));
@@ -72,19 +72,19 @@ module.exports = {
     },
 
     getEmptySentence : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await PostModel.getEmptySentence(token);
+        const result = await PostModel.getEmptySentence(curatorIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMPTY_SENTENCE_LIST_SUCCESS, result));  
     },
 
     setTheme : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
@@ -94,7 +94,7 @@ module.exports = {
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
 
-        const result = await PostModel.setTheme(token, themeIdx, sentenceIdx, sentence, title, author, publisher);
+        const result = await PostModel.setTheme(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher);
         
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMPTY_SENTENCE_SET_THEME_SUCCESS));  
 

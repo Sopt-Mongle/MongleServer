@@ -19,14 +19,13 @@ module.exports = {
     },
 
     getTodaySentence: async(req, res)=>{
-        const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MainModel.getTodaySentence(token);
+        const result = await MainModel.getTodaySentence(curatorIdx);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAY_SENTENCE));
             return;
@@ -44,13 +43,12 @@ module.exports = {
         
     },
     getTodayTheme: async(req, res)=>{
-        const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const result = await MainModel.getTodayTheme(token);
+        const result = await MainModel.getTodayTheme(curatorIdx);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_TODAY_THEME));
             return;
@@ -59,13 +57,12 @@ module.exports = {
     },
 
     getWaitTheme: async(req, res)=>{
-        const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const result = await MainModel.getWaitTheme(token);
+        const result = await MainModel.getWaitTheme(curatorIdx);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_WAIT_THEME));
             return;
@@ -74,13 +71,12 @@ module.exports = {
     },
 
     getNowTheme: async(req, res)=>{
-        const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const result = await MainModel.getNowTheme(token);
+        const result = await MainModel.getNowTheme(curatorIdx);
         if(result.length == 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_NOW_THEME));
             return;

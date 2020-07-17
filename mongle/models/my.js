@@ -6,8 +6,7 @@ const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
 
 const my = {
-    getMyProfile: async(token) =>{
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    getMyProfile: async(curatorIdx) =>{
         let query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
@@ -30,8 +29,7 @@ const my = {
         }
     },
 
-    getMyTheme: async(token) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    getMyTheme: async(curatorIdx) => {
         let query = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
@@ -75,8 +73,7 @@ const my = {
         }
     },
 
-    getMySentence: async(token) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    getMySentence: async(curatorIdx) => {
         let query = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ${curatorIdx}`;
         try{
             let result = await pool.queryParam(query);
@@ -129,8 +126,7 @@ const my = {
 
     },
 
-    getMySubscribe: async(token) =>{
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    getMySubscribe: async(curatorIdx) =>{
         let query = `SELECT * FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
         
         try{
@@ -159,8 +155,7 @@ const my = {
         }
     },
 
-    deleteSentence: async(token, sentenceIdx) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    deleteSentence: async(curatorIdx, sentenceIdx) => {
         const preQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
         let query = `DELETE FROM sentence WHERE sentenceIdx = ${sentenceIdx}`;
         try{
@@ -178,8 +173,7 @@ const my = {
         }throw err;
     },
 
-    editSentence: async(token, sentenceIdx, sentence) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    editSentence: async(curatorIdx, sentenceIdx, sentence) => {
         const preQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
         let query = `UPDATE sentence SET sentence = "${sentence}" WHERE sentenceIdx = ${sentenceIdx}`;
         try{
@@ -198,8 +192,7 @@ const my = {
         }throw err;
     },
 
-    editProfile: async(token, name, img, introduce, keywordIdx) => {
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    editProfile: async(curatorIdx, name, img, introduce, keywordIdx) => {
         const preQuery = `SELECT * FROM curator WHERE name = "${name}" AND curatorIdx != ${curatorIdx}`;
         let query = `UPDATE curator SET name = "${name}", img = "${img}", introduce = "${introduce}", keywordIdx = ${keywordIdx} WHERE curatorIdx = ${curatorIdx}`;
         try{

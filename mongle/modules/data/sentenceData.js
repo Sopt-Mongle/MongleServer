@@ -12,6 +12,7 @@ module.exports =
             "title": rawSentenceData.title,
             "author": rawSentenceData.author,
             "publisher": rawSentenceData.publisher,
+            "thumbnail": rawSentenceData.thumbnail,
             "timestamp": rawSentenceData.timestamp,
             "alreadyLiked": rawSentenceData.alreadyLiked,
             "alreadyBookmarked": rawSentenceData.alreadyBookmarked

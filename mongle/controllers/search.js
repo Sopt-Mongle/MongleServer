@@ -71,26 +71,24 @@ module.exports = {
     },
 
     recentSearch : async(req, res) =>{
-        const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
-        const result = await SearchModel.recentSearch(token);
+        const result = await SearchModel.recentSearch(curatorIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_SEARCH_SUCCESS, result));
     },
 
     recentDelete : async(req, res) => {
-        const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await SearchModel.recentDelete(token);
+        const result = await SearchModel.recentDelete(curatorIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECENT_DELETE_SUCCESS));
 

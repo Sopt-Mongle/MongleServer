@@ -6,13 +6,14 @@ const MyModel = require('../models/my');
 
 module.exports = {
     getMyProfile : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMyProfile(token);
+        const result = await MyModel.getMyProfile(curatorIdx);
 
         if(result.length === 0){
             res.status(statusCode.NO_CONTENT).send(util.fail(statusCode.NO_CONTENT, resMessage.NO_CONTENT_CURATOR));
@@ -23,51 +24,51 @@ module.exports = {
     },
 
     getMyTheme : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMyTheme(token);
+        const result = await MyModel.getMyTheme(curatorIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MY_THEME_SUCCESS, result));
     },
 
     getMySentence : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMySentence(token);
+        const result = await MyModel.getMySentence(curatorIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MY_SENTENCE_SUCCESS, result));
     },
 
     getMySubscribe : async(req, res) => {
-        const token = req.headers.token;
-        if(!token){
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.getMySubscribe(token);
+        const result = await MyModel.getMySubscribe(curatorIdx);
 
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MY_SUBSCRIBE_SUCCESS, result));
     },
 
 
     deleteSentence : async(req, res) => {
-        const token = req.headers.token;
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
         const sentenceIdx = req.params.sentenceIdx;
-        if(!token || !sentenceIdx){
+        if(!curatorIdx || !sentenceIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.deleteSentence(token, sentenceIdx);
+        const result = await MyModel.deleteSentence(curatorIdx, sentenceIdx);
 
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.CURATOR_SENTENCE_UNMATCH));
@@ -77,15 +78,15 @@ module.exports = {
     },
 
     editSentence : async(req, res) => {
-        const token = req.headers.token;
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
         const sentenceIdx = req.params.sentenceIdx;
         const {sentence} = req.body;
-        if(!token || !sentenceIdx || !sentence){
+        if(!curatorIdx || !sentenceIdx || !sentence){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await MyModel.editSentence(token, sentenceIdx, sentence);
+        const result = await MyModel.editSentence(curatorIdx, sentenceIdx, sentence);
 
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.CURATOR_SENTENCE_UNMATCH));
@@ -95,17 +96,17 @@ module.exports = {
     },
 
     editProfile : async(req, res) => {
-        const token = req.headers.token;
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
         const {name, introduce, keywordIdx} = req.body;
         const img = req.files;
-        const location = img.map(image => image.location);
+        const location = img.map(image => image.location);  
 
         if(img === undefined){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_IMAGE));
             return;
         }
 
-        if(!token || !name || !introduce || !keywordIdx){
+        if(!curatorIdx || !name || !introduce || !keywordIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
@@ -115,7 +116,7 @@ module.exports = {
             return;
         }
 
-        const result = await MyModel.editProfile(token, name, location, introduce, keywordIdx);
+        const result = await MyModel.editProfile(curatorIdx, name, img, introduce, keywordIdx);
 
         if(result == -1){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
