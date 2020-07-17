@@ -53,17 +53,21 @@ const post = {
         const values = [sentence, title, author, 0, 0, curatorIdx, publisher, thumbnail];
 
         try{
+            let result = [];
             if(themeIdx === 0){ //테마없는 테마 선택한 문장일 경우
+                result.push(-1);
                 //empty_sentence 에 insert
                 let query = `INSERT INTO empty_sentence(sentence, title, author, publisher, thumbnail, writerIdx) VALUES("${sentence}", "${title}", "${author}", "${publisher}", "${thumbnail}", ${curatorIdx})`;
                 const result1 = await pool.queryParam(query);
                 let sentenceIdx = result1.insertId;
                 query = `INSERT INTO empty_curator_sentence(curatorIdx, sentenceIdx) VALUES(${curatorIdx}, ${sentenceIdx})`;
                 await pool.queryParam(query);
-                return -1;
+                result.push(sentenceIdx);
+                return result;
 
             }
             else{ //특정 테마 선택한 문장일 경우
+                result.push(0);
                 let query = `INSERT INTO sentence(${fields}) VALUES(${questions})`;
                 const result2 = await pool.queryParamArr(query, values);
                 let sentenceIdx = result2.insertId;
@@ -71,7 +75,8 @@ const post = {
                 await pool.queryParam(query);
                 query = `INSERT INTO theme_sentence(sentenceIdx, themeIdx) VALUES(${sentenceIdx}, ${themeIdx})`;
                 await pool.queryParam(query);
-                return 0;
+                result.push(sentenceIdx);
+                return result;
             }
             
         }

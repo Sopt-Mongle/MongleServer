@@ -39,12 +39,14 @@ module.exports = {
 
         const result = await PostModel.createSentence(curatorIdx, req.body);
 
-        if(result == -1){
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_EMPTY_SENTENCE_SUCCESS));
+        console.log(result[0]);
+
+        if(result[0] == -1){
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_EMPTY_SENTENCE_SUCCESS, result[1]));
 
         }
         else{
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_SENTENCE_SUCCESS));
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATE_SENTENCE_SUCCESS, result[1]));
         }
     },
 

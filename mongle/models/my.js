@@ -11,14 +11,13 @@ const my = {
         try{
             let result = await pool.queryParam(query);
             //키워드
-            const keywordIdx = result[0].keywordIdx;
-            query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
-            const keywordResult = await pool.queryParam(query);
-            if(keywordResult[0] === undefined){
-                result[0].keyword = null;
-            }
-            else{
+            console.log(result);
+            if(result[0].keywordIdx !== null){
+                const keywordIdx = result[0].keywordIdx;
+                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}` ;
+                const keywordResult = await pool.queryParam(query);
                 result[0].keyword = keywordResult[0].keyword;
+                
             }
             
             return result.map(CuratorData);
