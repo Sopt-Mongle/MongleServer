@@ -78,7 +78,7 @@ const curator = {
 
             //프로필 - 키워드
             let keywordIdx = profileResult[0].keywordIdx;
-            if(keywordIdx != null){
+            if(keywordIdx !== undefined){
                 query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
                 const keywordResult = await pool.queryParam(query);            
                 profileResult[0].keyword = keywordResult[0].keyword;
