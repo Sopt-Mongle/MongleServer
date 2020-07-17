@@ -64,6 +64,6 @@ module.exports = {
         }
 
         const result = await UserModel.withdraw(curatorIdx);
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.WITHDRAW_SUCCESS, result));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.WITHDRAW_SUCCESS));
     }
 }
