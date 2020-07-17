@@ -232,7 +232,6 @@ const curator = {
                 //--- 큐레이터 ---
                 query = `SELECT distinct(s.writerIdx) FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = 25 ORDER BY s.likes DESC limit 3`;
                 let curatorResult = await pool.queryParam(query);
-                console.log(curatorResult[0]);
 
                 await Promise.all(curatorResult.map(async(element) => {
                     let curatorIdx2 = element.writerIdx; 
