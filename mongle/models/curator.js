@@ -146,6 +146,15 @@ const curator = {
                 element.writer = writerResult[0].name;
                 element.writerImg = writerResult[0].img;
 
+                //테마 정보
+                query = `SELECT * FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}`;
+                const themeInfoResult = await pool.queryParam(query);
+                const themeIdx = themeInfoResult[0].themeIdx;
+                element.themeIdx = themeIdx;
+                query = `SELECT theme FROM theme WHERE themeIdx = ${themeIdx}`;
+                const themeNameResult = await pool.queryParam(query);
+                element.theme = themeNameResult[0].theme;
+
                 //문장 - 북마크 여부
                 query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
                 const alreadyBookmarkedResult = await pool.queryParam(query);
