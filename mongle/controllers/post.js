@@ -30,7 +30,7 @@ module.exports = {
     
     createSentence : async(req, res) =>{
         const curatorIdx = (await req.decoded).valueOf(0).idx;
-        const {sentence, title, author, publisher, themeIdx} = req.body;
+        const {sentence, title, author, publisher, thumbnail, themeIdx} = req.body;
 
         if(!curatorIdx || !sentence || !title || !author || !publisher){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
