@@ -74,6 +74,19 @@ const user = {
             console.log('getUserByEmail ERROR : ', err);
             throw err;
         }
+    },
+
+    withdraw : async (token) =>{
+        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+        const query = `DELETE FROM curator WHERE curatorIdx = ${curatorIdx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }
+        catch(err){
+            console.log('withdraw ERROR : ', err);
+            throw err;
+        }
     }
 }
 module.exports = user;

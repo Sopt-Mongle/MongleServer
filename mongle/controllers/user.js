@@ -51,19 +51,24 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {accessToken : token}));
     },
 
-    // withdraw : async(req, res) => {
-    //     const token = req.headers.token;
-    //     if(!token){
-    //         res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-    //         return;
-    //     }
-    //     const result = await CuratorModel.getCuratorInfo(token);
+    withdraw : async(req, res) => {
+        const token = req.headers.token;
+        if(!token){
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
 
-    //     if(result.length === 0){
-    //         res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_CURATOR));
-    //         return;
-    //     }
+        const {email, password} = req.body;
+        if (!email || !password) {
+        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+        const user = await UserModel.getUserByEmail(email);
+        const hashed = await encryption.encryptWithSalt(password, user[0].salt);
+        if(hashed !== user[0].password){//비밀번호 확인
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
+        }
 
-    //     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CURATOR_INFO_SUCCESS, result));
-    // }
+        const result = await UserModel.withdraw(token);
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.WITHDRAW_SUCCESS, result));
+    }
 }

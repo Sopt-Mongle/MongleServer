@@ -16,6 +16,7 @@ module.exports = {
     LOGIN_FAIL: "로그인 실패",
     NO_USER: "존재하지 않는 회원입니다.",
     MISS_MATCH_PW: "비밀번호가 맞지 않습니다.",
+    WITHDRAW_SUCCESS: "회원탈퇴 성공",
 
     //메인
     EDITORS_PICK_SUCCESS: "에디터's Pick 조회 성공",
