@@ -104,7 +104,7 @@
 >  - 테마 검색
 >  - API 문서 작성
 
->  박현주(https://github.com/HyeonJooo)
+>  [박현주](https://github.com/HyeonJooo)
 >  - 문장 상세 조회
 >  - 문장 좋아요
 >  - 문장 북마크
