@@ -84,7 +84,7 @@
 ### :closed_book: 배포
 
 * AWS EC2 - 클라우드 컴퓨팅 시스템
-* AWS RDS - 
+* AWS RDS - 데이터베이스 관리 시스템
 ### :books: 사용된 도구
 
 * [Node.js](https://nodejs.org/ko/) - 런타임 환경
