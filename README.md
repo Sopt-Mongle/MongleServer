@@ -94,6 +94,10 @@
 * [MySql](https://miro.medium.com/max/800/0*GFfnMZ1sESpT9uYs.jpg) - 데이터베이스
 
 ### 📘 Members
+| 김해리 | 박현주 |
+| :---: | :---: |
+| <img src="https://avatars2.githubusercontent.com/u/41534832?s=400&u=12354b310724861914d139cae2a378adf10a3a1d&v=4" width="50%"></img> | <img src="https://avatars3.githubusercontent.com/u/58289478?s=400&v=4" width="50%"></img>  |
+| [Github 링크](https://github.com/khl6235) | [Github 링크](https://github.com/HyeonJooo) |
 
 > [김해리](https://github.com/khl6235)
 >  - 구독 중인 큐레이터 목록 조회
