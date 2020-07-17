@@ -81,12 +81,22 @@
 
 ![Screen Shot 2020-07-16 at 11 02 37 PM](https://user-images.githubusercontent.com/41534832/87680539-83f4f480-c7b8-11ea-96bf-3239aebdaf49.png)
 
+### :closed_book: 배포
 
+* AWS EC2 - 클라우드 컴퓨팅 시스템
+* AWS RDS - 
+### :books: 사용된 도구
+
+* [Node.js](https://nodejs.org/ko/) - 런타임 환경
+* [Express.js](http://expressjs.com/ko/) - 익스프레스 프레임워크 
+* [NPM](https://rometools.github.io/rome/) - 노드 패키지 관리자
+* [PM2](http://pm2.keymetrics.io/) - 프로세스 관리자
+* [MySql](https://miro.medium.com/max/800/0*GFfnMZ1sESpT9uYs.jpg) - 데이터베이스
 
 ### 📘 Members
 
-> 김해리
->	- 구독 중인 큐레이터 목록 조회
+> [김해리](https://github.com/khl6235)
+>  - 구독 중인 큐레이터 목록 조회
 >  - 제목으로 책 검색
 >  - 큐레이터 구독/구독 취소
 >  - 메인에서 에디터's Pick 컨텐츠 조회
@@ -94,7 +104,7 @@
 >  - 테마 검색
 >  - API 문서 작성
 
->  박현주
+>  [박현주](https://github.com/HyeonJooo)
 >  - 문장 상세 조회
 >  - 문장 좋아요
 >  - 문장 북마크
