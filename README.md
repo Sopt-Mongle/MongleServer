@@ -81,6 +81,10 @@
 
 ![Screen Shot 2020-07-16 at 11 02 37 PM](https://user-images.githubusercontent.com/41534832/87680539-83f4f480-c7b8-11ea-96bf-3239aebdaf49.png)
 
+### 📗 Architecture
+
+![Web App Reference Architecture-2](https://user-images.githubusercontent.com/41534832/87784623-9c751580-c871-11ea-8f24-30baef129bdf.png)
+
 ### :closed_book: 배포
 
 * AWS EC2 - 클라우드 컴퓨팅 시스템
