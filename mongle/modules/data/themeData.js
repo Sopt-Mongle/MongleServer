@@ -9,7 +9,8 @@ module.exports =
             "writer": rawThemeData.writer,
             "writerImg": rawThemeData.writerImg,
             "alreadyBookmarked": rawThemeData.alreadyBookmarked,
-            "sentenceNum": rawThemeData.sentenceNum
+            "sentenceNum": rawThemeData.sentenceNum,
+            "curatorNum" : rawThemeData.curatorNum
         };
         return themeData;
     };

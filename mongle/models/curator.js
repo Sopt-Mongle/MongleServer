@@ -223,6 +223,13 @@ const curator = {
                 let sentenceNumResult = await pool.queryParam(query);
                 element.sentenceNum = sentenceNumResult[0].num;
 
+                //참여한 큐레이터 수
+                query = `SELECT COUNT(s.writerIdx) as num FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
+                GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 AND t.themeIdx = ${themeIdx} ORDER BY createdAt DESC limit 2`;
+                let curatorNumResult = await pool.queryParam(query);
+                // console.log(curatorNumResult[0]);
+                console.log(themeIdx, curatorNumResult[0].num);
+                element.curatorNum = curatorNumResult[0].num;
 
                 //--- 큐레이터 ---
                 query = `SELECT writerIdx FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = ${themeIdx} ORDER BY likes DESC limit 3`;
@@ -242,8 +249,13 @@ const curator = {
                     //프로필 - 키워드
                     let keywordIdx = curatorInfoResult[0].keywordIdx;
                     query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-                    const keywordResult = await pool.queryParam(query);
-                    element.keyword = keywordResult[0].keyword;
+                    const keyword = await pool.queryParam(query);
+                    if(keyword.length !== 0){
+                        element.keyword = keyword[0].keyword;
+                    }
+                    else{
+                        element.keyword = null;
+                    }
 
                     //프로필 - 구독 여부
                     query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
