@@ -78,10 +78,13 @@ const curator = {
 
             //프로필 - 키워드
             let keywordIdx = profileResult[0].keywordIdx;
-            if(keywordIdx !== undefined){
+            if(keywordIdx !== null){
                 query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
                 const keywordResult = await pool.queryParam(query);            
                 profileResult[0].keyword = keywordResult[0].keyword;
+            }
+            else{
+                profileResult[0].keyword = null;
             }
 
             //프로필 - 구독 여부
