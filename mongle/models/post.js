@@ -143,10 +143,10 @@ const post = {
         }throw err;
     },
 
-    setTheme : async(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher) => {
+    setTheme : async(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher, thumbnail) => {
         const deleteQuery1 = `DELETE FROM empty_sentence WHERE sentenceIdx = ${sentenceIdx}`;
-        const insertQuery1 = `INSERT INTO sentence(sentence, title, author, publisher, likes, saves, writerIdx)
-                                            VALUES("${sentence}", "${title}", "${author}", "${publisher}", 0, 0, ${curatorIdx})`;
+        const insertQuery1 = `INSERT INTO sentence(sentence, title, author, publisher, thumbnail, likes, saves, writerIdx)
+                                            VALUES("${sentence}", "${title}", "${author}", "${publisher}", "${thumbnail}", 0, 0, ${curatorIdx})`;
         
         try{
             await pool.queryParam(deleteQuery1);
