@@ -89,12 +89,12 @@ module.exports = {
             return;
         }
 
-        const {themeIdx, sentenceIdx, sentence, title, author, publisher} = req.body;
+        const {themeIdx, sentenceIdx, sentence, title, author, publisher, thumbnail} = req.body;
         if(!themeIdx || !sentenceIdx || !sentence || !title || !author || !publisher){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
 
-        const result = await PostModel.setTheme(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher);
+        const result = await PostModel.setTheme(curatorIdx, themeIdx, sentenceIdx, sentence, title, author, publisher, thumbnail);
         
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMPTY_SENTENCE_SET_THEME_SUCCESS));  
 
