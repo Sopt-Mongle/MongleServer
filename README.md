@@ -81,7 +81,17 @@
 
 ![Screen Shot 2020-07-16 at 11 02 37 PM](https://user-images.githubusercontent.com/41534832/87680539-83f4f480-c7b8-11ea-96bf-3239aebdaf49.png)
 
+## :closed_book: 배포
 
+* AWS EC2 - 클라우드 컴퓨팅 시스템
+* AWS RDS - 
+## :books: 사용된 도구
+
+* [Node.js](https://nodejs.org/ko/) - 런타임 환경
+* [Express.js](http://expressjs.com/ko/) - 익스프레스 프레임워크 
+* [NPM](https://rometools.github.io/rome/) - 노드 패키지 관리자
+* [PM2](http://pm2.keymetrics.io/) - 프로세스 관리자
+* [MySql](https://miro.medium.com/max/800/0*GFfnMZ1sESpT9uYs.jpg) - 데이터베이스
 
 ### 📘 Members
 
