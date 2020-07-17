@@ -227,13 +227,12 @@ const curator = {
                 query = `SELECT COUNT(s.writerIdx) as num FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
                 GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 AND t.themeIdx = ${themeIdx} ORDER BY createdAt DESC limit 2`;
                 let curatorNumResult = await pool.queryParam(query);
-                // console.log(curatorNumResult[0]);
-                console.log(themeIdx, curatorNumResult[0].num);
                 element.curatorNum = curatorNumResult[0].num;
 
                 //--- 큐레이터 ---
-                query = `SELECT writerIdx FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = ${themeIdx} ORDER BY likes DESC limit 3`;
+                query = `SELECT distinct(s.writerIdx) FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = 25 ORDER BY s.likes DESC limit 3`;
                 let curatorResult = await pool.queryParam(query);
+                console.log(curatorResult[0]);
 
                 await Promise.all(curatorResult.map(async(element) => {
                     let curatorIdx2 = element.writerIdx; 
