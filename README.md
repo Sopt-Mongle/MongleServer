@@ -132,3 +132,5 @@
 #### [API 문서 바로가기❗️](https://github.com/Sopt-Mongle/MongleServer/wiki)
 #### [기능 명세서 바로가기❗️](https://docs.google.com/spreadsheets/d/19oIWAG0WNR7ldLuVWfylbdrmZumOtTE1EQWJmJRgPAo/edit#gid=0)
 
+
+<div align="right" style="display:flex;"><img src="https://user-images.githubusercontent.com/41534832/87791813-df3cea80-c87d-11ea-9740-f96e155e171f.jpg" width = "30%"></div>
