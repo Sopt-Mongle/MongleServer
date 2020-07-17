@@ -98,14 +98,7 @@
 | :---: | :---: |
 | <img src="https://avatars2.githubusercontent.com/u/41534832?s=400&u=12354b310724861914d139cae2a378adf10a3a1d&v=4" width="50%"></img> | <img src="https://avatars3.githubusercontent.com/u/58289478?s=400&v=4" width="50%"></img>  |
 | [Github 링크](https://github.com/khl6235) | [Github 링크](https://github.com/HyeonJooo) |
-| - 구독 중인 큐레이터 목록 조회<br> - 제목으로 책 검색<br>  - 큐레이터 구독/구독 취소<br>   - 메인에서 에디터's Pick 컨텐츠 조회<br>   - 문장 검색<br>   - 테마 검색<br>   - API 문서 작성<br>| >  - 문장 상세 조회
->  - 문장 좋아요
->  - 문장 북마크
->  - 테마 좋아요
->  - 테마 북마크
->  - 큐레이터 상세 조회
->  - 내 서재 상세 조회
->  - API 문서 작성 |
+| - 구독 중인 큐레이터 목록 조회<br> - 제목으로 책 검색<br>  - 큐레이터 구독/구독 취소<br>   - 메인에서 에디터's Pick 컨텐츠 조회<br>   - 문장 검색<br>   - 테마 검색<br>   - API 문서 작성<br>|  - 문장 상세 조회<br>  - 문장 좋아요<br>  - 문장 북마크<br>  - 테마 좋아요<br>  - 테마 북마크<br>  - 큐레이터 상세 조회<br>  - 내 서재 상세 조회<br> - API 문서 작성<br> |
 
 
 
