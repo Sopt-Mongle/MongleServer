@@ -266,8 +266,9 @@ const curator = {
                 element.curatorNum = curatorNumResult[0].num;
 
                 //--- 큐레이터 ---
-                let curatorQuery = `SELECT distinct(s.writerIdx) FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = 25 ORDER BY s.likes DESC limit 3`;
-                let curatorResult = await pool.queryParam(curatorQuery);
+                let curatorQuery = `SELECT distinct(s.writerIdx) FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = ? ORDER BY s.likes DESC limit 3`;
+                let curatorValue = [themeIdx];
+                let curatorResult = await pool.queryParam_Parse(curatorQuery, curatorValue);
 
                 await Promise.all(curatorResult.map(async(element) => {
                     let curatorIdx2 = element.writerIdx; 
