@@ -37,6 +37,32 @@ module.exports = {
             }
         });
     },
+    queryParam_Parse: async (query, value) => {
+        let result = null;
+        try {
+            const pool = await poolPromise;
+            const connection = await pool.getConnection();
+            try {
+                result = await connection.query(query, value) || null;
+            } catch (queryError) {
+                connection.rollback(() => {});
+                if(queryError.errno == 1452) {
+                    result = new NoReferencedRowError();
+                }
+                console.log(queryError);
+            }
+            pool.releaseConnection(connection);
+        } catch (connectionError) {
+            console.log(connectionError);   
+        }
+        if(result instanceof Error) {
+            throw result;
+        }
+        if(!result) {
+            throw new DatabaseError();
+        }
+        return result;
+    },
     Transaction: async (...args) => {
         return new Promise(async (resolve, reject) => {
             try {

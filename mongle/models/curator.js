@@ -5,20 +5,22 @@ const CuratorData = require('../modules/data/curatorData');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
 const curatorData = require('../modules/data/curatorData');
+const { value } = require('../config/database');
 
 const curator = {
     getAllCurators: async(curatorIdx) =>{
-        let query = `SELECT * FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ${curatorIdx}`;
-        
+        const query = `SELECT * FROM follow JOIN curator ON follow.followedIdx = curatorIdx WHERE followerIdx = ?`;
         try{
-            let tempResult = await pool.queryParam(query);
+            const values = [curatorIdx];
+            let tempResult = await pool.queryParam_Parse(query, values);
 
             //구독 중인 큐레이터
             await Promise.all(tempResult.map(async(element) => {
                 let keywordIdx = element.keywordIdx;
                 //키워드
-                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-                const keywordResult = await pool.queryParam(query);
+                let query2 = `SELECT keyword FROM keyword WHERE keywordIdx = ?`;
+                let values2 = [keywordIdx];
+                let keywordResult = await pool.queryParam_Parse(query2, values2);
                 element.keyword = keywordResult[0].keyword;
                 
                 //북마크 여부
@@ -35,27 +37,30 @@ const curator = {
     },
 
     subscribe: async(followerIdx, followedIdx) =>{
-        let query = `SELECT * FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${followedIdx}`;
+        const query = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
         try{
             let result = "";
-            const selectResult = await pool.queryParam(query);
+            const values = [followerIdx, followedIdx];
+            const selectResult = await pool.queryParam_Parse(query, values);
             
             if(selectResult.length == 0){ //구독 안했던 큐레이터 -> 구독하기!!
-                query = `INSERT INTO follow(followerIdx, followedIdx) VALUE(${followerIdx}, ${followedIdx})`;
-                await pool.queryParam(query);
+                const insertFollowQuery = `INSERT INTO follow(followerIdx, followedIdx) VALUE(?, ?)`;
+                await pool.queryParam_Parse(insertFollowQuery, values);
             
-                query = `UPDATE curator SET subscribe = subscribe+1 WHERE curatorIdx = ${followedIdx}`;
-                await pool.queryParam(query);
+                const updateCuratorQuery = `UPDATE curator SET subscribe = subscribe+1 WHERE curatorIdx = ?`;
+                const updateCuratorValues = [followedIdx];
+                await pool.queryParam_Parse(updateCuratorQuery, updateCuratorValues);
 
                 result = true;
 
             }
             else{ //구독 했던 큐레이터 -> 구독취소!!
-                query = `DELETE FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${followedIdx}`;
-                await pool.queryParam(query);
+                const deleteFollowQuery = `DELETE FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
+                await pool.queryParam_Parse(deleteFollowQuery, values);
 
-                query = `UPDATE curator SET subscribe = subscribe-1 WHERE curatorIdx = ${followedIdx}`;
-                await pool.queryParam(query);
+                const updateCuratorQuery = `UPDATE curator SET subscribe = subscribe-1 WHERE curatorIdx = ?`;
+                const updateCuratorValues = [followedIdx];
+                await pool.queryParam_Parse(updateCuratorQuery, updateCuratorValues);
 
                 result = false;
             }
@@ -68,19 +73,21 @@ const curator = {
     },
 
     getCuratorInfo: async(curatorIdx, curatorIdx2) =>{
-        let profilequery = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx2}`;
-        let themequery = `SELECT * FROM theme WHERE writerIdx = ${curatorIdx2}`;
-        let sentencequery = `SELECT * FROM sentence WHERE writerIdx = ${curatorIdx2}`;
+        const profileQuery = `SELECT * FROM curator WHERE curatorIdx = ?`;
+        const themeQuery = `SELECT * FROM theme WHERE writerIdx = ?`;
+        const sentenceQuery = `SELECT * FROM sentence WHERE writerIdx = ?`;
 
         try{
             //--- 프로필 ---
-            let profileResult = await pool.queryParam(profilequery);
+            const profileValue = [curatorIdx2];
+            let profileResult = await pool.queryParam_Parse(profileQuery, profileValue);
 
             //프로필 - 키워드
             let keywordIdx = profileResult[0].keywordIdx;
             if(keywordIdx !== null){
-                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-                const keywordResult = await pool.queryParam(query);            
+                const keywordQuery = `SELECT keyword FROM keyword WHERE keywordIdx = ?`;
+                const keywordValue = [keywordIdx];
+                const keywordResult = await pool.queryParam_Parse(keywordQuery, keywordValue);
                 profileResult[0].keyword = keywordResult[0].keyword;
             }
             else{
@@ -88,8 +95,9 @@ const curator = {
             }
 
             //프로필 - 구독 여부
-            query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
-            const followResult = await pool.queryParam(query);
+            const followQuery = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
+            const followValues = [curatorIdx, curatorIdx2];
+            const followResult = await pool.queryParam_Parse(followQuery, followValues);
             if(followResult.length == 0){
                 profileResult[0].alreadySubscribed = false;
             }
@@ -98,27 +106,32 @@ const curator = {
             }
 
             //--- 테마 ---
-            let themeResult = await pool.queryParam(themequery);
+            const themeValue = [curatorIdx2];
+            let themeResult = await pool.queryParam_Parse(themeQuery, themeValue);
 
             await Promise.all(themeResult.map(async(element) =>{
                 let writerIdx = element.writerIdx;
                 let themeImgIdx = element.themeImgIdx;
                 let themeIdx = element.themeIdx;
 
-                //테마 - 테마 배경 이미지                
-                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
-                const themeImgResult = await pool.queryParam(query);
+                //테마 - 테마 배경 이미지
+                
+                let themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
+                let themeImgValue = [themeImgIdx];
+                let themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
                 element.themeImg = themeImgResult[0].img;
 
                 //테마 - writer 정보
-                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-                let writerResult = await pool.queryParam(query);
+                let writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
+                let writerValue = [writerIdx];
+                let writerResult = await pool.queryParam_Parse(writerQuery, writerValue);
                 element.writer = writerResult[0].name;
                 element.writerImg = writerResult[0].img;
 
                 //테마 - 북마크 여부
-                query = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
-                const alreadyResult = await pool.queryParam(query);
+                let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
+                let alreadyValue = [curatorIdx, themeIdx];
+                let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValue);
                 if(alreadyResult.length == 0){
                     element.alreadyBookmarked = false;
                 }
@@ -127,37 +140,43 @@ const curator = {
                 }
 
                 //테마 - 안에 문장 수
-                query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
-                const sentenceNum = await pool.queryParam(query);
+                let query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
+                let value = [themeIdx];
+                let sentenceNum = await pool.queryParam_Parse(query, value);
                 element.sentenceNum = sentenceNum[0].num;
 
             }));
 
             //--- 문장 ---
-            let sentenceResult = await pool.queryParam(sentencequery);
+            const sentenceValue = [curatorIdx2];
+            let sentenceResult = await pool.queryParam_Parse(sentenceQuery, sentenceValue);
 
             await Promise.all(sentenceResult.map(async(element) =>{
                 let writerIdx = element.writerIdx;
                 let sentenceIdx = element.sentenceIdx;
 
                 //문장 - writer 정보
-                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-                let writerResult = await pool.queryParam(query);
+                let writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ?`;
+                let writerValue = [writerIdx];
+                let writerResult = await pool.queryParam_Parse(writerQuery, writerValue);
                 element.writer = writerResult[0].name;
                 element.writerImg = writerResult[0].img;
 
                 //테마 정보
-                query = `SELECT * FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}`;
-                const themeInfoResult = await pool.queryParam(query);
-                const themeIdx = themeInfoResult[0].themeIdx;
+                let themeInfoQuery = `SELECT * FROM theme_sentence WHERE sentenceIdx = ?`;
+                let themeInfoValue = [sentenceIdx];
+                let themeInfoResult = await pool.queryParam_Parse(themeInfoQuery, themeInfoValue);
+                let themeIdx = themeInfoResult[0].themeIdx;
                 element.themeIdx = themeIdx;
-                query = `SELECT theme FROM theme WHERE themeIdx = ${themeIdx}`;
-                const themeNameResult = await pool.queryParam(query);
+                let themeNameQuery = `SELECT theme FROM theme WHERE themeIdx = ?`;
+                let themeNameValue = [themeIdx];
+                let themeNameResult = await pool.queryParam(themeNameQuery, themeNameValue);
                 element.theme = themeNameResult[0].theme;
 
                 //문장 - 북마크 여부
-                query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-                const alreadyBookmarkedResult = await pool.queryParam(query);
+                let alreadyBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                let alreadyBookmarkedValues = [curatorIdx, sentenceIdx];
+                let alreadyBookmarkedResult = await pool.queryParam_Parse(alreadyBookmarkedQuery, alreadyBookmarkedValues);
                 if(alreadyBookmarkedResult.length == 0){
                     element.alreadyBookmarked = false;
                 }
@@ -166,8 +185,9 @@ const curator = {
                 }
 
                 //문장 - 좋아요 여부
-                query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-                const sentenceLikedResult = await pool.queryParam(query);
+                let sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                let sentenceLikedValues = [curatorIdx, sentenceIdx];
+                let sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
                 if(sentenceLikedResult.length == 0){
                     element.alreadyLiked = false;
                 }
@@ -198,8 +218,9 @@ const curator = {
             let keyword;
             await Promise.all(result.map(async(element) =>{
                 let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
-                keyword = await pool.queryParam(query);
+                let query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ?`;
+                let value = [curatorIdx];
+                keyword = await pool.queryParam_Parse(query, value);
                 if(keyword.length !== 0){
                     element.keyword = keyword[0].keyword;
                 }
@@ -215,7 +236,7 @@ const curator = {
     },
 
     getThemeInCurator: async(curatorIdx) =>{
-        let query = `SELECT t.* FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
+        const query = `SELECT t.* FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
                     GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 ORDER BY createdAt DESC limit 2`;
         try{
             //--- 테마 ---
@@ -226,29 +247,33 @@ const curator = {
                 let themeIdx = element.themeIdx;
                 //테마 배경 이미지
                 let themeImgIdx = element.themeImgIdx;
-                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
-                let themeImgResult = await pool.queryParam(query);
+                let themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
+                let themeImgValue = [themeImgIdx];
+                let themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
                 element.themeImg = themeImgResult[0].img;
 
                 //안에 문장 수
-                query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
-                let sentenceNumResult = await pool.queryParam(query);
+                let sentenceNumQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
+                let sentenceNumValue = [themeIdx];
+                let sentenceNumResult = await pool.queryParam_Parse(sentenceNumQuery, sentenceNumValue);
                 element.sentenceNum = sentenceNumResult[0].num;
 
                 //참여한 큐레이터 수
-                query = `SELECT COUNT(s.writerIdx) as num FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
-                GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 AND t.themeIdx = ${themeIdx} ORDER BY createdAt DESC limit 2`;
-                let curatorNumResult = await pool.queryParam(query);
+                let curatorNumQuery = `SELECT COUNT(s.writerIdx) as num FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
+                GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 AND t.themeIdx = ? ORDER BY createdAt DESC limit 2`;
+                let curatorNumValue = [themeIdx];
+                let curatorNumResult = await pool.queryParam_Parse(curatorNumQuery, curatorNumValue);
                 element.curatorNum = curatorNumResult[0].num;
 
                 //--- 큐레이터 ---
-                query = `SELECT distinct(s.writerIdx) FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = 25 ORDER BY s.likes DESC limit 3`;
-                let curatorResult = await pool.queryParam(query);
+                let curatorQuery = `SELECT distinct(s.writerIdx) FROM sentence s JOIN theme_sentence ts ON s.sentenceIdx = ts.sentenceIdx WHERE ts.themeIdx = 25 ORDER BY s.likes DESC limit 3`;
+                let curatorResult = await pool.queryParam(curatorQuery);
 
                 await Promise.all(curatorResult.map(async(element) => {
                     let curatorIdx2 = element.writerIdx; 
-                    query = `SELECT * FROM curator WHERE curatorIdx = ${curatorIdx2}`;
-                    let curatorInfoResult = await pool.queryParam(query);
+                    let curatorInfoQuery = `SELECT * FROM curator WHERE curatorIdx = ?`;
+                    let curatorInfoValue = [curatorIdx2];
+                    let curatorInfoResult = await pool.queryParam_Parse(curatorInfoQuery, curatorInfoValue);
 
                     //어차피 위에 .map으로 다 알아서 들어가는 정보들!!
                     element.curatorIdx = curatorInfoResult[0].curatorIdx;
@@ -258,8 +283,9 @@ const curator = {
 
                     //프로필 - 키워드
                     let keywordIdx = curatorInfoResult[0].keywordIdx;
-                    query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-                    const keyword = await pool.queryParam(query);
+                    let keywordQuery = `SELECT keyword FROM keyword WHERE keywordIdx = ?`;
+                    let keywordValue = [keywordIdx];
+                    let keyword = await pool.queryParam_Parse(keywordQuery, keywordValue);
                     if(keyword.length !== 0){
                         element.keyword = keyword[0].keyword;
                     }
@@ -268,8 +294,9 @@ const curator = {
                     }
 
                     //프로필 - 구독 여부
-                    query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
-                    const followResult = await pool.queryParam(query);
+                    let followQuery = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
+                    let followValues = [curatorIdx, curatorIdx2];
+                    let followResult = await pool.queryParam_Parse(followQuery, followValues);
                     if(followResult.length == 0){
                         element.alreadySubscribed = false;
                     }
@@ -290,19 +317,22 @@ const curator = {
     },
 
     getCuratorByKeyword: async(keywordIdx, followerIdx) =>{
-        let query = `SELECT * FROM curator WHERE keywordIdx = ${keywordIdx}`;
+        const query = `SELECT * FROM curator WHERE keywordIdx = ?`;
         try{
-            let result = await pool.queryParam(query);
+            const value = [keywordIdx];
+            let result = await pool.queryParam_Parse(query, value);
             let keyword;
             let alreadySave;
             await Promise.all(result.map(async(element) =>{
                 let curatorIdx = element.curatorIdx;
-                query = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ${curatorIdx}`;
-                keyword = await pool.queryParam(query);
+                let curatorQuery = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ?`;
+                let curatorValue = [curatorIdx];
+                keyword = await pool.queryParam_Parse(curatorQuery, curatorValue);
                 element.keyword = keyword[0].keyword;
 
-                let savequery = `SELECT * FROM follow WHERE followerIdx = ${followerIdx} AND followedIdx = ${curatorIdx}`;
-                alreadySave = await pool.queryParam(savequery);
+                let saveQuery = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
+                let saveValues = [followerIdx, curatorIdx];
+                alreadySave = await pool.queryParam(saveQuery, saveValues);
                 if(alreadySave.length === 0){
                     element.alreadySubscribed = false;
                 }

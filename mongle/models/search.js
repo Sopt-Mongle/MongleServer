@@ -1,30 +1,34 @@
 const pool = require('../modules/pool');
-
 const CuratorData = require('../modules/data/curatorData');
 const SentenceData = require('../modules/data/sentenceData');
 const ThemeData = require('../modules/data/themeData');
 const jwt = require('../modules/jwt');
+
 const search = {
     searchCurator: async(token, words)=>{
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const queryWords = words.replace(/(\s)/g, "%");
 
-        let query = `SELECT * FROM curator WHERE name LIKE "%${queryWords}%"`;
-        try{
-            let tempResult = await pool.queryParam(query);
+        const query = `SELECT * FROM curator WHERE name LIKE ?`;
+        const value = ['%'+queryWords+'%'];
 
+        try{
+            let tempResult = await pool.queryParam_Parse(query, value);
+            console.log(tempResult);
             await Promise.all(tempResult.map(async(element) => {
                 let keywordIdx = element.keywordIdx;
-                query = `SELECT keyword FROM keyword WHERE keywordIdx = ${keywordIdx}`;
-                const keywordResult = await pool.queryParam(query);
+                let keywordQuery = `SELECT keyword FROM keyword WHERE keywordIdx = ?`;
+                let keywordValue = [keywordIdx];
+                const keywordResult = await pool.queryParam_Parse(keywordQuery, keywordValue);
                 if(keywordResult[0] !== undefined){
                     element.keyword = keywordResult[0].keyword;
                 }
 
                 //구독 여부
                 let curatorIdx2 = element.curatorIdx;
-                query = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
-                const followResult = await pool.queryParam(query);
+                let followQuery = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
+                let followValues = [curatorIdx, curatorIdx2];
+                const followResult = await pool.queryParam_Parse(followQuery, followValues);
                 if(followResult.length == 0){
                     element.alreadySubscribed = false;
                 }
@@ -35,8 +39,6 @@ const search = {
             }));
 
             return tempResult.map(CuratorData);
-
-            // return result;
         }
         catch(err){
             console.log('searchCurator ERROR : ', err);
@@ -49,27 +51,32 @@ const search = {
         const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
         const queryWords = words.replace(/(\s)/g, "%");
 
-        let query = `SELECT * FROM theme WHERE theme LIKE "%${queryWords}%"`;
+        const query = `SELECT * FROM theme WHERE theme LIKE ?`;
+        const value = ['%'+queryWords+'%'];
+        
         try{
-            //최근 검색어 테이블에 저장
-            const query2 = `INSERT INTO search_words(curatorIdx, word) VALUES(${curatorIdx}, "${words}")`;
-            await pool.queryParam(query2);
+            let result = await pool.queryParam_Parse(query, value);
 
-            let result = await pool.queryParam(query);
+            //최근 검색어 테이블에 저장
+            const query2 = `INSERT INTO search_words(curatorIdx, word) VALUES(?, ?)`;
+            const values2 = [curatorIdx, words];
+            await pool.queryParam_Parse(query2, values2);
+
             await Promise.all(result.map(async(element) =>{
                 //안에 문장 수
                 let themeIdx = element.themeIdx;
-                query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
-                let sentenceNum = await pool.queryParam(query);
+                let countQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
+                let countValue = [themeIdx];
+                let sentenceNum = await pool.queryParam_Parse(countQuery, countValue);
                 element.sentenceNum = sentenceNum[0].num;
 
                 //themeImg 뽑아주기
                 let themeImgIdx = element.themeImgIdx;
-                query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
-                let themeImgResult = await pool.queryParam(query);
+                let themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
+                let themeImgValue = [themeImgIdx];
+                let themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
                 element.themeImg = themeImgResult[0].img;
             }));
-            
             
             return result.map(ThemeData);
         }
@@ -79,28 +86,33 @@ const search = {
         }
     },
 
-    searchSentence: async( words)=>{
+    searchSentence: async(words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
         
-        let query = `SELECT * FROM sentence WHERE sentence LIKE "%${queryWords}%"`;
+        const query = `SELECT * FROM sentence WHERE sentence LIKE ?`;
+        const value = ['%'+queryWords+'%'];
+        
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
             await Promise.all(result.map(async(element) => {
                 //문장 writer 정보
                 let writerIdx = element.writerIdx;
-                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-                let writerResult = await pool.queryParam(query);
+                let writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ?`;
+                let writerValue = [writerIdx];
+                let writerResult = await pool.queryParam_Parse(writerQuery, writerValue);
                 element.writer = writerResult[0].name;
                 element.writerImg = writerResult[0].img;
 
                 //테마 정보
                 let sentenceIdx = element.sentenceIdx;
-                query = `SELECT * FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}`;
-                let themeInfoResult = await pool.queryParam(query);
+                let themeInfoQuery = `SELECT * FROM theme_sentence WHERE sentenceIdx = ?`;
+                let themeInfoValue = [sentenceIdx];
+                let themeInfoResult = await pool.queryParam_Parse(themeInfoQuery, themeInfoValue);
                 let themeIdx = themeInfoResult[0].themeIdx;
                 element.themeIdx = themeIdx;
-                query = `SELECT theme FROM theme WHERE themeIdx = ${themeIdx}`;
-                let themeNameResult = await pool.queryParam(query);
+                let themeNameQuery = `SELECT theme FROM theme WHERE themeIdx = ?`;
+                let themeNameValue = [themeIdx];
+                let themeNameResult = await pool.queryParam_Parse(themeNameQuery, themeNameValue);
                 element.theme = themeNameResult[0].theme;
             }));
 
@@ -114,9 +126,10 @@ const search = {
     },
 
     recentSearch: async(curatorIdx) => {
-        let query = `SELECT * FROM search_words WHERE curatorIdx = ${curatorIdx} ORDER BY searchWordsIdx DESC LIMIT 10`;
+        const query = `SELECT * FROM search_words WHERE curatorIdx = ? ORDER BY searchWordsIdx DESC LIMIT 10`;
+        const value = [curatorIdx];
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
 
             let words = [];
             result.valueOf(0).forEach(element => {
@@ -136,9 +149,10 @@ const search = {
     },
 
     recentDelete: async(curatorIdx) =>{
-        let query = `DELETE FROM search_words WHERE curatorIdx = ${curatorIdx}`;
+        const query = `DELETE FROM search_words WHERE curatorIdx = ?`;
+        const value = [curatorIdx];
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
             return result;
         }
         catch(err){
@@ -148,7 +162,7 @@ const search = {
     },
 
     recommendSearch : async()=>{
-        let query = `SELECT word FROM search_words GROUP BY word ORDER BY COUNT(*) DESC LIMIT 15`;
+        const query = `SELECT word FROM search_words GROUP BY word ORDER BY COUNT(*) DESC LIMIT 15`;
         try{
             const tempResult = await pool.queryParam(query);
             let result = [];

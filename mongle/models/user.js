@@ -22,9 +22,10 @@ const user = {
     },
 
     signin : async (email)=>{
-        const query = `SELECT * FROM curator WHERE email = "${email}"`;
+        const query = `SELECT * FROM curator WHERE email = "?"`;
+        const value = [email];
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
             // console.log("입력한 password: " + password);
             // console.log("원래 salt값: " + result[0].salt);
             // console.log("저장된 hash값: " + result[0].password);
@@ -41,9 +42,10 @@ const user = {
     },
 
     checkUserName: async (name) => {
-        const query = `SELECT * FROM curator WHERE name = "${name}"`;
+        const query = `SELECT * FROM curator WHERE name = "?"`;
+        const value = [name];
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
             if(result.length > 0) return true;
             else return false;
         } catch(err){
@@ -53,9 +55,10 @@ const user = {
     },
 
     checkUserEmail: async (email) => {
-        const query = `SELECT * FROM curator WHERE email = "${email}"`;
+        const query = `SELECT * FROM curator WHERE email = ?`;
+        const value = [email];
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
             if(result.length > 0) return true;
             else return false;
         } catch(err){
@@ -65,9 +68,10 @@ const user = {
     },
 
     getUserByEmail : async (email) =>{
-        const query = `SELECT * FROM curator WHERE email = "${email}"`;
+        const query = `SELECT * FROM curator WHERE email = ?`;
+        const value = [email];
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
             return result;
         }
         catch(err){
@@ -77,9 +81,10 @@ const user = {
     },
 
     withdraw : async (curatorIdx) =>{
-        const query = `DELETE FROM curator WHERE curatorIdx = ${curatorIdx}`;
+        const query = `DELETE FROM curator WHERE curatorIdx = ?`;
+        const value = [curatorIdx];
         try{
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParam_Parse(query, value);
             return result;
         }
         catch(err){

@@ -5,9 +5,10 @@ const SentenceData = require('../modules/data/sentenceData');
 
 const detail = {
     getSentence : async(curatorIdx, sentenceIdx) =>{
-        let query = `SELECT * FROM sentence WHERE sentenceIdx = "${sentenceIdx}"`;
+        const query = `SELECT * FROM sentence WHERE sentenceIdx = ?`;
         try{
-            const firstResult = await pool.queryParam(query);
+            const value = [sentenceIdx];
+            const firstResult = await pool.queryParam_Parse(query, value);
             let result;
             result = firstResult.map(SentenceData);
 
@@ -16,15 +17,17 @@ const detail = {
                 return -1;
             }
             const writerIdx = firstResult[0].writerIdx;
-            query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-            const writerResult = await pool.queryParam(query);
+            const writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ?`;
+            const writerValue = [writerIdx]; 
+            const writerResult = await pool.queryParam_Parse(writerQuery, writerValue);
             result[0].writer = writerResult[0].name;
             result[0].writerImg = writerResult[0].img;
 
             //문장 북마크 여부
-            const sentenceIdx = firstResult[0].sentenceIdx;
-            query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-            const sentenceBookmarkedResult = await pool.queryParam(query);
+            const sentenceIdx2 = firstResult[0].sentenceIdx;
+            const sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
+            const sentenceBookmarkedValues = [curatorIdx, sentenceIdx2];
+            const sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
             if(sentenceBookmarkedResult.length == 0){
                 result[0].alreadyBookmarked = false;
             }
@@ -33,8 +36,9 @@ const detail = {
             }
 
             //문장 좋아요 여부
-            query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-            const sentenceLikedResult = await pool.queryParam(query);
+            const sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
+            const sentenceLikedValues = [curatorIdx, sentenceIdx];
+            const sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
             if(sentenceLikedResult.length == 0){
                 result[0].alreadyLiked = false;
             }
@@ -43,12 +47,14 @@ const detail = {
             }
 
             //테마 정보
-            query = `SELECT * FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}`;
-            const themeInfoResult = await pool.queryParam(query);
+            const themeInfoQuery = `SELECT * FROM theme_sentence WHERE sentenceIdx = ?`;
+            const themeInfoValue = [sentenceIdx];
+            const themeInfoResult = await pool.queryParam_Parse(themeInfoQuery, themeInfoValue);
             const themeIdx = themeInfoResult[0].themeIdx;
             result[0].themeIdx = themeIdx;
-            query = `SELECT theme FROM theme WHERE themeIdx = ${themeIdx}`;
-            const themeNameResult = await pool.queryParam(query);
+            const themeNameQuery = `SELECT theme FROM theme WHERE themeIdx = ?`;
+            const themeNameValue = [themeIdx];
+            const themeNameResult = await pool.queryParam_Parse(themeNameQuery, themeNameValue);
             result[0].theme = themeNameResult[0].theme;
             
             return result;
@@ -58,9 +64,10 @@ const detail = {
     },
 
     isLike: async(curatorIdx, sentenceIdx) => {
-        let query = `SELECT COUNT(*) as cnt FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
+        const query = `SELECT COUNT(*) as cnt FROM curator_sentence_like WHERE curatorIdx = ? and sentenceIdx = ?`;
         try{
-            const result = await pool.queryParam(query);
+            const values = [curatorIdx, sentenceIdx];
+            const result = await pool.queryParam_Parse(query, values);
             if(result[0].cnt === 0){
                 return true;
             }
@@ -73,14 +80,17 @@ const detail = {
     },
 
     deleteLike: async(curatorIdx, sentenceIdx) =>{
-        let query1 = `DELETE FROM curator_sentence_like WHERE curatorIdx="${curatorIdx}" and sentenceIdx="${sentenceIdx}"`;
-        let query2 = `UPDATE sentence SET likes = likes-1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT likes FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
+        const deleteQuery = `DELETE FROM curator_sentence_like WHERE curatorIdx="?" and sentenceIdx="?"`;
+        const updateQuery = `UPDATE sentence SET likes = likes-1 WHERE sentenceIdx="?"`;
+        const selectQuery = `SELECT likes FROM sentence WHERE sentenceIdx="?"`;
         try{
-            const result1 = await pool.queryParam(query1);
-            const result2 = await pool.queryParam(query2);
-            const result3 = await pool.queryParam(query3);
-            return result3;
+            const deleteValues = [curatorIdx, sentenceIdx];
+            await pool.queryParam_Parse(deleteQuery, deleteValues);
+            const updateValue = [sentenceIdx];
+            await pool.queryParam_Parse(updateQuery, updateValue);
+            const selectValue = [sentenceIdx];
+            const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
+            return selectResult;
         }catch(err){
             console.log('deleteLike err: ' + err);
         }throw err;
@@ -91,30 +101,34 @@ const detail = {
         const question = `?,?`;
         const values = [curatorIdx, sentenceIdx];
         
-        let query1 = `INSERT INTO curator_sentence_like(${fields}) VALUES(${question})`;
-        let query2 = `UPDATE sentence SET likes = likes+1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT likes FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
+        const insertQuery = `INSERT INTO curator_sentence_like(${fields}) VALUES(${question})`;
+        const updateQuery = `UPDATE sentence SET likes = likes+1 WHERE sentenceIdx="?"`;
+        const selectQuery = `SELECT likes FROM sentence WHERE sentenceIdx="?"`;
         try{
-            const result1 = await pool.queryParamArr(query1, values);
-            const result2 = await pool.queryParam(query2);
-            const result3 = await pool.queryParam(query3);
-            return result3;
+            await pool.queryParamArr(insertQuery, values);
+            const updateValue = [sentenceIdx];
+            await pool.queryParam_Parse(updateQuery, updateValue);
+            const selectValue = [sentenceIdx];
+            const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
+            return selectResult;
         }catch(err){
             console.log('addLike err: ' + err);
         }throw err;
     },
 
     isBookmark: async(curatorIdx, sentenceIdx) => {
-        let query = `SELECT COUNT(*) as cnt FROM curator_sentence WHERE curatorIdx = ${curatorIdx} and sentenceIdx = ${sentenceIdx}`;
+        const query = `SELECT COUNT(*) as cnt FROM curator_sentence WHERE curatorIdx = ? and sentenceIdx = ?`;
         try{
-            const result = await pool.queryParam(query);
+            const values = [curatorIdx, sentenceIdx];
+            const result = await pool.queryParam_Parse(query, values);
             if(result[0].cnt === 0){
                 return true;
             }
             else if(result[0].cnt === 1){
-                query = `SELECT COUNT(*) as cnt2 FROM curator_sentence JOIN sentence ON curator_sentence.sentenceIdx = sentence.sentenceIdx WHERE curator_sentence.curatorIdx = sentence.writerIdx AND curator_sentence.curatorIdx = ${curatorIdx}`;
-                const result2 = await pool.queryParam(query);
-                if(result2[0].cnt2 === 0){ //다른 사람 문장 북마크가 된 상태
+                const checkQuery = `SELECT COUNT(*) as cnt2 FROM curator_sentence JOIN sentence ON curator_sentence.sentenceIdx = sentence.sentenceIdx WHERE curator_sentence.curatorIdx = sentence.writerIdx AND curator_sentence.curatorIdx = ?`;
+                const checkValue = [curatorIdx];
+                const checkResult = await pool.queryParam_Parse(checkQuery, checkValue);
+                if(checkResult[0].cnt2 === 0){ //다른 사람 문장 북마크가 된 상태
                     return false;
                 }
                 else{//내가 쓴 문장이라서 저장된 경우
@@ -130,20 +144,24 @@ const detail = {
     },
 
     deleteBookmark: async(curatorIdx, sentenceIdx) =>{
-        let query = `SELECT MAX(timestamp) timestamp FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
+        const query = `SELECT MAX(timestamp) timestamp FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
                 
         try{
-            const result = await pool.queryParam(query);
+            const values = [curatorIdx, sentenceIdx];
+            const result = await pool.queryParam_Parse(query, values);
             const timestamp = result[0].timestamp;
-            let query1 = `DELETE FROM curator_sentence WHERE timestamp = "${timestamp}"`;
-            await pool.queryParam(query1);
+            const deleteQuery = `DELETE FROM curator_sentence WHERE timestamp = "?"`;
+            const deleteValue = [timestamp];
+            await pool.queryParam_Parse(deleteQuery, deleteValue);
 
-            let query2 = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx="${sentenceIdx}"`;
-            await pool.queryParam(query2);
+            const updateQuery = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx="?"`;
+            const updateValue = [sentenceIdx];
+            await pool.queryParam_Parse(updateQuery, updateValue);
 
-            let query3 = `SELECT saves FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
-            const result3 = await pool.queryParam(query3);
-            return result3;
+            const selectQuery = `SELECT saves FROM sentence WHERE sentenceIdx="?"`;
+            const selectValue = [sentenceIdx];
+            const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
+            return selectResult;
         }catch(err){
             console.log('DeleteBookmark err: ' + err);
         }throw err;
@@ -154,29 +172,33 @@ const detail = {
         const question = `?,?`;
         const values = [curatorIdx, sentenceIdx];
         
-        let query1 = `INSERT INTO curator_sentence(${fields}) VALUES(${question})`;
-        let query2 = `UPDATE sentence SET saves = saves+1 WHERE sentenceIdx="${sentenceIdx}"`;
-        let query3 = `SELECT saves FROM sentence WHERE sentenceIdx="${sentenceIdx}"`;
+        const insertQuery = `INSERT INTO curator_sentence(${fields}) VALUES(${question})`;
+        const updateQuery = `UPDATE sentence SET saves = saves+1 WHERE sentenceIdx="?"`;
+        const selectQuery = `SELECT saves FROM sentence WHERE sentenceIdx="?"`;
         try{
-            const result1 = await pool.queryParamArr(query1, values);
-            const result2 = await pool.queryParam(query2);
-            const result3 = await pool.queryParam(query3);
-            return result3;
+            await pool.queryParamArr(insertQuery, values);
+            const updateValue = [sentenceIdx];
+            await pool.queryParam_Parse(updateQuery, updateValue);
+            const selectValue = [sentenceIdx];
+            const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
+            return selectResult;
         }catch(err){
             console.log('addBookmark err: ' + err);
         }throw err;
     },
 
     otherSentence: async(curatorIdx, sentenceIdx)=>{
-        let query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ${sentenceIdx}) AND sentenceIdx != ${sentenceIdx}) ORDER BY timestamp DESC LIMIT 2`;
+        const query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ?) AND sentenceIdx != ?) ORDER BY timestamp DESC LIMIT 2`;
         try{
-            const firstResult = await pool.queryParam(query);
+            const values = [sentenceIdx, sentenceIdx];
+            let firstResult = await pool.queryParam_Parse(query, values);
 
             await Promise.all(firstResult.map(async(element) => {
                 //writer 정보
                 let writerIdx = element.writerIdx;
-                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-                let writerResult = await pool.queryParam(query);
+                let writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ?`;
+                let writerValue = [writerIdx];
+                let writerResult = await pool.queryParam_Parse(writerQuery, writerValue);
                 element.writer = writerResult[0].name;
                 element.writerImg = writerResult[0].img;
 
@@ -190,10 +212,11 @@ const detail = {
     },
 
     getTheme : async(curatorIdx, themeIdx) =>{
-        let query = `SELECT * FROM theme WHERE themeIdx = ${themeIdx}`;
+        const themeQuery = `SELECT * FROM theme WHERE themeIdx = ?`;
         try{
             //--- theme ---
-            const themeResult = await pool.queryParam(query);
+            const themeValue = [themeIdx];
+            const themeResult = await pool.queryParam_Parse(themeQuery, themeValue);
             let result = {};
             result.theme = themeResult.map(ThemeData);
 
@@ -203,24 +226,28 @@ const detail = {
 
             //테마 배경 이미지
             const themeImgIdx = themeResult[0].themeImgIdx;
-            query = `SELECT img FROM themeImg WHERE themeImgIdx = ${themeImgIdx}`;
-            const themeImgResult = await pool.queryParam(query);
+            const themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
+            const themeImgValue = [themeImgIdx];
+            const themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
             result.theme[0].themeImg = themeImgResult[0].img;
 
             //테마 writer 정보
             const writerIdx = themeResult[0].writerIdx;
-            query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-            const writerResult = await pool.queryParam(query);
+            const writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ?`;
+            const writerValue = [writerIdx];
+            const writerResult = await pool.queryParam_Parse(writerQuery, writerValue);
             result.theme[0].writer = writerResult[0].name;
             result.theme[0].writerImg = writerResult[0].img;
 
             //테마 조회수
-            query = `UPDATE theme SET count = count+1 WHERE themeIdx = ${themeIdx}`;
-            await pool.queryParam(query);
+            const updateQuery = `UPDATE theme SET count = count+1 WHERE themeIdx = ?`;
+            const updateValue = [themeIdx];
+            await pool.queryParam_Parse(updateQuery, updateValue);
 
             //북마크 여부
-            query = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
-            const alreadyResult = await pool.queryParam(query);
+            const alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
+            const alreadyValues = [curatorIdx, themeIdx];
+            const alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
             if(alreadyResult.length == 0){
                 result.theme[0].alreadyBookmarked = false;
             }
@@ -229,26 +256,30 @@ const detail = {
             }
 
             //안에 문장 수
-            query = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ${themeIdx}`;
-            const sentenceNum = await pool.queryParam(query);
+            const selectQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
+            const selectValue = [themeIdx];
+            const sentenceNum = await pool.queryParam_Parse(selectQuery, selectValue);
             result.theme[0].sentenceNum = sentenceNum[0].num;
             
             //--- sentences ---
-            query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence JOIN theme WHERE theme_sentence.themeIdx = theme.themeIdx AND theme.themeIdx = ${themeIdx})`;
-            const sentenceResult = await pool.queryParam(query);
+            const sentenceQuery = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence JOIN theme WHERE theme_sentence.themeIdx = theme.themeIdx AND theme.themeIdx = ?)`;
+            const sentenceValue = [themeIdx];
+            let sentenceResult = await pool.queryParam_Parse(sentenceQuery, sentenceValue);
 
             await Promise.all(sentenceResult.map(async(element) =>{
                 //문장 writer 정보
                 let writerIdx = element.writerIdx;
-                query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-                let writerResult = await pool.queryParam(query);
+                let writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ?`;
+                let writerValue = [writerIdx];
+                let writerResult = await pool.queryParam_Parse(writerQuery, writerValue);
                 element.writer = writerResult[0].name;
                 element.writerImg = writerResult[0].img;
 
                 //문장 북마크 여부
                 let sentenceIdx = element.sentenceIdx;
-                query = `SELECT * FROM curator_sentence WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-                const sentenceBookmarkedResult = await pool.queryParam(query);
+                let sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                let sentenceBookmarkedValues = [curatorIdx, sentenceIdx];
+                let sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
                 if(sentenceBookmarkedResult.length == 0){
                     element.alreadyBookmarked = false;
                 }
@@ -257,8 +288,9 @@ const detail = {
                 }
 
                 //문장 좋아요 여부
-                query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-                const sentenceLikedResult = await pool.queryParam(query);
+                let sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                let sentenceLikedValues = [curatorIdx, sentenceIdx];
+                let sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
                 if(sentenceLikedResult.length == 0){
                     element.alreadyLiked = false;
                 }
@@ -278,16 +310,18 @@ const detail = {
     },
 
     themeIsBookmark: async(curatorIdx, themeIdx) => {
-        let query = `SELECT COUNT(*) as cnt FROM curator_theme WHERE curatorIdx = ${curatorIdx} and themeIdx = ${themeIdx}`;
+        const query = `SELECT COUNT(*) as cnt FROM curator_theme WHERE curatorIdx = ? and themeIdx = ?`;
         try{
-            const result = await pool.queryParam(query);
+            const values = [curatorIdx, themeIdx];
+            const result = await pool.queryParam_Parse(query, values);
             if(result[0].cnt === 0){
                 return true;
             }
             else if(result[0].cnt === 1){
-                query = `SELECT COUNT(*) as cnt2 FROM curator_theme JOIN theme ON curator_theme.themeIdx = theme.themeIdx WHERE curator_theme.curatorIdx = theme.writerIdx AND curator_theme.curatorIdx = ${curatorIdx}`;
-                const result2 = await pool.queryParam(query);
-                if(result2[0].cnt2 === 0){ //다른 사람 테마 북마크가 된 상태
+                const checkQuery = `SELECT COUNT(*) as cnt2 FROM curator_theme JOIN theme ON curator_theme.themeIdx = theme.themeIdx WHERE curator_theme.curatorIdx = theme.writerIdx AND curator_theme.curatorIdx = ?`;
+                const checkValue = [curatorIdx];
+                const checkResult = await pool.queryParam_Parse(checkQuery, checkValue);
+                if(checkResult[0].cnt2 === 0){ //다른 사람 테마 북마크가 된 상태
                     return false;
                 }
                 else{//내가 쓴 테마라서 저장된 경우
@@ -303,20 +337,24 @@ const detail = {
     },
 
     themeDeleteBookmark: async(curatorIdx, themeIdx) =>{
-        let query = `SELECT MAX(timestamp) timestamp FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
+        const query = `SELECT MAX(timestamp) timestamp FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
                 
         try{
-            const result = await pool.queryParam(query);
+            const values = [curatorIdx, themeIdx];
+            const result = await pool.queryParam_Parse(query, values);
             const timestamp = result[0].timestamp;
-            let query1 = `DELETE FROM curator_theme WHERE timestamp = "${timestamp}"`;
-            await pool.queryParam(query1);
+            const deleteQuery = `DELETE FROM curator_theme WHERE timestamp = "?"`;
+            const deleteValue = [timestamp];
+            await pool.queryParam_Parse(deleteQuery, deleteValue);
 
-            let query2 = `UPDATE theme SET saves = saves-1 WHERE themeIdx="${themeIdx}"`;
-            await pool.queryParam(query2);
+            const updateQuery = `UPDATE theme SET saves = saves-1 WHERE themeIdx="?"`;
+            const updateValue = [themeIdx];
+            await pool.queryParam_Parse(updateQuery, updateValue);
 
-            let query3 = `SELECT saves FROM theme WHERE themeIdx="${themeIdx}"`;
-            const result3 = await pool.queryParam(query3);
-            return result3;
+            const selectQuery = `SELECT saves FROM theme WHERE themeIdx="?"`;
+            const selectValue = [themeIdx];
+            const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
+            return selectResult;
         }catch(err){
             console.log('themeDeleteBookmark err: ' + err);
         }throw err;
@@ -327,14 +365,16 @@ const detail = {
         const question = `?,?`;
         const values = [curatorIdx, themeIdx];
         
-        let query1 = `INSERT INTO curator_theme(${fields}) VALUES(${question})`;
-        let query2 = `UPDATE theme SET saves = saves+1 WHERE themeIdx="${themeIdx}"`;
-        let query3 = `SELECT saves FROM theme WHERE themeIdx="${themeIdx}"`;
+        const insertQuery = `INSERT INTO curator_theme(${fields}) VALUES(${question})`;
+        const updateQuery = `UPDATE theme SET saves = saves+1 WHERE themeIdx="?"`;
+        const selectQuery = `SELECT saves FROM theme WHERE themeIdx="?"`;
         try{
-            const result1 = await pool.queryParamArr(query1, values);
-            const result2 = await pool.queryParam(query2);
-            const result3 = await pool.queryParam(query3);
-            return result3;
+            await pool.queryParamArr(insertQuery, values);
+            const updateValue = [themeIdx];
+            await pool.queryParam_Parse(updateQuery, updateValue);
+            const selectValue = [themeIdx];
+            const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
+            return selectResult;
         }catch(err){
             console.log('themeAddBookmark err: ' + err);
         }throw err;
