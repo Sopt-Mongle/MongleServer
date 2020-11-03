@@ -5,5 +5,6 @@ const authUtil = require('../../modules/authUtil');
 
 router.post('/signup',UserController.signup);
 router.post('/signin',UserController.signin);
+router.post('/auth', UserController.auth);
 router.delete('/withdraw', authUtil.checkToken, UserController.withdraw);
 module.exports = router;

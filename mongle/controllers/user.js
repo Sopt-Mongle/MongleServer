@@ -5,6 +5,7 @@ const statusCode = require('../modules/statusCode');
 const jwt = require('../modules/jwt');
 
 const UserModel = require('../models/user');
+const Mail = require('../modules/nodemailer');
 
 module.exports = {
     signup : async(req,res) =>{
@@ -33,7 +34,7 @@ module.exports = {
         const {email, password} = req.body;
         
         if (!email || !password) {
-        return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
 
         const alreadyEmail = await UserModel.checkUserEmail(email);
@@ -50,6 +51,19 @@ module.exports = {
 
         const {token, _} = await jwt.sign(user[0]);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, {accessToken : token}));
+    },
+
+    auth : async(req, res) => {
+        const email = req.body;
+
+        if(!email){
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+
+        const authNum = await Mail.auth(email);
+
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMAIL_SEND_SUCCESS, authNum));
+
     },
 
     withdraw : async(req, res) => {
