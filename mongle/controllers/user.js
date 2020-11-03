@@ -62,7 +62,7 @@ module.exports = {
 
         const authNum = await Mail.auth(email);
 
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMAIL_SEND_SUCCESS, authNum));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMAIL_SEND_SUCCESS, {authNum : authNum}));
 
     },
 
