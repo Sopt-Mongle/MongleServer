@@ -44,6 +44,7 @@ module.exports = {
         const user = await UserModel.getUserByEmail(email);
 
         const hashed = await encryption.encryptWithSalt(password, user[0].salt);
+        // console.log('hashed: ', hashed);
         if(hashed !== user[0].password){//비밀번호 확인
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
         }
@@ -66,5 +67,20 @@ module.exports = {
 
         const result = await UserModel.withdraw(curatorIdx);
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.WITHDRAW_SUCCESS));
+    },
+
+    changePassword : async(req, res) =>{
+        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        const{password} = req.body;
+        if (!curatorIdx || !password) {
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+        const {salt, hashed} = await encryption.encrypt(password);
+        
+        const idx = await UserModel.changePassword(curatorIdx, hashed, salt);
+        if (idx === -1) {
+            return await res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CHANGE_PASSWORD_SUCCESS));
     }
 }

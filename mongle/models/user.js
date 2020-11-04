@@ -80,6 +80,19 @@ const user = {
         }
     },
 
+    getUserByCuratorIdx : async (curatorIdx) =>{
+        const query = `SELECT * FROM curator WHERE curatorIdx = ?`;
+        const value = [curatorIdx];
+        try{
+            const result = await pool.queryParam_Parse(query, value);
+            return result;
+        }
+        catch(err){
+            console.log('getUserByCuratorIdx ERROR : ', err);
+            throw err;
+        }
+    },
+
     withdraw : async (curatorIdx) =>{
         const query = `DELETE FROM curator WHERE curatorIdx = ?`;
         const value = [curatorIdx];
@@ -89,6 +102,19 @@ const user = {
         }
         catch(err){
             console.log('withdraw ERROR : ', err);
+            throw err;
+        }
+    },
+
+    changePassword : async(curatorIdx, password, salt) =>{        
+        const query = `UPDATE curator SET password = ?, salt = ? WHERE curatorIdx = ?`;
+        const value = [password, salt, curatorIdx];
+        try{
+            const result = await pool.queryParam_Parse(query, value);
+            const insertId = result.insertId;
+            return insertId;
+        }catch(err){
+            console.log('changePassword ERROR :', err);
             throw err;
         }
     }

@@ -17,6 +17,7 @@ module.exports = {
             }
         })
     },
+
     encryptWithSalt: async (password, salt) => {
         return new Promise(async (resolve, reject) => {
             try {
