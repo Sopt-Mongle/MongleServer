@@ -333,7 +333,7 @@ const curator = {
 
                 let saveQuery = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
                 let saveValues = [followerIdx, curatorIdx];
-                alreadySave = await pool.queryParam(saveQuery, saveValues);
+                alreadySave = await pool.queryParam_Parse(saveQuery, saveValues);
                 if(alreadySave.length === 0){
                     element.alreadySubscribed = false;
                 }
