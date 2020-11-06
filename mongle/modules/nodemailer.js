@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
+const appPassword = require('../config/mailKey').appPassword;
 
 module.exports = {
     auth: async (email) => {
@@ -21,7 +22,7 @@ module.exports = {
             requireTLS: true,
             auth: {
                 user: 'mongle.official@gmail.com',
-                pass: '@mongle0718'
+                pass: appPassword
             }
         });
 
