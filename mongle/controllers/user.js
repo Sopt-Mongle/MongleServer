@@ -8,15 +8,30 @@ const UserModel = require('../models/user');
 const Mail = require('../modules/nodemailer');
 
 module.exports = {
+    duplicate : async(req, res) =>{
+        const {email, name} = req.body;
+        if(!email || !name){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+        }
+
+        const alreadyEmail = await UserModel.checkUserEmail(email);
+        if(alreadyEmail){
+            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_EMAIL));
+        }
+
+        const alreadyName = await UserModel.checkUserName(name);
+        if (alreadyName){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
+        }
+
+        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DUPLICATE));
+        
+    },
+
     signup : async(req,res) =>{
         const {email, password, name} = req.body;
         if (!email|| !password || !name ) {            
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-        }
-        // 사용중인 닉네임이 있는지 확인
-        const check = await UserModel.checkUserName(name);
-        if (check) {
-            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
         }
 
         const {salt, hashed} = await encryption.encrypt(password);
@@ -45,7 +60,6 @@ module.exports = {
         const user = await UserModel.getUserByEmail(email);
 
         const hashed = await encryption.encryptWithSalt(password, user[0].salt);
-        // console.log('hashed: ', hashed);
         if(hashed !== user[0].password){//비밀번호 확인
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
         }
@@ -62,7 +76,6 @@ module.exports = {
         }
 
         const authNum = await Mail.auth(email);
-
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.EMAIL_SEND_SUCCESS, {authNum : authNum}));
 
     },
@@ -97,4 +110,5 @@ module.exports = {
         }
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CHANGE_PASSWORD_SUCCESS));
     }
+    
 }

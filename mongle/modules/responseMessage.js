@@ -10,6 +10,8 @@ module.exports = {
     CREATED_USER: "회원 가입 성공",
     DELETE_USER: "회원 탈퇴 성공",
     ALREADY_NAME: "이미 사용중인 닉네임입니다.",
+    ALREADY_EMAIL: "이미 사용중인 이메일입니다.",
+    NO_DUPLICATE: "사용 가능한 이메일과 닉네임입니다.",
     EMAIL_SEND_SUCCESS: "인증번호 이메일 전송 성공",
     
     // 로그인
