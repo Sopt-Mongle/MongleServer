@@ -24,6 +24,7 @@ module.exports = {
         } catch (err) {
             if (err.message === 'jwt expired') {
                 console.log('expired token');
+                console.log(TOKEN_EXPIRED);
                 return TOKEN_EXPIRED;
             } else if (err.message === 'invalid token') {
                 console.log('invalid token');

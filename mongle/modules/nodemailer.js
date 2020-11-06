@@ -34,7 +34,7 @@ module.exports = {
 
         try{
             await transporter.sendMail(mailOptions, function (err, info){
-                console.log('Email sent: '+info.response);
+                // console.log('Email sent: '+info.response);
                 transporter.close()
             });
 
