@@ -21,33 +21,35 @@ const user = {
         }
     },
 
-    signin : async (email)=>{
-        const query = `SELECT * FROM curator WHERE email = "?"`;
-        const value = [email];
-        try{
-            const result = await pool.queryParam_Parse(query, value);
-            // console.log("입력한 password: " + password);
-            // console.log("원래 salt값: " + result[0].salt);
-            // console.log("저장된 hash값: " + result[0].password);
-            // const hashed = await crypto.pbkdf2Sync(password, result[0].salt, 1, 32, 'sha512').toString('hex');
-            // console.log('로그인 비번으로 해쉬한값: ' + hashed);
+    // signin : async (email)=>{
+    //     const query = `SELECT * FROM curator WHERE email = "?"`;
+    //     const value = [email];
+    //     try{
+    //         const result = await pool.queryParam_Parse(query, value);
+    //         // console.log("입력한 password: " + password);
+    //         // console.log("원래 salt값: " + result[0].salt);
+    //         // console.log("저장된 hash값: " + result[0].password);
+    //         // const hashed = await crypto.pbkdf2Sync(password, result[0].salt, 1, 32, 'sha512').toString('hex');
+    //         // console.log('로그인 비번으로 해쉬한값: ' + hashed);
 
-            // if(result[0].password === hashed) return result;
-            // else return false;
-            return result;
-        } catch(err){
-            console.log('signin err : ', err);
-            throw err;
-        }
-    },
+    //         // if(result[0].password === hashed) return result;
+    //         // else return false;
+    //         return result;
+    //     } catch(err){
+    //         console.log('signin err : ', err);
+    //         throw err;
+    //     }
+    // },
 
     checkUserName: async (name) => {
-        const query = `SELECT * FROM curator WHERE name = "?"`;
+        const query = `SELECT * FROM curator WHERE name = ?`;
         const value = [name];
         try{
             const result = await pool.queryParam_Parse(query, value);
-            if(result.length > 0) return true;
-            else return false;
+            if(result.length > 0) //already used name
+                return true;
+            else //not used name
+                return false;
         } catch(err){
             console.log('checkUserName err : ', err);
             throw err;
@@ -59,8 +61,10 @@ const user = {
         const value = [email];
         try{
             const result = await pool.queryParam_Parse(query, value);
-            if(result.length > 0) return true;
-            else return false;
+            if(result.length > 0) //already used email
+                return true;
+            else //not used email
+                return false;
         } catch(err){
             console.log('checkUserEmail err : ', err);
             throw err;
