@@ -16,15 +16,15 @@ module.exports = {
 
         const alreadyEmail = await UserModel.checkUserEmail(email);
         if(alreadyEmail){
-            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_EMAIL));
+            return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ALREADY_EMAIL, {duplicate : 'email'}));
         }
 
         const alreadyName = await UserModel.checkUserName(name);
         if (alreadyName){
-            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_NAME));
+            return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ALREADY_NAME, {duplicate : 'name'}));
         }
 
-        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DUPLICATE));
+        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.NO_DUPLICATE, {duplicate : 'available'}));
         
     },
 
