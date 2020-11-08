@@ -80,9 +80,9 @@ const detail = {
     },
 
     deleteLike: async(curatorIdx, sentenceIdx) =>{
-        const deleteQuery = `DELETE FROM curator_sentence_like WHERE curatorIdx="?" and sentenceIdx="?"`;
-        const updateQuery = `UPDATE sentence SET likes = likes-1 WHERE sentenceIdx="?"`;
-        const selectQuery = `SELECT likes FROM sentence WHERE sentenceIdx="?"`;
+        const deleteQuery = `DELETE FROM curator_sentence_like WHERE curatorIdx=? and sentenceIdx=?`;
+        const updateQuery = `UPDATE sentence SET likes = likes-1 WHERE sentenceIdx=?`;
+        const selectQuery = `SELECT likes FROM sentence WHERE sentenceIdx=?`;
         try{
             const deleteValues = [curatorIdx, sentenceIdx];
             await pool.queryParam_Parse(deleteQuery, deleteValues);
@@ -102,8 +102,8 @@ const detail = {
         const values = [curatorIdx, sentenceIdx];
         
         const insertQuery = `INSERT INTO curator_sentence_like(${fields}) VALUES(${question})`;
-        const updateQuery = `UPDATE sentence SET likes = likes+1 WHERE sentenceIdx="?"`;
-        const selectQuery = `SELECT likes FROM sentence WHERE sentenceIdx="?"`;
+        const updateQuery = `UPDATE sentence SET likes = likes+1 WHERE sentenceIdx=?`;
+        const selectQuery = `SELECT likes FROM sentence WHERE sentenceIdx=?`;
         try{
             await pool.queryParamArr(insertQuery, values);
             const updateValue = [sentenceIdx];
@@ -150,15 +150,15 @@ const detail = {
             const values = [curatorIdx, sentenceIdx];
             const result = await pool.queryParam_Parse(query, values);
             const timestamp = result[0].timestamp;
-            const deleteQuery = `DELETE FROM curator_sentence WHERE timestamp = "?"`;
+            const deleteQuery = `DELETE FROM curator_sentence WHERE timestamp = ?`;
             const deleteValue = [timestamp];
             await pool.queryParam_Parse(deleteQuery, deleteValue);
 
-            const updateQuery = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx="?"`;
+            const updateQuery = `UPDATE sentence SET saves = saves-1 WHERE sentenceIdx=?`;
             const updateValue = [sentenceIdx];
             await pool.queryParam_Parse(updateQuery, updateValue);
 
-            const selectQuery = `SELECT saves FROM sentence WHERE sentenceIdx="?"`;
+            const selectQuery = `SELECT saves FROM sentence WHERE sentenceIdx=?`;
             const selectValue = [sentenceIdx];
             const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
             return selectResult;
@@ -173,8 +173,8 @@ const detail = {
         const values = [curatorIdx, sentenceIdx];
         
         const insertQuery = `INSERT INTO curator_sentence(${fields}) VALUES(${question})`;
-        const updateQuery = `UPDATE sentence SET saves = saves+1 WHERE sentenceIdx="?"`;
-        const selectQuery = `SELECT saves FROM sentence WHERE sentenceIdx="?"`;
+        const updateQuery = `UPDATE sentence SET saves = saves+1 WHERE sentenceIdx=?`;
+        const selectQuery = `SELECT saves FROM sentence WHERE sentenceIdx=?`;
         try{
             await pool.queryParamArr(insertQuery, values);
             const updateValue = [sentenceIdx];
@@ -343,15 +343,15 @@ const detail = {
             const values = [curatorIdx, themeIdx];
             const result = await pool.queryParam_Parse(query, values);
             const timestamp = result[0].timestamp;
-            const deleteQuery = `DELETE FROM curator_theme WHERE timestamp = "?"`;
+            const deleteQuery = `DELETE FROM curator_theme WHERE timestamp = ?`;
             const deleteValue = [timestamp];
             await pool.queryParam_Parse(deleteQuery, deleteValue);
 
-            const updateQuery = `UPDATE theme SET saves = saves-1 WHERE themeIdx="?"`;
+            const updateQuery = `UPDATE theme SET saves = saves-1 WHERE themeIdx=?`;
             const updateValue = [themeIdx];
             await pool.queryParam_Parse(updateQuery, updateValue);
 
-            const selectQuery = `SELECT saves FROM theme WHERE themeIdx="?"`;
+            const selectQuery = `SELECT saves FROM theme WHERE themeIdx=?`;
             const selectValue = [themeIdx];
             const selectResult = await pool.queryParam_Parse(selectQuery, selectValue);
             return selectResult;
@@ -366,8 +366,8 @@ const detail = {
         const values = [curatorIdx, themeIdx];
         
         const insertQuery = `INSERT INTO curator_theme(${fields}) VALUES(${question})`;
-        const updateQuery = `UPDATE theme SET saves = saves+1 WHERE themeIdx="?"`;
-        const selectQuery = `SELECT saves FROM theme WHERE themeIdx="?"`;
+        const updateQuery = `UPDATE theme SET saves = saves+1 WHERE themeIdx=?`;
+        const selectQuery = `SELECT saves FROM theme WHERE themeIdx=?`;
         try{
             await pool.queryParamArr(insertQuery, values);
             const updateValue = [themeIdx];
