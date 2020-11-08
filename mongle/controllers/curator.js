@@ -61,7 +61,7 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.THEME_IN_CURATOR_SUCCESS, result));
     },
 
-    getCuratorByKeyword : async(req, res) => {  
+    getCuratorByKeyword : async(req, res) => {
         const keywordIdx = req.params.keywordIdx;
         const curatorIdx = (await req.decoded).valueOf(0).idx;
         if(!keywordIdx || !curatorIdx){
