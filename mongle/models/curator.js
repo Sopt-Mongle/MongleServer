@@ -170,7 +170,7 @@ const curator = {
                 element.themeIdx = themeIdx;
                 let themeNameQuery = `SELECT theme FROM theme WHERE themeIdx = ?`;
                 let themeNameValue = [themeIdx];
-                let themeNameResult = await pool.queryParam(themeNameQuery, themeNameValue);
+                let themeNameResult = await pool.queryParam_Parse(themeNameQuery, themeNameValue);
                 element.theme = themeNameResult[0].theme;
 
                 //문장 - 북마크 여부
