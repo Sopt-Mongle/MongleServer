@@ -8,22 +8,25 @@ const TOKEN_INVALID = -2;
 const authUtil = {
     checkToken: async (req, res, next) => {
         var token = req.headers.token;
-        
-        if (!token) {
+        const user = jwt.verify(token);
+        if(token == "guest"){
+            req.decoded = "guest";
+        }
+        else if (!token) {
             return res.json(util.fail(statusCode.BAD_REQUEST, resMessage.EMPTY_TOKEN));
         }
-        const user = jwt.verify(token);
-        
-        if (user == TOKEN_EXPIRED) {
+        else if (user == TOKEN_EXPIRED) {
             return res.json(util.fail(statusCode.UNAUTHORIZED, resMessage.EXPIRED_TOKEN));
         }
-        if (user == TOKEN_INVALID) {
+        else if (user == TOKEN_INVALID) {
             return res.json(util.fail(statusCode.UNAUTHORIZED, resMessage.INVALID_TOKEN));
         }
-        if ((await user).valueOf(0).idx == undefined) {
+        else if ((await user).valueOf(0).idx == undefined) {
             return res.json(util.fail(statusCode.UNAUTHORIZED, resMessage.INVALID_TOKEN));
         }
-        req.decoded = user;
+        else{
+            req.decoded = user;
+        }
         next();
     }
 }

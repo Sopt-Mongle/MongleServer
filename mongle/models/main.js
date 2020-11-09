@@ -42,14 +42,19 @@ const main = {
 
                 //북마크 여부
                 let sentenceIdx = element.sentenceIdx;
-                let sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
-                let sentenceBookmarkedValues = [curatorIdx, sentenceIdx];
-                let sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
-                if(sentenceBookmarkedResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
                 }
                 else{
-                    element.alreadyBookmarked = true;
+                    let sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                    let sentenceBookmarkedValues = [curatorIdx, sentenceIdx];
+                    let sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
+                    if(sentenceBookmarkedResult.length == 0){
+                        element.alreadyBookmarked = false;
+                    }
+                    else{
+                        element.alreadyBookmarked = true;
+                    }
                 }
 
                 //좋아요 여부
@@ -113,14 +118,19 @@ const main = {
 
                 //테마 북마크 여부
                 let themeIdx = element.themeIdx;
-                let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
-                let alreadyValues = [curatorIdx, themeIdx];
-                let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
-                if(alreadyResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
                 }
                 else{
-                    element.alreadyBookmarked = true;
+                    let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
+                    let alreadyValues = [curatorIdx, themeIdx];
+                    let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
+                    if(alreadyResult.length == 0){
+                        element.alreadyBookmarked = false;
+                    }
+                    else{
+                        element.alreadyBookmarked = true;
+                    }
                 }
 
                 //안에 문장 수
@@ -155,6 +165,10 @@ const main = {
 
                 //테마 북마크 여부
                 let themeIdx = element.themeIdx;
+                if(curatorIdx === "guest"){
+                    element.alreadyBookmarked = false;
+                }
+                else{
                 let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
                 let alreadyValues = [curatorIdx, themeIdx];
                 let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
@@ -164,6 +178,7 @@ const main = {
                 else{
                     element.alreadyBookmarked = true;
                 }
+            }
 
                 //안에 문장 수
                 let countQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
@@ -195,14 +210,19 @@ const main = {
 
                 //테마 북마크 여부
                 let themeIdx = element.themeIdx;
-                let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
-                let alreadyValues = [curatorIdx, themeIdx];
-                let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
-                if(alreadyResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
                 }
                 else{
-                    element.alreadyBookmarked = true;
+                    let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
+                    let alreadyValues = [curatorIdx, themeIdx];
+                    let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
+                    if(alreadyResult.length == 0){
+                        element.alreadyBookmarked = false;
+                    }
+                    else{
+                        element.alreadyBookmarked = true;
+                    }
                 }
 
                 //안에 문장 수
