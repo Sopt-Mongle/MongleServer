@@ -12,7 +12,6 @@ const main = {
             let result = await pool.queryParam(query);
             await Promise.all(result.map(async(element) =>{
                 let themeIdx = element.themeIdx;
-                //안에 문장 수
                 let countQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
                 let countValue = [themeIdx];
                 let sentenceNum = await pool.queryParam_Parse(countQuery, countValue);
@@ -33,14 +32,6 @@ const main = {
             let result = await pool.queryParam(query);
 
             await Promise.all(result.map(async(element) =>{
-                //writer 정보
-                // const writerIdx = element.writerIdx;
-                // query = `SELECT name, img FROM curator WHERE curatorIdx = ${writerIdx}`;
-                // const writerResult = await pool.queryParam(query);
-                // element.writer = writerResult[0].name;
-                // element.writerImg = writerResult[0].img;
-
-                //북마크 여부
                 let sentenceIdx = element.sentenceIdx;
                 if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
@@ -56,16 +47,6 @@ const main = {
                         element.alreadyBookmarked = true;
                     }
                 }
-
-                //좋아요 여부
-                // query = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ${curatorIdx} AND sentenceIdx = ${sentenceIdx}`;
-                // const sentenceLikedResult = await pool.queryParam(query);
-                // if(sentenceLikedResult.length == 0){
-                //     element.alreadyLiked = false;
-                // }
-                // else{
-                //     element.alreadyLiked = true;
-                // }
             }));
 
             return result.map(SentenceData);
@@ -87,7 +68,6 @@ const main = {
                 let keywordQuery = `SELECT keyword FROM keyword JOIN curator ON keyword.keywordIdx = curator.keywordIdx WHERE curatorIdx = ?`;
                 let keywordValue = [curatorIdx];
                 keyword = await pool.queryParam_Parse(keywordQuery, keywordValue);
-                // console.log(keyword[0].keyword);
                 if(keyword.length !== 0){
                     element.keyword = keyword[0].keyword;
                 }
@@ -109,14 +89,12 @@ const main = {
             let result = await pool.queryParam(query);
 
             await Promise.all(result.map(async(element) =>{
-                //테마 배경 이미지
                 let themeImgIdx = element.themeImgIdx;
                 let themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
                 let themeImgValue = [themeImgIdx];
                 let themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
                 element.themeImg = themeImgResult[0].img;
 
-                //테마 북마크 여부
                 let themeIdx = element.themeIdx;
                 if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
@@ -133,7 +111,6 @@ const main = {
                     }
                 }
 
-                //안에 문장 수
                 let countQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
                 let countValue = [themeIdx];
                 let sentenceNum = await pool.queryParam_Parse(countQuery, countValue);
@@ -156,31 +133,28 @@ const main = {
             let result = await pool.queryParam(query);
 
             await Promise.all(result.map(async(element) =>{
-                //테마 배경 이미지
                 let themeImgIdx = element.themeImgIdx;
                 let themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
                 let themeImgValue = [themeImgIdx];
                 let themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
                 element.themeImg = themeImgResult[0].img;
 
-                //테마 북마크 여부
                 let themeIdx = element.themeIdx;
                 if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
                 }
                 else{
-                let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
-                let alreadyValues = [curatorIdx, themeIdx];
-                let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
-                if(alreadyResult.length == 0){
-                    element.alreadyBookmarked = false;
+                    let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
+                    let alreadyValues = [curatorIdx, themeIdx];
+                    let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
+                    if(alreadyResult.length == 0){
+                        element.alreadyBookmarked = false;
+                    }
+                    else{
+                        element.alreadyBookmarked = true;
+                    }
                 }
-                else{
-                    element.alreadyBookmarked = true;
-                }
-            }
 
-                //안에 문장 수
                 let countQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
                 let countValue = [themeIdx];
                 let sentenceNum = await pool.queryParam_Parse(countQuery, countValue);
@@ -201,14 +175,12 @@ const main = {
         try{
             let result = await pool.queryParam(query);
             await Promise.all(result.map(async(element) =>{
-                //테마 배경 이미지
                 let themeImgIdx = element.themeImgIdx;
                 let themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
                 let themeImgValue = [themeImgIdx];
                 let themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
                 element.themeImg = themeImgResult[0].img;
 
-                //테마 북마크 여부
                 let themeIdx = element.themeIdx;
                 if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
@@ -225,7 +197,6 @@ const main = {
                     }
                 }
 
-                //안에 문장 수
                 let countQuery = `SELECT COUNT(*) as num FROM theme_sentence WHERE themeIdx = ?`;
                 let countValue = [themeIdx];
                 let sentenceNum = await pool.queryParam_Parse(countQuery, countValue);
