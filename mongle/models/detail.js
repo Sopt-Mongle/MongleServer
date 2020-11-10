@@ -25,25 +25,35 @@ const detail = {
 
             //문장 북마크 여부
             const sentenceIdx2 = firstResult[0].sentenceIdx;
-            const sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
-            const sentenceBookmarkedValues = [curatorIdx, sentenceIdx2];
-            const sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
-            if(sentenceBookmarkedResult.length == 0){
+            if(curatorIdx === "guest"){
                 result[0].alreadyBookmarked = false;
             }
             else{
-                result[0].alreadyBookmarked = true;
+                const sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                const sentenceBookmarkedValues = [curatorIdx, sentenceIdx2];
+                const sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
+                if(sentenceBookmarkedResult.length == 0){
+                    result[0].alreadyBookmarked = false;
+                }
+                else{
+                    result[0].alreadyBookmarked = true;
+                }
             }
 
             //문장 좋아요 여부
-            const sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
-            const sentenceLikedValues = [curatorIdx, sentenceIdx];
-            const sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
-            if(sentenceLikedResult.length == 0){
+            if(curatorIdx === "guest"){
                 result[0].alreadyLiked = false;
             }
             else{
-                result[0].alreadyLiked = true;
+                const sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                const sentenceLikedValues = [curatorIdx, sentenceIdx];
+                const sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
+                if(sentenceLikedResult.length == 0){
+                    result[0].alreadyLiked = false;
+                }
+                else{
+                    result[0].alreadyLiked = true;
+                }
             }
 
             //테마 정보
@@ -187,7 +197,7 @@ const detail = {
         }throw err;
     },
 
-    otherSentence: async(curatorIdx, sentenceIdx)=>{
+    otherSentence: async(sentenceIdx)=>{
         const query = `SELECT * FROM sentence WHERE sentence.sentenceIdx IN (SELECT sentenceIdx FROM theme_sentence WHERE theme_sentence.themeIdx IN (SELECT themeIdx FROM theme_sentence WHERE sentenceIdx = ?) AND sentenceIdx != ?) ORDER BY timestamp DESC LIMIT 2`;
         try{
             const values = [sentenceIdx, sentenceIdx];
@@ -245,14 +255,19 @@ const detail = {
             await pool.queryParam_Parse(updateQuery, updateValue);
 
             //북마크 여부
-            const alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
-            const alreadyValues = [curatorIdx, themeIdx];
-            const alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
-            if(alreadyResult.length == 0){
+            if(curatorIdx === "guest"){
                 result.theme[0].alreadyBookmarked = false;
             }
             else{
-                result.theme[0].alreadyBookmarked = true;
+                const alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ? AND themeIdx = ?`;
+                const alreadyValues = [curatorIdx, themeIdx];
+                const alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValues);
+                if(alreadyResult.length == 0){
+                    result.theme[0].alreadyBookmarked = false;
+                }
+                else{
+                    result.theme[0].alreadyBookmarked = true;
+                }
             }
 
             //안에 문장 수
@@ -277,31 +292,38 @@ const detail = {
 
                 //문장 북마크 여부
                 let sentenceIdx = element.sentenceIdx;
-                let sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
-                let sentenceBookmarkedValues = [curatorIdx, sentenceIdx];
-                let sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
-                if(sentenceBookmarkedResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
                 }
                 else{
-                    element.alreadyBookmarked = true;
+                    let sentenceBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                    let sentenceBookmarkedValues = [curatorIdx, sentenceIdx];
+                    let sentenceBookmarkedResult = await pool.queryParam_Parse(sentenceBookmarkedQuery, sentenceBookmarkedValues);
+                    if(sentenceBookmarkedResult.length == 0){
+                        element.alreadyBookmarked = false;
+                    }
+                    else{
+                        element.alreadyBookmarked = true;
+                    }
                 }
 
                 //문장 좋아요 여부
-                let sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
-                let sentenceLikedValues = [curatorIdx, sentenceIdx];
-                let sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
-                if(sentenceLikedResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyLiked = false;
                 }
                 else{
-                    element.alreadyLiked = true;
+                    let sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                    let sentenceLikedValues = [curatorIdx, sentenceIdx];
+                    let sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
+                    if(sentenceLikedResult.length == 0){
+                        element.alreadyLiked = false;
+                    }
+                    else{
+                        element.alreadyLiked = true;
+                    }
                 }
-
             }));
-
             result.sentence = sentenceResult.map(SentenceData);
-
             return result;
         }
         catch(err){
