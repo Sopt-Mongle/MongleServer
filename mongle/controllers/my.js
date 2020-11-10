@@ -100,11 +100,6 @@ module.exports = {
         const {name, introduce, keywordIdx} = req.body;
         const img = req.files;
         const location = img.map(image => image.location);
-        console.log('curatorIdx: ', curatorIdx);
-        console.log('name: ', name);
-        console.log('introduce: ', introduce);
-        console.log('keywordIdx: ', keywordIdx);
-        console.log('img: ', img);
         if(img === undefined){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_IMAGE));
             return;
