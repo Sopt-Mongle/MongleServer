@@ -5,8 +5,7 @@ const ThemeData = require('../modules/data/themeData');
 const jwt = require('../modules/jwt');
 
 const search = {
-    searchCurator: async(token, words)=>{
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    searchCurator: async(curatorIdx, words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
 
         const query = `SELECT * FROM curator WHERE name LIKE ?`;
@@ -26,16 +25,20 @@ const search = {
 
                 //구독 여부
                 let curatorIdx2 = element.curatorIdx;
-                let followQuery = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
-                let followValues = [curatorIdx, curatorIdx2];
-                const followResult = await pool.queryParam_Parse(followQuery, followValues);
-                if(followResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadySubscribed = false;
                 }
                 else{
-                    element.alreadySubscribed = true;
+                    let followQuery = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
+                    let followValues = [curatorIdx, curatorIdx2];
+                    const followResult = await pool.queryParam_Parse(followQuery, followValues);
+                    if(followResult.length == 0){
+                        element.alreadySubscribed = false;
+                    }
+                    else{
+                        element.alreadySubscribed = true;
+                    }
                 }
-                
             }));
 
             return tempResult.map(CuratorData);
@@ -47,8 +50,7 @@ const search = {
 
     },
 
-    searchTheme: async(token, words)=>{
-        const curatorIdx = (await jwt.verify(token)).valueOf(0).idx;
+    searchTheme: async(curatorIdx, words)=>{
         const queryWords = words.replace(/(\s)/g, "%");
 
         const query = `SELECT * FROM theme WHERE theme LIKE ?`;
@@ -57,10 +59,12 @@ const search = {
         try{
             let result = await pool.queryParam_Parse(query, value);
 
-            //최근 검색어 테이블에 저장
-            const query2 = `INSERT INTO search_words(curatorIdx, word) VALUES(?, ?)`;
-            const values2 = [curatorIdx, words];
-            await pool.queryParam_Parse(query2, values2);
+            //최근 검색어 테이블에 저장(회원인 경우만 저장)
+            if(curatorIdx != "guest"){
+                const query2 = `INSERT INTO search_words(curatorIdx, word) VALUES(?, ?)`;
+                const values2 = [curatorIdx, words];
+                await pool.queryParam_Parse(query2, values2);
+            }
 
             await Promise.all(result.map(async(element) =>{
                 //안에 문장 수

@@ -7,8 +7,14 @@ const SearchModel = require('../models/search');
 module.exports = {
     searchCurator : async(req, res) =>{
         const words = req.query.words;
-        const token = req.headers.token;
-        if(!token){
+        let curatorIdx;
+        if(req.decoded === "guest"){
+            curatorIdx = "guest"; 
+        }
+        else{
+            curatorIdx = (await req.decoded).valueOf(0).idx;
+        }
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
@@ -18,7 +24,7 @@ module.exports = {
             return;
         }
 
-        const result = await SearchModel.searchCurator(token, words);
+        const result = await SearchModel.searchCurator(curatorIdx, words);
 
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_CURATORS));
@@ -29,9 +35,14 @@ module.exports = {
     },
 
     searchTheme : async(req, res) =>{
-        const token = req.headers.token;
-        // const curatorIdx = req.body.curatorIdx;
-        if(!token){
+        let curatorIdx;
+        if(req.decoded === "guest"){
+            curatorIdx = "guest"; 
+        }
+        else{
+            curatorIdx = (await req.decoded).valueOf(0).idx;
+        }
+        if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
@@ -42,7 +53,7 @@ module.exports = {
             return;
         } 
         //검색 결과 중 제일 먼저 나오는 쪽에서 최근검색어 테이블에 insert
-        const result = await SearchModel.searchTheme(token, words);
+        const result = await SearchModel.searchTheme(curatorIdx, words);
         
         if(result.length === 0){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_SEARCH_THEMES));
@@ -71,7 +82,13 @@ module.exports = {
     },
 
     recentSearch : async(req, res) =>{
-        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        let curatorIdx;
+        if(req.decoded === "guest"){
+            curatorIdx = "guest"; 
+        }
+        else{
+            curatorIdx = (await req.decoded).valueOf(0).idx;
+        }
         if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
