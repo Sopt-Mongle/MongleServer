@@ -95,14 +95,19 @@ const curator = {
             }
 
             //프로필 - 구독 여부
-            const followQuery = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
-            const followValues = [curatorIdx, curatorIdx2];
-            const followResult = await pool.queryParam_Parse(followQuery, followValues);
-            if(followResult.length == 0){
+            if(curatorIdx === "guest"){
                 profileResult[0].alreadySubscribed = false;
             }
             else{
-                profileResult[0].alreadySubscribed = true;
+                const followQuery = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
+                const followValues = [curatorIdx, curatorIdx2];
+                const followResult = await pool.queryParam_Parse(followQuery, followValues);
+                if(followResult.length == 0){
+                    profileResult[0].alreadySubscribed = false;
+                }
+                else{
+                    profileResult[0].alreadySubscribed = true;
+                }
             }
 
             //--- 테마 ---
@@ -129,14 +134,19 @@ const curator = {
                 element.writerImg = writerResult[0].img;
 
                 //테마 - 북마크 여부
-                let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
-                let alreadyValue = [curatorIdx, themeIdx];
-                let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValue);
-                if(alreadyResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
                 }
                 else{
-                    element.alreadyBookmarked = true;
+                    let alreadyQuery = `SELECT * FROM curator_theme WHERE curatorIdx = ${curatorIdx} AND themeIdx = ${themeIdx}`;
+                    let alreadyValue = [curatorIdx, themeIdx];
+                    let alreadyResult = await pool.queryParam_Parse(alreadyQuery, alreadyValue);
+                    if(alreadyResult.length == 0){
+                        element.alreadyBookmarked = false;
+                    }
+                    else{
+                        element.alreadyBookmarked = true;
+                    }
                 }
 
                 //테마 - 안에 문장 수
@@ -174,27 +184,36 @@ const curator = {
                 element.theme = themeNameResult[0].theme;
 
                 //문장 - 북마크 여부
-                let alreadyBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
-                let alreadyBookmarkedValues = [curatorIdx, sentenceIdx];
-                let alreadyBookmarkedResult = await pool.queryParam_Parse(alreadyBookmarkedQuery, alreadyBookmarkedValues);
-                if(alreadyBookmarkedResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyBookmarked = false;
                 }
                 else{
-                    element.alreadyBookmarked = true;
+                    let alreadyBookmarkedQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                    let alreadyBookmarkedValues = [curatorIdx, sentenceIdx];
+                    let alreadyBookmarkedResult = await pool.queryParam_Parse(alreadyBookmarkedQuery, alreadyBookmarkedValues);
+                    if(alreadyBookmarkedResult.length == 0){
+                        element.alreadyBookmarked = false;
+                    }
+                    else{
+                        element.alreadyBookmarked = true;
+                    }
                 }
 
                 //문장 - 좋아요 여부
-                let sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
-                let sentenceLikedValues = [curatorIdx, sentenceIdx];
-                let sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
-                if(sentenceLikedResult.length == 0){
+                if(curatorIdx === "guest"){
                     element.alreadyLiked = false;
                 }
                 else{
-                    element.alreadyLiked = true;
+                    let sentenceLikedQuery = `SELECT * FROM curator_sentence_like WHERE curatorIdx = ? AND sentenceIdx = ?`;
+                    let sentenceLikedValues = [curatorIdx, sentenceIdx];
+                    let sentenceLikedResult = await pool.queryParam_Parse(sentenceLikedQuery, sentenceLikedValues);
+                    if(sentenceLikedResult.length == 0){
+                        element.alreadyLiked = false;
+                    }
+                    else{
+                        element.alreadyLiked = true;
+                    }
                 }
-
             }));
 
             let result = {};
@@ -295,18 +314,22 @@ const curator = {
                     }
 
                     //프로필 - 구독 여부
-                    let followQuery = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
-                    let followValues = [curatorIdx, curatorIdx2];
-                    let followResult = await pool.queryParam_Parse(followQuery, followValues);
-                    if(followResult.length == 0){
+                    if(curatorIdx === "guest"){
                         element.alreadySubscribed = false;
                     }
                     else{
-                        element.alreadySubscribed = true;
+                        let followQuery = `SELECT * FROM follow WHERE followerIdx = ${curatorIdx} AND followedIdx = ${curatorIdx2}`;
+                        let followValues = [curatorIdx, curatorIdx2];
+                        let followResult = await pool.queryParam_Parse(followQuery, followValues);
+                        if(followResult.length == 0){
+                            element.alreadySubscribed = false;
+                        }
+                        else{
+                            element.alreadySubscribed = true;
+                        }
                     }
                 }));
                 element.curators = curatorResult.map(CuratorData);
-
             }));
 
             result.theme = themeResult;
@@ -331,16 +354,20 @@ const curator = {
                 keyword = await pool.queryParam_Parse(curatorQuery, curatorValue);
                 element.keyword = keyword[0].keyword;
 
-                let saveQuery = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
-                let saveValues = [followerIdx, curatorIdx];
-                alreadySave = await pool.queryParam_Parse(saveQuery, saveValues);
-                if(alreadySave.length === 0){
+                if(followerIdx === "guest"){
                     element.alreadySubscribed = false;
                 }
                 else{
-                    element.alreadySubscribed = true;
-                }
-                
+                    let saveQuery = `SELECT * FROM follow WHERE followerIdx = ? AND followedIdx = ?`;
+                    let saveValues = [followerIdx, curatorIdx];
+                    alreadySave = await pool.queryParam_Parse(saveQuery, saveValues);
+                    if(alreadySave.length === 0){
+                        element.alreadySubscribed = false;
+                    }
+                    else{
+                        element.alreadySubscribed = true;
+                    }
+                }                
             }));
             return result.map(curatorData);
 

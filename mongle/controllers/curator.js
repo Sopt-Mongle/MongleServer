@@ -20,7 +20,13 @@ module.exports = {
     },
 
     getCuratorInfo : async(req, res) => {
-        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        let curatorIdx;
+        if(req.decoded === "guest"){
+            curatorIdx = "guest"; 
+        }
+        else{
+            curatorIdx = (await req.decoded).valueOf(0).idx;
+        }
         const curatorIdx2 = req.params.curatorIdx;
         if(!curatorIdx || !curatorIdx2){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -47,7 +53,13 @@ module.exports = {
         return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.RECOMMEND_CURATOR_SUCCESS, result));
     },
     getThemeInCurator : async(req, res) => {
-        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        let curatorIdx;
+        if(req.decoded === "guest"){
+            curatorIdx = "guest"; 
+        }
+        else{
+            curatorIdx = (await req.decoded).valueOf(0).idx;
+        }
         if(!curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
@@ -63,7 +75,13 @@ module.exports = {
 
     getCuratorByKeyword : async(req, res) => {
         const keywordIdx = req.params.keywordIdx;
-        const curatorIdx = (await req.decoded).valueOf(0).idx;
+        let curatorIdx;
+        if(req.decoded === "guest"){
+            curatorIdx = "guest"; 
+        }
+        else{
+            curatorIdx = (await req.decoded).valueOf(0).idx;
+        }
         if(!keywordIdx || !curatorIdx){
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
