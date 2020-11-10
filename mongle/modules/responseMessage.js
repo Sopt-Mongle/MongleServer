@@ -82,20 +82,15 @@ module.exports = {
     RECENT_SEARCH_SUCCESS: "최근 검색어 조회 성공",
     RECENT_DELETE_SUCCESS: "최근 검색어 전체삭제 성공",
     RECOMMEND_SEARCH_SUCCESS: "추천 검색어 조회 성공",
-    
 
     // 프로필 조회
     READ_PROFILE_SUCCESS: "프로필 조회 성공",
-    
 
     //포스트
     ALREADY_THEME: "이미 작성된 테마입니다.",
     CREATED_THEME:"테마 작성 성공",
-    CREATE_EMPTY_SENTENCE_SUCCESS:"테마 없는 문장 올리기 성공",
-    EMPTY_SENTENCE_LIST_SUCCESS:"테마 없는 문장 목록 조회 성공",
-    CREATE_SENTENCE_SUCCESS:"테마 있는 문장 올리기 성공",
+    CREATE_SENTENCE_SUCCESS:"문장 올리기 성공",
     THEME_LIST_SUCCESS: "선택할 테마 리스트 조회 성공",
-    EMPTY_SENTENCE_SET_THEME_SUCCESS: "테마 없는 문장 테마 지정하기 성공",
     GET_THEMEIMG_SUCCESS: "테마 이미지 조회 성공",
 
     CREATED_POST:"포스팅 성공",
