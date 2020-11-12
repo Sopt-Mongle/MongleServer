@@ -40,9 +40,7 @@ module.exports = {
             return await res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
-        const user = await UserModel.getUserByEmail(email);
-        const {token, _} = await jwt.sign(user[0]);
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER, {accessToken : token}));
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER));
     },
 
     signin : async(req, res) =>{
