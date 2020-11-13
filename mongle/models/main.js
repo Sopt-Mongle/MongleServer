@@ -16,6 +16,12 @@ const main = {
                 let countValue = [themeIdx];
                 let sentenceNum = await pool.queryParam_Parse(countQuery, countValue);
                 element.sentenceNum = sentenceNum[0].num;
+
+                //테마제목 추출
+                let themeResult = `SELECT theme FROM theme WHERE themeIdx = ?`;
+                let themeValue = [themeIdx];
+                let theme = await pool.queryParam_Parse(themeResult, themeValue);
+                element.theme = theme[0].theme;
             }));
             return result;
         }
