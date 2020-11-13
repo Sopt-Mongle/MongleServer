@@ -39,9 +39,9 @@ module.exports = {
         if (idx === -1) {
             return await res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-
-        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER));
-    },
+        const user = await UserModel.getUserByEmail(email);
+        const {token, _} = await jwt.sign(user[0]);
+        return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER, {accessToken : token}));    },
 
     signin : async(req, res) =>{
         const {email, password} = req.body;
