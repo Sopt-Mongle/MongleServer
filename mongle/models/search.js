@@ -13,7 +13,6 @@ const search = {
 
         try{
             let tempResult = await pool.queryParam_Parse(query, value);
-            // console.log(tempResult);
             await Promise.all(tempResult.map(async(element) => {
                 let keywordIdx = element.keywordIdx;
                 let keywordQuery = `SELECT keyword FROM keyword WHERE keywordIdx = ?`;
