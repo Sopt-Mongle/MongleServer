@@ -49,7 +49,7 @@ const post = {
                 const curatorThemeQuery = `INSERT INTO curator_theme(${fields2}) VALUES(${questions2})`;
                 await pool.queryParamArr(curatorThemeQuery, values2);
 
-                return 0;
+                return themeIdx;
             }
         }
         catch(err){

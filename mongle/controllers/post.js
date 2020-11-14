@@ -24,7 +24,7 @@ module.exports = {
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_THEME));
         }
         else{
-            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_THEME));
+            return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_THEME, result));
         }
     },
     
