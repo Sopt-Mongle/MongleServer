@@ -2,6 +2,7 @@ const pool = require('../modules/pool');
 const jwt = require('../modules/jwt');
 const ThemeData = require('../modules/data/themeData');
 const SentenceData = require('../modules/data/sentenceData');
+// const { catch } = require('../config/database');
 
 const detail = {
     getSentence : async(curatorIdx, sentenceIdx) =>{
@@ -401,6 +402,30 @@ const detail = {
             console.log('themeAddBookmark err: ' + err);
         }throw err;
     },
+
+    report: async(sort, idx, content) => {
+        try{
+            if(sort == 'theme'){
+                const fields = `themeIdx, content`;
+                const questions = `?, ?`;
+                const values = [idx, content];
+                const reportQuery = `INSERT INTO report(${fields}) VALUES(${questions})`;
+                await pool.queryParamArr(reportQuery, values);
+            }
+            else if(sort == 'sentence'){
+                const fields = `sentenceIdx, content`;
+                const questions = `?, ?`;
+                const values = [idx, content];
+                const reportQuery = `INSERT INTO report(${fields}) VALUES(${questions})`;
+                await pool.queryParamArr(reportQuery, values);
+            }
+            return 0;
+
+        }catch(err){
+            console.log('report err: ' + err);
+        }throw err;
+
+    }
 }
 
 module.exports = detail;

@@ -179,5 +179,17 @@ module.exports = {
         }).then((res) => Func2(res));
 
         return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.BOOKMARK_THEME, result));
+    },
+
+    report : async(req, res) => {
+        const {sort, idx, content} = req.body; //falseAd, inappropriate
+
+        if(!sort || !idx || !content){
+            return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE_THEME));
+        }
+
+        await detailModel.report(sort, idx, content);
+        return await res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.REPORT_SUCCESS));
+
     }
 }

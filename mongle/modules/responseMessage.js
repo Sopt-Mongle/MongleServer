@@ -69,6 +69,7 @@ module.exports = {
     READ_SENTENCE_FAIL: "없는 문장입니다.",
     READ_THEME_FAIL:"없는 테마입니다.",
     BOOKMARK_THEME:"테마 북마크 성공",
+    REPORT_SUCCESS: "신고 성공",
 
     //검색
     NO_SEARCH_WORDS: "입력한 검색어가 없습니다.",
