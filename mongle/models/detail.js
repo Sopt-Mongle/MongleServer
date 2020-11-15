@@ -136,9 +136,9 @@ const detail = {
             if(result[0].cnt === 0){
                 return true;
             }
-            else if(result[0].cnt === 1){
-                const checkQuery = `SELECT COUNT(*) as cnt2 FROM curator_sentence JOIN sentence ON curator_sentence.sentenceIdx = sentence.sentenceIdx WHERE curator_sentence.curatorIdx = sentence.writerIdx AND curator_sentence.curatorIdx = ?`;
-                const checkValue = [curatorIdx];
+            else if(result[0].cnt === 1){//내가 쓴 문장인지, 다른사람 문장을 북마크한건지 검사
+                const checkQuery = `SELECT COUNT(*) as cnt2 FROM curator_sentence JOIN sentence ON curator_sentence.sentenceIdx = sentence.sentenceIdx WHERE curator_sentence.curatorIdx = sentence.writerIdx AND curator_sentence.curatorIdx = ? AND curator_sentence.sentenceIdx = ?`;
+                const checkValue = [curatorIdx, sentenceIdx];
                 const checkResult = await pool.queryParam_Parse(checkQuery, checkValue);
                 if(checkResult[0].cnt2 === 0){ //다른 사람 문장 북마크가 된 상태
                     return false;
@@ -342,8 +342,8 @@ const detail = {
                 return true;
             }
             else if(result[0].cnt === 1){
-                const checkQuery = `SELECT COUNT(*) as cnt2 FROM curator_theme JOIN theme ON curator_theme.themeIdx = theme.themeIdx WHERE curator_theme.curatorIdx = theme.writerIdx AND curator_theme.curatorIdx = ?`;
-                const checkValue = [curatorIdx];
+                const checkQuery = `SELECT COUNT(*) as cnt2 FROM curator_theme JOIN theme ON curator_theme.themeIdx = theme.themeIdx WHERE curator_theme.curatorIdx = theme.writerIdx AND curator_theme.curatorIdx = ? AND curator_theme.themeIdx = ?`;
+                const checkValue = [curatorIdx, themeIdx];
                 const checkResult = await pool.queryParam_Parse(checkQuery, checkValue);
                 if(checkResult[0].cnt2 === 0){ //다른 사람 테마 북마크가 된 상태
                     return false;

@@ -88,7 +88,7 @@ const my = {
             await Promise.all(result.map(async(element) => {
                 let writerIdx = element.writerIdx;
                 let sentenceIdx = element.sentenceIdx;
-
+                
                 //writer 정보
                 let writerQuery = `SELECT name FROM curator WHERE curatorIdx = ?`;
                 let writerValue = [writerIdx];
