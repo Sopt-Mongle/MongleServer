@@ -133,7 +133,7 @@ const main = {
 
     getWaitTheme: async(curatorIdx)=>{
         //저장된 문장이 2개 미만인 테마들
-        const query = `SELECT * FROM theme LEFT JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx
+        const query = `SELECT theme.* FROM theme LEFT JOIN theme_sentence ON theme.themeIdx = theme_sentence.themeIdx
         group by theme.themeIdx having count(theme_sentence.sentenceIdx) < 2`;
         try{
             let result = await pool.queryParam(query);
