@@ -98,11 +98,15 @@ const user = {
     },
 
     withdraw : async (curatorIdx) =>{
-        const query = `DELETE FROM curator WHERE curatorIdx = ?`;
+        const query1 = `DELETE FROM curator WHERE curatorIdx = ?`;
+        const query2 = `DELETE FROM curator_theme WHERE curatorIdx = ?`;
+        const query3 = `DELETE FROM curator_sentence WHERE curatorIdx = ?`;
         const value = [curatorIdx];
         try{
-            const result = await pool.queryParam_Parse(query, value);
-            return result;
+            const result1 = await pool.queryParam_Parse(query1, value);
+            const result2 = await pool.queryParam_Parse(query2, value);
+            const result3 = await pool.queryParam_Parse(query3, value);
+            return;
         }
         catch(err){
             console.log('withdraw ERROR : ', err);
