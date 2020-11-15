@@ -63,11 +63,12 @@ const detail = {
             const themeInfoResult = await pool.queryParam_Parse(themeInfoQuery, themeInfoValue);
             const themeIdx = themeInfoResult[0].themeIdx;
             result[0].themeIdx = themeIdx;
-            const themeNameQuery = `SELECT theme FROM theme WHERE themeIdx = ?`;
+            const themeNameQuery = `SELECT theme, themeImgIdx FROM theme WHERE themeIdx = ?`;
             const themeNameValue = [themeIdx];
             const themeNameResult = await pool.queryParam_Parse(themeNameQuery, themeNameValue);
+            console.log(themeNameResult);
             result[0].theme = themeNameResult[0].theme;
-            
+            result[0].themeImgIdx = themeNameResult[0].themeImgIdx;
             return result;
         }catch(err){
             console.log('getSentence err: ' + err);
