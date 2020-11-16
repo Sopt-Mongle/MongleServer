@@ -27,7 +27,7 @@ module.exports = {
         });
 
         let mailOptions = {
-            from: 'mongle.official@gmail.com',
+            from: `"몽글" <mongle.official@gmail.com>`,
             to: email.email, // 수신할 이메일
             subject: '몽글 인증 메일입니다', // 메일 제목
             html: emailTemplete,
