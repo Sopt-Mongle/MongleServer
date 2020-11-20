@@ -68,7 +68,11 @@ const detail = {
             const themeNameResult = await pool.queryParam_Parse(themeNameQuery, themeNameValue);
             // console.log(themeNameResult);
             result[0].theme = themeNameResult[0].theme;
-            result[0].themeImgIdx = themeNameResult[0].themeImgIdx;
+            const themeImgIdx = themeNameResult[0].themeImgIdx;
+            const themeImgQuery = `SELECT img FROM themeImg WHERE themeImgIdx = ?`;
+            const themeImgValue = [themeImgIdx];
+            const themeImgResult = await pool.queryParam_Parse(themeImgQuery, themeImgValue);
+            result[0].themeImg = themeImgResult[0].img;
             // console.log(result);
             return result;
         }catch(err){
