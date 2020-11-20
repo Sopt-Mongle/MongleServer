@@ -164,7 +164,7 @@ const curator = {
             await Promise.all(sentenceResult.map(async(element) =>{
                 let writerIdx = element.writerIdx;
                 let sentenceIdx = element.sentenceIdx;
-
+                
                 //문장 - writer 정보
                 let writerQuery = `SELECT name, img FROM curator WHERE curatorIdx = ?`;
                 let writerValue = [writerIdx];

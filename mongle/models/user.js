@@ -98,11 +98,24 @@ const user = {
     },
 
     withdraw : async (curatorIdx) =>{
+
         const query1 = `DELETE FROM curator WHERE curatorIdx = ?`;
         const query2 = `DELETE FROM curator_theme WHERE curatorIdx = ?`;
         const query3 = `DELETE FROM curator_sentence WHERE curatorIdx = ?`;
+        const query4 = `SELECT theme_sentence.sentenceIdx FROM theme_sentence JOIN theme ON theme_sentence.themeIdx = theme.themeIdx WHERE theme.writerIdx = ?`;
         const value = [curatorIdx];
         try{
+            const result4 = await pool.queryParam_Parse(query4, value);
+            await Promise.all(result4.map(async(element) =>{
+                let sentenceIdx = element.sentenceIdx;
+                console.log('sentenceIdx: ', sentenceIdx);
+                const deleteValue = [sentenceIdx];
+                let deleteQuery1 = `DELETE FROM sentence WHERE sentenceIdx = ?`;
+                let deleteQuery2 = `DELETE FROM curator_sentence WHERE sentenceIdx = ?`;
+                await pool.queryParam_Parse(deleteQuery1, deleteValue);
+                await pool.queryParam_Parse(deleteQuery2, deleteValue);
+            }));
+
             const result1 = await pool.queryParam_Parse(query1, value);
             const result2 = await pool.queryParam_Parse(query2, value);
             const result3 = await pool.queryParam_Parse(query3, value);

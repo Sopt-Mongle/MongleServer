@@ -81,7 +81,6 @@ const post = {
             await pool.queryParamArr(themeSentenceQuery, values3);
 
             return sentenceIdx;
-                       
         }
         catch(err){
             console.log('createSentence err: ' + err);
