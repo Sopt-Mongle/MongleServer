@@ -18,7 +18,7 @@ module.exports = {
         if(!theme || !themeImgIdx){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
         }
-        console.log("themeImgIdx: ", themeImgIdx);
+        // console.log("themeImgIdx: ", themeImgIdx);
         const result = await PostModel.makeTheme(curatorIdx, theme, themeImgIdx);
         if(result == -1){
             return await res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_THEME));

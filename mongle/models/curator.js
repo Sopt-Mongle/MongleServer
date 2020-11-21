@@ -278,8 +278,10 @@ const curator = {
                 element.sentenceNum = sentenceNumResult[0].num;
 
                 //참여한 큐레이터 수
-                let curatorNumQuery = `SELECT COUNT(s.writerIdx) as num FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
-                GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 AND t.themeIdx = ? ORDER BY createdAt DESC limit 2`;
+                let curatorNumQuery = `SELECT COUNT(distinct sentence.writerIdx) as num
+                                        FROM theme_sentence
+                                        JOIN sentence ON sentence.sentenceIdx = theme_sentence.sentenceIdx
+                                        WHERE theme_sentence.themeIdx = ?`;
                 let curatorNumValue = [themeIdx];
                 let curatorNumResult = await pool.queryParam_Parse(curatorNumQuery, curatorNumValue);
                 element.curatorNum = curatorNumResult[0].num;
