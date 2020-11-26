@@ -30,7 +30,7 @@ const my = {
     },
 
     getMyTheme: async(curatorIdx) => {
-        const query = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ?`;
+        const query = `SELECT * FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ? ORDER BY theme.createdAt DESC`;
         try{
             const value = [curatorIdx];
             let result = await pool.queryParam_Parse(query, value);
@@ -39,7 +39,7 @@ const my = {
             let save = [];
             let write = [];
 
-            await Promise.all(result.map(async(element) => {
+            for(element of result){
                 let writerIdx = element.writerIdx;
                 let themeIdx = element.themeIdx;
 
@@ -62,7 +62,7 @@ const my = {
                 else{
                     save.push(element);
                 }
-            }));
+            }
             
             resultArray.write = write.map(ThemeData);
             resultArray.save = save.map(ThemeData);

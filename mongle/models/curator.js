@@ -74,8 +74,8 @@ const curator = {
 
     getCuratorInfo: async(curatorIdx, curatorIdx2) =>{
         const profileQuery = `SELECT * FROM curator WHERE curatorIdx = ?`;
-        const themeQuery = `SELECT * FROM theme WHERE writerIdx = ?`;
-        const sentenceQuery = `SELECT * FROM sentence WHERE writerIdx = ?`;
+        const themeQuery = `SELECT * FROM theme WHERE writerIdx = ? ORDER BY createdAt DESC`;
+        const sentenceQuery = `SELECT * FROM sentence WHERE writerIdx = ? ORDER BY timestamp DESC`;
 
         try{
             //--- 프로필 ---
