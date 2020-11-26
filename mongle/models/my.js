@@ -76,7 +76,7 @@ const my = {
     },
 
     getMySentence: async(curatorIdx) => {
-        const query = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ? ORDER BY sentence.sentenceIdx`;
+        const query = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ? ORDER BY sentence.sentenceIdx DESC`;
         try{
             const value = [curatorIdx];
             let result = await pool.queryParam_Parse(query, value);
