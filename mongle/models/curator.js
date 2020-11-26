@@ -256,7 +256,7 @@ const curator = {
 
     getThemeInCurator: async(curatorIdx) =>{
         const query = `SELECT t.* FROM theme t INNER JOIN theme_sentence ts ON t.themeIdx = ts.themeIdx INNER JOIN sentence s ON ts.sentenceIdx = s.sentenceIdx
-                    GROUP BY t.themeIdx HAVING COUNT(s.writerIdx) >= 3 ORDER BY createdAt DESC limit 2`;
+                    GROUP BY t.themeIdx HAVING COUNT(distinct s.writerIdx) >= 3 ORDER BY createdAt DESC limit 2`;
         try{
             //--- 테마 ---
             let result = {};

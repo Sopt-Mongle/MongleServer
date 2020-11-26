@@ -163,6 +163,7 @@ const my = {
     deleteSentence: async(curatorIdx, sentenceIdx) => {
         const preQuery = `SELECT * FROM curator_sentence WHERE curatorIdx = ? AND sentenceIdx = ?`;
         const query = `DELETE FROM sentence WHERE sentenceIdx = ?`;
+        const query2 = `DELETE FROM curator_sentence WHERE sentenceIdx = ?`;
         try{
             const preValues = [curatorIdx, sentenceIdx];
             const preResult = await pool.queryParam_Parse(preQuery, preValues);
@@ -172,6 +173,7 @@ const my = {
             else{
                 const value = [sentenceIdx];
                 const result = await pool.queryParam_Parse(query, value);
+                const result2 = await pool.queryParam_Parse(query2, value);
                 return result;
             }
             
