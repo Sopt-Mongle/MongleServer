@@ -76,7 +76,7 @@ const my = {
     },
 
     getMySentence: async(curatorIdx) => {
-        const query = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ?`;
+        const query = `SELECT * FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ? ORDER BY sentence.sentenceIdx`;
         try{
             const value = [curatorIdx];
             let result = await pool.queryParam_Parse(query, value);
@@ -85,7 +85,7 @@ const my = {
             let save = [];
             let write = [];
 
-            await Promise.all(result.map(async(element) => {
+            for(element of result){
                 let writerIdx = element.writerIdx;
                 let sentenceIdx = element.sentenceIdx;
                 
@@ -101,6 +101,8 @@ const my = {
                 let themeResult = await pool.queryParam_Parse(themeQuery, themeValue);
                 element.theme = themeResult[0].theme;              
 
+                // console.log(element);
+
                 //저장한 문장, 내가 쓴 문장 구분
                 if(writerIdx == curatorIdx){
                     let temp = write.find(s => s.sentenceIdx == sentenceIdx);
@@ -114,11 +116,12 @@ const my = {
                 else{
                     save.push(element);
                 }
-            }));
+
+            }
             
             resultArray.write = write.map(SentenceData);
             resultArray.save = save.map(SentenceData);
-            
+
             return resultArray;            
 
         }
