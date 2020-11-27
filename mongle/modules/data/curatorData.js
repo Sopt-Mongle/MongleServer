@@ -8,7 +8,9 @@ module.exports =
             "keyword": rawCuratorData.keyword,
             "keywordIdx": rawCuratorData.keywordIdx,
             "subscribe": rawCuratorData.subscribe,
-            "alreadySubscribed": rawCuratorData.alreadySubscribed
+            "alreadySubscribed": rawCuratorData.alreadySubscribed,
+            "themeCount": rawCuratorData.themeCount,
+            "sentenceCount": rawCuratorData.sentenceCount
         };
         return curatorData;
     };

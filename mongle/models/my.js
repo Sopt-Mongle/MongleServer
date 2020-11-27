@@ -8,9 +8,13 @@ const SentenceData = require('../modules/data/sentenceData');
 const my = {
     getMyProfile: async(curatorIdx) =>{
         const query = `SELECT * FROM curator WHERE curatorIdx = ?`;
+        const themeQuery = `SELECT COUNT(*) as cnt FROM theme JOIN curator_theme ON theme.themeIdx = curator_theme.themeIdx WHERE curator_theme.curatorIdx = ? ORDER BY theme.createdAt DESC`;
+        const sentenceQuery = `SELECT COUNT(*) as cnt FROM sentence JOIN curator_sentence ON sentence.sentenceIdx = curator_sentence.sentenceIdx WHERE curator_sentence.curatorIdx = ? ORDER BY sentence.sentenceIdx DESC`;
         try{
             const value = [curatorIdx];
             let result = await pool.queryParam_Parse(query, value);
+            let themeResult = await pool.queryParam_Parse(themeQuery, value);
+            let sentenceResult = await pool.queryParam_Parse(sentenceQuery, value);
             //키워드
             if(result[0].keywordIdx !== null){
                 const keywordIdx = result[0].keywordIdx;
@@ -20,7 +24,8 @@ const my = {
                 result[0].keyword = keywordResult[0].keyword;
                 
             }
-            
+            result[0].themeCount = themeResult[0].cnt;
+            result[0].sentenceCount = sentenceResult[0].cnt;
             return result.map(CuratorData);
         }
         catch(err){
@@ -63,7 +68,6 @@ const my = {
                     save.push(element);
                 }
             }
-            
             resultArray.write = write.map(ThemeData);
             resultArray.save = save.map(ThemeData);
             
@@ -118,7 +122,6 @@ const my = {
                 }
 
             }
-            
             resultArray.write = write.map(SentenceData);
             resultArray.save = save.map(SentenceData);
 
