@@ -177,7 +177,7 @@ const main = {
 
     getNowTheme: async(curatorIdx)=>{
         //최근 3일동안 생성된 테마들을 조회수 순으로 정렬~
-        const query = `SELECT * FROM theme WHERE (createdAt) >= DATE_SUB(NOW(), INTERVAL 72 HOUR) ORDER BY count DESC LIMIT 10`;
+        const query = `SELECT * FROM theme ORDER BY count DESC LIMIT 10`;
         try{
             let result = await pool.queryParam(query);
             await Promise.all(result.map(async(element) =>{
